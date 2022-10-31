@@ -4,6 +4,7 @@ import trashsoftware.duckSonTranslator.dict.BaseDict;
 import trashsoftware.duckSonTranslator.dict.BaseItem;
 import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.PinyinDict;
+import trashsoftware.duckSonTranslator.grammar.GrammarDict;
 import trashsoftware.duckSonTranslator.grammar.GrammarEffect;
 import trashsoftware.duckSonTranslator.grammar.Token;
 import trashsoftware.duckSonTranslator.translators.NoSuchWordException;
@@ -18,38 +19,17 @@ public class DuckSonTranslator {
             '“', '"', '”', '"', '‘', '\'', '’', '\''
     );
 
-    public static final Map<String, GrammarEffect> TENSE_INFO = Map.of(
-            "了",
-            new GrammarEffect(
-                    "past", -1,
-                    Set.of("v"),
-                    Map.of(),
-                    Map.of("解", new String[][]{{"understand", "v"}})),
-            "的",
-            new GrammarEffect(
-                    "belong", -1,
-                    Set.of("n", "pron"),
-                    Map.of("打", new String[][]{{"take", "v"}, {"taxi", "n"}}),
-                    Map.of("士", new String[][]{{"taxi", "n"}},
-                            "确", new String[][]{{"indeed", "adv"}})),
-            "正在",
-            new GrammarEffect(
-                    "ing", 1,
-                    Set.of("v"),
-                    Map.of(),
-                    Map.of())
-    );
-    public static final int MAX_TENSE_LEN = 2;
-
     private final BaseDict baseDict;
     private final PinyinDict pinyinDict;
     private final BigDict bigDict;
+    private final GrammarDict grammarDict;
     private boolean singleCharMode;
 
     public DuckSonTranslator(boolean singleCharMode) throws IOException {
         this.baseDict = new BaseDict();
         this.pinyinDict = new PinyinDict();
         this.bigDict = new BigDict();
+        this.grammarDict = new GrammarDict();
         
         this.singleCharMode = singleCharMode;
     }
@@ -138,7 +118,7 @@ public class DuckSonTranslator {
             GrammarEffect ge;
             if (i < chs.length() - 2) {
                 len2 = chs.substring(i, i + 2);
-                ge = TENSE_INFO.get(len2);
+                ge = grammarDict.tenseInfo.get(len2);
                 if (ge != null) {
                     if (!addSpecial(ge, chs, i, grammars)) {
                         grammars.put(i, new Token(len2, ge));
@@ -147,7 +127,7 @@ public class DuckSonTranslator {
                     }
                 }
             }
-            ge = TENSE_INFO.get(len1);
+            ge = grammarDict.tenseInfo.get(len1);
             if (ge != null) {
                 if (!addSpecial(ge, chs, i, grammars)) {
                     grammars.put(i, new Token(len1, ge));

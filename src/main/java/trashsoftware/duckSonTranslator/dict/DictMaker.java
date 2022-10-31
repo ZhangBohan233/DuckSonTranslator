@@ -65,8 +65,8 @@ public class DictMaker {
             String line;
             while ((line = br.readLine()) != null) {
                 lineNum++;
-                line = line.strip();
-                if (!(line.isBlank() || line.startsWith("#"))) {
+//                line = line.strip();
+                if (!(line.isBlank() || line.strip().startsWith("#"))) {
                     String[] split = line.split(",");
                     if (nCol == -1) nCol = split.length;
                     else if (nCol != split.length)

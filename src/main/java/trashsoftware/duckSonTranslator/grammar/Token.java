@@ -62,12 +62,11 @@ public class Token {
 
     private void applyIng() {
         String eng = getEng();
-        setEng(eng + "ing");
-//        if (eng.endsWith("e")) {
-//            token.setEng(eng + "d");
-//        } else {
-//            token.setEng(eng + "ed");
-//        }
+        if (eng.endsWith("e")) {
+            setEng(eng.substring(0, eng.length() - 1) + "ing");
+        } else {
+            setEng(eng + "ing");
+        }
     }
 
     public boolean isActual() {
