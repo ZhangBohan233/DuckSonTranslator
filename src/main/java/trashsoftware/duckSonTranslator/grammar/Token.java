@@ -1,10 +1,15 @@
 package trashsoftware.duckSonTranslator.grammar;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Token {
     
     private String chs;
     private String eng;
     private String partOfSpeech;
+    private Set<String> appliedTenses = new HashSet<>();
     private GrammarEffect grammarEffect;
     
     public Token(String chs, String eng, String partOfSpeech) {
@@ -18,6 +23,53 @@ public class Token {
         this.grammarEffect = effect;
     }
     
+    public void applyTense(String tenseName) {
+        if (!appliedTenses.contains(tenseName)) {
+            appliedTenses.add(tenseName);
+            switch (tenseName) {
+                case "past":
+                    applyPast();
+                    break;
+                case "belong":
+                    applyBelong();
+                    break;
+                case "ing":
+                    applyIng();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void applyPast() {
+        String eng = getEng();
+        if (eng.endsWith("e")) {
+            setEng(eng + "d");
+        } else {
+            setEng(eng + "ed");
+        }
+    }
+
+    private void applyBelong() {
+        String eng = getEng();
+        if (eng.endsWith("s")) {
+            setEng(eng + "'");
+        } else {
+            setEng(eng + "'s");
+        }
+    }
+
+    private void applyIng() {
+        String eng = getEng();
+        setEng(eng + "ing");
+//        if (eng.endsWith("e")) {
+//            token.setEng(eng + "d");
+//        } else {
+//            token.setEng(eng + "ed");
+//        }
+    }
+
     public boolean isActual() {
         return this.grammarEffect == null;
     }

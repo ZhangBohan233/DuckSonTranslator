@@ -23,48 +23,4 @@ public class GrammarEffect {
         this.specialPreComb = specialPreComb;
         this.specialPostComb = specialPostComb;
     }
-    
-    public void applyTo(Token token) {
-        switch (tenseName) {
-            case "past":
-                applyPast(token);
-                break;
-            case "belong":
-                applyBelong(token);
-                break;
-            case "ing":
-                applyIng(token);
-                break;
-            default:
-                break;
-        }
-    }
-    
-    private void applyPast(Token token) {
-        String eng = token.getEng();
-        if (eng.endsWith("e")) {
-            token.setEng(eng + "d");
-        } else {
-            token.setEng(eng + "ed");
-        }
-    }
-    
-    private void applyBelong(Token token) {
-        String eng = token.getEng();
-        if (eng.endsWith("s")) {
-            token.setEng(eng + "'");
-        } else {
-            token.setEng(eng + "'s");
-        }
-    }
-    
-    private void applyIng(Token token) {
-        String eng = token.getEng();
-        token.setEng(eng + "ing");
-//        if (eng.endsWith("e")) {
-//            token.setEng(eng + "d");
-//        } else {
-//            token.setEng(eng + "ed");
-//        }
-    }
 }

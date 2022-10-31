@@ -55,9 +55,13 @@ public class DuckSonTranslator {
     }
     
     public DuckSonTranslator() throws IOException {
-        this(false);
+        this(true);
     }
-    
+
+    public void setSingleCharMode(boolean singleCharMode) {
+        this.singleCharMode = singleCharMode;
+    }
+
     private static String[] splitToN(String orig, int n) {
         if (orig.length() < n) throw new RuntimeException();
         int avg = orig.length() / n;
@@ -191,10 +195,11 @@ public class DuckSonTranslator {
                 continue;
             }
 
-            BaseItem direct = baseDict.getByChs(cs);
+            BaseItem direct = baseDict.getByChs(chs, index);
             if (direct != null) {
-                Token token = new Token(cs, direct.eng, direct.partOfSpeech);
+                Token token = new Token(direct.chs, direct.eng, direct.partOfSpeech);
                 origIndexTokens.put(index, token);
+                index += direct.chs.length() - 1;
                 if (!notTrans.isEmpty()) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
                     notTrans.setLength(0);
@@ -228,6 +233,7 @@ public class DuckSonTranslator {
             Token tk = origIndexTokens.get(i);
             if (tk != null) {
                 tokens.add(tk);
+                i += tk.getChs().length() - 1;
                 continue;
             }
             tk = grammars.get(i);
@@ -238,31 +244,59 @@ public class DuckSonTranslator {
             }
             String notTransSeg = notTranslated.get(i);
             if (notTransSeg != null) {
-                while (!notTransSeg.isEmpty()) {
-                    BigDict.Result match = bigDict.translateOneWord(notTransSeg);
-                    if (match != null) {
-                        String thisWord = notTransSeg.substring(0, match.matchLength);
-
-                        Token token = new Token(thisWord, match.translated, match.partOfSpeech);
-                        tokens.add(token);
-
-                        notTransSeg = notTransSeg.substring(match.matchLength);
-                    } else {
-                        // 遍历同音字查询，只查一个字
-                        char cur = notTransSeg.charAt(0);
-                        String pinyin = pinyinDict.getPinyinByChs(cur);
-                        List<Character> sameSound = pinyinDict.getChsListByPinyin(pinyin);
-                        Token token = pickSameSoundWord(sameSound);
-                        tokens.add(token);
-                        
-                        notTransSeg = notTransSeg.substring(1);
-                    }
+                if (singleCharMode) {
+                    bigDictTransSingleChar(notTransSeg, tokens);
+                } else {
+                    bigDictTrans(notTransSeg, tokens);
                 }
             }
         }
         applyGrammar(tokens);
 
         return integrateToGeglish(tokens);
+    }
+    
+    private void bigDictTrans(String notTransSeg, List<Token> tokens) {
+        while (!notTransSeg.isEmpty()) {
+            BigDict.Result match = bigDict.translateOneWord(notTransSeg);
+            if (match != null) {
+                String thisWord = notTransSeg.substring(0, match.matchLength);
+
+                Token token = new Token(thisWord, match.translated, match.partOfSpeech);
+                tokens.add(token);
+
+                notTransSeg = notTransSeg.substring(match.matchLength);
+            } else {
+                char cur = notTransSeg.charAt(0);
+                tokens.add(bigDictSameSoundTrans(cur));
+
+                notTransSeg = notTransSeg.substring(1);
+            }
+        }
+    }
+
+    private void bigDictTransSingleChar(String notTransSeg, List<Token> tokens) {
+        for (char c : notTransSeg.toCharArray()) {
+            BigDict.Result result = bigDict.translateOneCharChsEng(c);
+            if (result != null) {
+                tokens.add(new Token(String.valueOf(c), result.translated, result.partOfSpeech));
+            } else {
+                tokens.add(bigDictSameSoundTrans(c));
+            }
+        }
+    }
+    
+    private Token bigDictSameSoundTrans(char cur) {
+        // 遍历同音字查询，只查一个字
+        String pinyin = pinyinDict.getPinyinByChs(cur);
+        List<Character> sameSound = pinyinDict.getChsListByPinyin(pinyin);
+        Token tk = pickSameSoundWord(sameSound);
+        if (tk == null) {
+            String cs = String.valueOf(cur);
+            return new Token(cs, cs, "n");
+        } else {
+            return tk;
+        }
     }
     
     private Token pickSameSoundWord(List<Character> chsChars) {
@@ -278,6 +312,7 @@ public class DuckSonTranslator {
                 minVal = result;
             }
         }
+        if (minVal == null) return null;
         return new Token(minChs, minVal.translated, minVal.partOfSpeech);
     }
 
@@ -316,7 +351,7 @@ public class DuckSonTranslator {
                         if (tk.isActual() && effect.effectivePos.contains(tk.getPartOfSpeech())) {
                             rem -= 1;
                             if (rem == 0) {
-                                effect.applyTo(tk);
+                                tk.applyTense(effect.tenseName);
                                 break;
                             }
                         }
@@ -328,7 +363,7 @@ public class DuckSonTranslator {
                         if (tk.isActual() && effect.effectivePos.contains(tk.getPartOfSpeech())) {
                             rem -= 1;
                             if (rem == 0) {
-                                effect.applyTo(tk);
+                                tk.applyTense(effect.tenseName);
                                 break;
                             }
                         }
