@@ -12,7 +12,7 @@ import java.util.*;
 public class DuckSonTranslator {
 
     public static final Set<String> NOT_BREAK_WORD = Set.of(
-            "pun", "num", "unk"
+            "pun", "unk"
     );
     private static final Map<Character, Character> PUNCTUATIONS_REGULAR = Map.of(
             '，', ',', '。', '.', '：', ':', '；', ';',
@@ -152,6 +152,7 @@ public class DuckSonTranslator {
 
     public String chsToGeglish(String chs) {
         SortedMap<Integer, Token> grammars = new TreeMap<>();
+
         for (int i = 0; i < chs.length(); i++) {
             String len1 = chs.substring(i, i + 1);
             String len2;
@@ -179,6 +180,8 @@ public class DuckSonTranslator {
         SortedMap<Integer, String> notTranslated = new TreeMap<>();
 
         StringBuilder notTrans = new StringBuilder();
+        StringBuilder numBuilder = new StringBuilder();
+        StringBuilder engBuilder = new StringBuilder();
 
         int index = 0;
         for (; index < chs.length(); index++) {
@@ -192,11 +195,35 @@ public class DuckSonTranslator {
                 continue;
             }
 
+            boolean interrupt = false;
             char c = chs.charAt(index);
             String cs = String.valueOf(c);
+            if (c >= '0' && c <= '9') {
+                numBuilder.append(c);
+                interrupt = true;
+            } else {
+                if (!numBuilder.isEmpty()) {
+                    String numStr = numBuilder.toString();
+                    origIndexTokens.put(index - numStr.length(), new Token(numStr, numStr, "num"));
+                    numBuilder.setLength(0);
+                }
+            }
+
+            if (c >= 'A' && c <= 'z') {
+                engBuilder.append(c);
+                interrupt = true;
+            } else {
+                if (!engBuilder.isEmpty()) {
+                    String engStr = engBuilder.toString();
+                    origIndexTokens.put(index - engStr.length(), new Token(engStr, engStr, "eng"));
+                    engBuilder.setLength(0);
+                }
+            }
+            
+            if (interrupt) continue;
+            
             if (c < 128) {  // ASCII
                 String pos = "unk";
-                if (c >= '0' && c <= '9') pos = "num";  // todo: 把数字的token连起来
 
                 Token token = new Token(cs, cs, pos);
                 origIndexTokens.put(index, token);
@@ -248,6 +275,16 @@ public class DuckSonTranslator {
         if (!notTrans.isEmpty()) {
             notTranslated.put(index - notTrans.length(), notTrans.toString());
             notTrans.setLength(0);
+        }
+        if (!numBuilder.isEmpty()) {
+            String numStr = numBuilder.toString();
+            origIndexTokens.put(index - numStr.length(), new Token(numStr, numStr, "num"));
+            numBuilder.setLength(0);
+        }
+        if (!engBuilder.isEmpty()) {
+            String engStr = engBuilder.toString();
+            origIndexTokens.put(index - engStr.length(), new Token(engStr, engStr, "eng"));
+            engBuilder.setLength(0);
         }
 
         // 开始真正的英语翻译
