@@ -7,7 +7,9 @@ import java.util.*;
 
 public class GrammarDict {
     public final Map<String, GrammarEffect> tenseInfo = new HashMap<>();
+    public final Map<String, GrammarEffect> tenseNameMap = new HashMap<>();
     private int maxKeyLength;
+    private int maxEngCombLength;
 
     public GrammarDict() throws IOException {
         List<String[]> lines =
@@ -29,6 +31,7 @@ public class GrammarDict {
             Map<String, String[][]> postCombos = analyzeCombo(line[5]);
 
             GrammarEffect grammarEffect = new GrammarEffect(
+                    keyWord,
                     tenseName,
                     effectiveIndex,
                     partOfSpeech,
@@ -36,10 +39,11 @@ public class GrammarDict {
                     postCombos
             );
             tenseInfo.put(keyWord, grammarEffect);
+            tenseNameMap.put(tenseName, grammarEffect);
         }
     }
 
-    private static Map<String, String[][]> analyzeCombo(String part) {
+    private Map<String, String[][]> analyzeCombo(String part) {
         Map<String, String[][]> combos = new HashMap<>();
         String[] pre = part.split(";");
         for (String p : pre) {
@@ -54,6 +58,7 @@ public class GrammarDict {
                 res[i][0] = posWord[1].strip();
                 res[i][1] = posWord[0].strip();
             }
+            if (res.length > maxEngCombLength) maxEngCombLength = res.length;
             combos.put(chsEng[0].strip(), res);
         }
         return combos;
@@ -61,5 +66,9 @@ public class GrammarDict {
 
     public int getMaxKeyLength() {
         return maxKeyLength;
+    }
+    
+    public int getMaxEngCombLength() {
+        return maxEngCombLength;
     }
 }

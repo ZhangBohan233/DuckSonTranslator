@@ -45,4 +45,8 @@ public class BaseDict {
     public BaseItem getByPinyin(String pinyin) {
         return pinyinMap.get(pinyin);
     }
+    
+    public BaseItem getByEng(String word) {
+        return engMap.get(word);
+    }
 }
