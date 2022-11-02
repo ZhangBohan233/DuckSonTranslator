@@ -16,18 +16,18 @@ public class DuckSonTranslator {
     );
     private static final Map<Character, Character> PUNCTUATIONS_REGULAR = Map.of(
             '，', ',', '。', '.', '：', ':', '；', ';',
-            '？', '?', '、', ','
+            '！', '!', '？', '?', '、', ',', '·', ' '
     );
     private static final Map<Character, Character> PUNCTUATIONS_QUOTE = Map.of(
             '“', '"', '”', '"', '‘', '\'', '’', '\'',
             '《', '"', '》', '"', '【', '[', '】', ']',
             '『', '"', '』', '"'
     );
-    public static final Map<Character, Character> PUNCTUATIONS = DictMaker.mergeMaps(
+    public static final Map<Character, Character> CHS_PUNCTUATIONS = DictMaker.mergeMaps(
             PUNCTUATIONS_REGULAR, PUNCTUATIONS_QUOTE
     );
-    public static final Map<Character, Character> ENG_CHS_PUNCTUATIONS =
-            DictMaker.invertMap(PUNCTUATIONS);
+    public static final Map<Character, Character> ENG_PUNCTUATIONS =
+            DictMaker.invertMap(CHS_PUNCTUATIONS);
     private final BaseDict baseDict;
     private final PinyinDict pinyinDict;
     private final BigDict bigDict;
@@ -95,6 +95,30 @@ public class DuckSonTranslator {
             if (i < ways - 1) increase(limits, indices);
         }
         return result;
+    }
+
+    public String autoDetectLanguage(String input) {
+        int totalLen = input.length();
+        int chsCount = 0;
+        int engCount = 0;
+        int othersCount = 0;
+
+        for (char c : input.toCharArray()) {
+            if (c >= 'A' && c <= 'z') engCount++;
+            else if (ENG_PUNCTUATIONS.containsKey(c)) engCount++;
+            else if (pinyinDict.getPinyinByChs(c) != null) chsCount++;
+            else if (CHS_PUNCTUATIONS.containsKey(c)) chsCount++;
+            else othersCount++;
+        }
+
+        if ((double) chsCount / totalLen > 0.75) return "chs";
+        if ((double) engCount / totalLen > 0.75) return "geg";
+
+        int subTotal = chsCount + engCount;
+        if ((double) chsCount / subTotal > 0.8) return "chs";
+        if ((double) engCount / subTotal > 0.8) return "geg";
+
+        return "unk";
     }
 
     public void setSingleCharMode(boolean singleCharMode) {
@@ -187,7 +211,7 @@ public class DuckSonTranslator {
         for (; index < chs.length(); index++) {
             Token grammarToken = grammars.get(index);
             if (grammarToken != null) {
-                if (!notTrans.isEmpty()) {
+                if (notTrans.length() > 0) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
                     notTrans.setLength(0);
                 }
@@ -202,7 +226,7 @@ public class DuckSonTranslator {
                 numBuilder.append(c);
                 interrupt = true;
             } else {
-                if (!numBuilder.isEmpty()) {
+                if (numBuilder.length() > 0) {
                     String numStr = numBuilder.toString();
                     origIndexTokens.put(index - numStr.length(), new Token(numStr, numStr, "num"));
                     numBuilder.setLength(0);
@@ -213,32 +237,32 @@ public class DuckSonTranslator {
                 engBuilder.append(c);
                 interrupt = true;
             } else {
-                if (!engBuilder.isEmpty()) {
+                if (engBuilder.length() > 0) {
                     String engStr = engBuilder.toString();
                     origIndexTokens.put(index - engStr.length(), new Token(engStr, engStr, "eng"));
                     engBuilder.setLength(0);
                 }
             }
-            
+
             if (interrupt) continue;
-            
+
             if (c < 128) {  // ASCII
                 String pos = "unk";
 
                 Token token = new Token(cs, cs, pos);
                 origIndexTokens.put(index, token);
-                if (!notTrans.isEmpty()) {
+                if (notTrans.length() > 0) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
                     notTrans.setLength(0);
                 }
                 continue;
             }
 
-            Character pun = PUNCTUATIONS.get(c);
+            Character pun = CHS_PUNCTUATIONS.get(c);
             if (pun != null) {
                 Token token = new Token(cs, String.valueOf(pun), "pun");
                 origIndexTokens.put(index, token);
-                if (!notTrans.isEmpty()) {
+                if (notTrans.length() > 0) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
                     notTrans.setLength(0);
                 }
@@ -250,7 +274,7 @@ public class DuckSonTranslator {
                 Token token = new Token(direct.chs, direct.eng, direct.partOfSpeech);
                 origIndexTokens.put(index, token);
                 index += direct.chs.length() - 1;
-                if (!notTrans.isEmpty()) {
+                if (notTrans.length() > 0) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
                     notTrans.setLength(0);
                 }
@@ -263,7 +287,7 @@ public class DuckSonTranslator {
                 if (sameSoundWord != null) {
                     Token token = new Token(cs, sameSoundWord.eng, sameSoundWord.partOfSpeech);
                     origIndexTokens.put(index, token);
-                    if (!notTrans.isEmpty()) {
+                    if (notTrans.length() > 0) {
                         notTranslated.put(index - notTrans.length(), notTrans.toString());
                         notTrans.setLength(0);
                     }
@@ -272,16 +296,16 @@ public class DuckSonTranslator {
                 }
             }
         }
-        if (!notTrans.isEmpty()) {
+        if (notTrans.length() > 0) {
             notTranslated.put(index - notTrans.length(), notTrans.toString());
             notTrans.setLength(0);
         }
-        if (!numBuilder.isEmpty()) {
+        if (numBuilder.length() > 0) {
             String numStr = numBuilder.toString();
             origIndexTokens.put(index - numStr.length(), new Token(numStr, numStr, "num"));
             numBuilder.setLength(0);
         }
-        if (!engBuilder.isEmpty()) {
+        if (engBuilder.length() > 0) {
             String engStr = engBuilder.toString();
             origIndexTokens.put(index - engStr.length(), new Token(engStr, engStr, "eng"));
             engBuilder.setLength(0);
@@ -317,9 +341,9 @@ public class DuckSonTranslator {
     }
 
     public String geglishToChs(String geglish) {
-        String[] baseWords = geglish.strip().split("\s");
+        String[] baseWords = geglish.strip().split(" ");
         List<Token> tokens = deriveGeglishTokens(baseWords);
-        
+
         tokens = translateCombineTokensGegToChs(tokens);
 
         for (Token token : tokens) {
@@ -340,26 +364,26 @@ public class DuckSonTranslator {
             StringBuilder number = new StringBuilder();
             for (char c : baseWord.toCharArray()) {
                 if (c >= 'A' && c <= 'z') {
-                    if (!number.isEmpty()) {
+                    if (number.length() > 0) {
                         String nonWordS = number.toString();
                         number.setLength(0);
                         words.add(new Token(nonWordS, nonWordS, "num"));
                     }
                     word.append(c);
                 } else {
-                    if (!word.isEmpty()) {
+                    if (word.length() > 0) {
                         words.add(new Token(word.toString()));
                         word.setLength(0);
                     }
                     if (c >= '0' && c <= '9') {
                         number.append(c);
                     } else {
-                        if (!number.isEmpty()) {
+                        if (number.length() > 0) {
                             String nonWordS = number.toString();
                             number.setLength(0);
                             words.add(new Token(nonWordS, nonWordS, "num"));
                         }
-                        Character pun = ENG_CHS_PUNCTUATIONS.get(c);
+                        Character pun = ENG_PUNCTUATIONS.get(c);
                         if (pun != null) {
                             words.add(new Token(String.valueOf(pun), String.valueOf(c), "pun"));
                         } else {
@@ -369,17 +393,18 @@ public class DuckSonTranslator {
 
                 }
             }
-            if (!number.isEmpty()) {
+            if (number.length() > 0) {
                 String nonWordS = number.toString();
                 words.add(new Token(nonWordS, nonWordS, "num"));
             }
-            if (!word.isEmpty()) {
+            if (word.length() > 0) {
                 words.add(new Token(word.toString()));
             }
         }
         return words;
     }
 
+    @SuppressWarnings("unchecked")
     private List<Token> translateCombineTokensGegToChs(List<Token> tokens) {
         List<Token> newTokens = new ArrayList<>();
         OUT_LOOP:
@@ -413,7 +438,7 @@ public class DuckSonTranslator {
                                     }
                                 }
 //                                System.out.println("Match!" + comb.length + Arrays.deepToString(engPos) + Arrays.deepToString(poss));
-                                
+
                                 String[] chsSplit = splitToN(savedCombo.getValue(), engPos.length);
 //                                System.out.println(Arrays.toString(chsSplit));
                                 boolean isPost = effect.isPost(savedCombo.getValue());
@@ -425,14 +450,14 @@ public class DuckSonTranslator {
                                 } else {
                                     i += engPos.length - 1;
                                 }
-                                
+
                                 for (int x = 0; x < engPos.length; x++) {
                                     Token tk = new Token(chsSplit[x], engPos[x][0], engPos[x][1]);
                                     if (!poss[x][1].isEmpty()) tk.addTense(poss[x][1]);
-                                    
+
                                     newTokens.add(tk);
                                 }
-                                
+
                                 continue OUT_LOOP;
                             }
                         }

@@ -10,13 +10,12 @@ import java.util.stream.Collectors;
 
 public class BigDict {
 
-    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
-    protected final Map<String, BigDictValue> engChsMap = new HashMap<>();
-    protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
-    
     public static final Set<Character> CHS_EXCEPTIONS = Set.of(
             '的', '（', '）', '(', ')'
     );
+    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
+    protected final Map<String, BigDictValue> engChsMap = new HashMap<>();
+    protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
 
     public BigDict() throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -26,8 +25,8 @@ public class BigDict {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.strip().startsWith("#")) continue;
-                
-                String[] split = line.split("\s{3}");
+
+                String[] split = line.split(" {3}");
                 List<String> stripped = Arrays.stream(split)
                         .map(String::strip)
                         .filter(s -> !s.isBlank())
@@ -36,7 +35,7 @@ public class BigDict {
                     String eng = stripped.get(0);
                     List<String> desPart = new ArrayList<>();
                     for (String spl : stripped.subList(1, stripped.size())) {
-                        List<String> spl2 = Arrays.stream(spl.split("\s"))
+                        List<String> spl2 = Arrays.stream(spl.split(" "))
                                 .map(String::strip)
                                 .collect(Collectors.toList());
                         desPart.addAll(spl2);
@@ -58,7 +57,9 @@ public class BigDict {
                         } else {
                             String[] last = poses[poses.length - 1].split("\\.");
                             List<String> posesList = new ArrayList<>(List.of(poses).subList(0, poses.length - 1));
-                            posesList.addAll(Arrays.stream(last).toList().subList(0, last.length - 1));
+                            posesList.addAll(Arrays.asList(last).subList(0, last.length - 1));
+                            
+//                            posesList.addAll(Arrays.stream(last).toList().subList(0, last.length - 1));
                             List<String> des = Arrays.stream(last[last.length - 1]
                                             .split("，"))
                                     .map(String::strip)
@@ -109,6 +110,26 @@ public class BigDict {
         }
     }
 
+    private static void updateCandidatesMap(Map<String, SingleChsCharCandidate> subMap,
+                                            Map<String, SingleChsCharCandidate> fullMap) {
+        for (Map.Entry<String, SingleChsCharCandidate> entry : subMap.entrySet()) {
+            SingleChsCharCandidate can = fullMap.get(entry.getKey());
+            if (can == null) {
+                fullMap.put(entry.getKey(), entry.getValue());
+            } else {
+                can.updatePosPurity(entry.getValue().posPurity);
+            }
+        }
+    }
+
+    private static int countChar(char c, String s) {
+        int count = 0;
+        for (char cc : s.toCharArray()) {
+            if (c == cc) count++;
+        }
+        return count;
+    }
+
     public Result translateOneWord(String sentence) {
         Trie.Get<BigDictValue> results = chsEngTrie.get(sentence);
         if (results.matchLength == 0) return null;
@@ -150,13 +171,13 @@ public class BigDict {
             if (posIndividualMax > individualMax) {
                 individualMax = posIndividualMax;
                 best = posIndividualBest;
-                
+
                 if (posSum > posSumMax) {  // 同时也更新这个posSumMax
                     posSumMax = posSum;
                 }
                 continue;
             }
-            
+
             if (posSum > posSumMax) {
                 posSumMax = posSum;
                 best = posIndividualBest;
@@ -172,7 +193,7 @@ public class BigDict {
         Purity best = null;
         for (Map.Entry<String, Trie.Match<BigDictValue>> entry : results.value.entrySet()) {
             Purity bestPosDes = posDesOfMaxPurity(
-                    sentence.substring(0, entry.getValue().matchLength), 
+                    sentence.substring(0, entry.getValue().matchLength),
                     entry.getValue()
             );
             System.out.println(entry + " " + bestPosDes);
@@ -198,7 +219,7 @@ public class BigDict {
             String posPurestDes = null;  // 这个词性最好的英文
             for (String des : posDes.getValue()) {
                 BigDictValue reverseTrans = engChsMap.get(des);
-                
+
                 int wordTotal = 0;
                 int wordMatchLen = 0;
                 List<String> engChsSamePos = reverseTrans.value.get(pos);
@@ -215,7 +236,7 @@ public class BigDict {
                     wordPurest = wordPurity;
                     posPurestDes = des;
                 }
-                
+
                 posTotal += wordTotal;
                 posMatchLen += wordMatchLen;
             }
@@ -225,13 +246,13 @@ public class BigDict {
                 purestPos = pos;
                 purestDes = posPurestDes;
             }
-            
+
 //            System.out.println(pos + " " + posPurity);
         }
 //        System.out.println(purest + " " + purestPos + " " + purestDes);
         return new Purity(purestPos, purestDes, purest);
     }
-    
+
     private Map<String, BigDictValue> getAllMatches(char chs) {
         Map<String, BigDictValue> allMatches = new HashMap<>();
         for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
@@ -241,15 +262,19 @@ public class BigDict {
         }
         return allMatches;
     }
-    
+
     public Result translateOneCharChsEng(char chs) {
         Map<String, BigDictValue> allMatches = getAllMatches(chs);
 //        SortedMap<Double, List<Purity2>> purityMap = new TreeMap<>();
         Map<String, SingleChsCharCandidate> candidates = new HashMap<>();
         for (Map.Entry<String, BigDictValue> entry : allMatches.entrySet()) {
 //            String chsWord = entry.getKey();
+//            if (chsWord.length() == 1 && chsWord.charAt(0) == chs) {
+//                System.out.println("Exact match!");
+//                return new Result()  todo: try this
+//            }
             Map<String, List<String>> engPosDes = entry.getValue().value;
-            
+
             Map<String, SingleChsCharCandidate> thisCandidate = createCandidate(chs, engPosDes);
             updateCandidatesMap(thisCandidate, candidates);
         }
@@ -262,7 +287,7 @@ public class BigDict {
         SingleChsCharCandidate candidate = candidateList.get(0);
         return new Result(candidate.engWord, candidate.bestPartOfSpeech(), 1);
     }
-    
+
     private Purity2 purityOfWord(char chsChar, String pos, String eng, List<String> chsDesOfPos) {
 //        System.out.println(chsChar + " " + eng + chsDesOfPos);
         int matched = 0;
@@ -274,45 +299,51 @@ public class BigDict {
         double purity = (double) matched / chsDesOfPos.size();
         return new Purity2(pos, eng, chsDesOfPos, purity);
     }
-    
-    private Map<String, SingleChsCharCandidate> createCandidate(char chsChar, 
-                                                   Map<String, List<String>> engPosDes) {
+
+    private Map<String, SingleChsCharCandidate> createCandidate(char chsChar,
+                                                                Map<String, List<String>> engPosDes) {
         Map<String, SingleChsCharCandidate> engAndCandidates = new HashMap<>();
         for (Map.Entry<String, List<String>> posDes : engPosDes.entrySet()) {
             String pos = posDes.getKey();
 
-//            System.out.println(posDes.getValue());
-            
             for (String eng : posDes.getValue()) {
                 BigDictValue reverse = engChsMap.get(eng);
                 SingleChsCharCandidate can = engAndCandidates.computeIfAbsent(eng, SingleChsCharCandidate::new);
-                
+
                 for (Map.Entry<String, List<String>> chsPosDes : reverse.value.entrySet()) {
 //                    System.out.println(chsPosDes);
                     String engPos = chsPosDes.getKey();
                     if (!pos.equals(engPos)) continue;
-                    
+
                     List<String> chsDes = chsPosDes.getValue();
-                    
+
                     int posMatch = 0;
+                    int totalMatch = 0;
                     for (String chs : chsDes) {
-                        if (chs.indexOf(chsChar) != -1) posMatch++;
+                        int charIndex = chs.indexOf(chsChar);
+                        if (charIndex != -1) {
+                            posMatch++;
+                            can.matchIndices.add(charIndex);
+                        }
+//                        posMatch += countChar(chsChar, chs);
+                        totalMatch += chs.length();
                     }
 //                    double posPurity = (double) posMatch / chsPosDes.getValue().size();
                     int[] matchTotal = can.posPurity.get(pos);
                     if (matchTotal != null) {
                         matchTotal[0] += posMatch;
                         matchTotal[1] += chsDes.size();
+                        matchTotal[2] += totalMatch;
                     } else {
-                        can.posPurity.put(pos, new int[]{posMatch, chsDes.size()});
+                        can.posPurity.put(pos, new int[]{posMatch, chsDes.size(), totalMatch});
                     }
                 }
             }
         }
-        
+
         return engAndCandidates;
     }
-    
+
     public ChsResult translateEngToChs(String engWord) {
         BigDictValue chs = engChsMap.get(engWord);
         if (chs == null) return null;
@@ -320,7 +351,11 @@ public class BigDict {
         if (chsPos == null) return null;
         return new ChsResult(chsPos[0], chsPos[1]);
     }
-    
+
+//    private int occurrenceInOtherWords(char chsChar) {
+//        
+//    }
+
     private String[] pickBestChs(BigDictValue dictValue) {
         Map<Character, ChsCharFreq> charFreq = new HashMap<>();  // 要保持顺序
         for (Map.Entry<String, List<String>> posChs : dictValue.value.entrySet()) {
@@ -346,10 +381,6 @@ public class BigDict {
         ChsCharFreq result = chsCharFreqList.get(0);
         return new String[]{String.valueOf(result.chsChar), result.anyPos};
     }
-    
-//    private int occurrenceInOtherWords(char chsChar) {
-//        
-//    }
 
     public static class Result {
         public final String translated;
@@ -367,7 +398,7 @@ public class BigDict {
             return String.format("(%s)%s@%d", partOfSpeech, translated, matchLength);
         }
     }
-    
+
     public static class ChsResult {
         public final String translated;
         public final String partOfSpeech;
@@ -382,12 +413,12 @@ public class BigDict {
             return String.format("(%s)%s", partOfSpeech, translated);
         }
     }
-    
+
     private static class Purity implements Comparable<Purity> {
         final String pos;
         final String des;
         final double purity;
-        
+
         Purity(String pos, String des, double purity) {
             this.pos = pos;
             this.des = des;
@@ -398,7 +429,7 @@ public class BigDict {
         public String toString() {
             return String.format("%s, %s, %f", pos, des, purity);
         }
-        
+
         boolean betterThan(Purity o) {
             return compareTo(o) > 0;
         }
@@ -412,13 +443,13 @@ public class BigDict {
             }
         }
     }
-    
+
     private static class Purity2 extends Purity {
         final List<String> chsWords;
-        
+
         Purity2(String pos, String des, List<String> chsWords, double purity) {
             super(pos, des, purity);
-            
+
             this.chsWords = chsWords;
         }
 
@@ -427,18 +458,22 @@ public class BigDict {
             return super.toString() + ", " + chsWords;
         }
     }
-    
+
     private static class SingleChsCharCandidate implements Comparable<SingleChsCharCandidate> {
 
         final Map<String, int[]> posPurity = new HashMap<>();
         final String engWord;
+        final List<Integer> matchIndices = new ArrayList<>();
         private int total = -1;  // 临时值
+        private int totalWords = -1;
+        private int totalWordLengths = -1;
         private int totalMatches = -1;
-        
+        private double avgMatchIndex = -1.0;
+
         SingleChsCharCandidate(String engWord) {
             this.engWord = engWord;
         }
-        
+
         void updatePosPurity(Map<String, int[]> otherPp) {
             for (Map.Entry<String, int[]> entry : otherPp.entrySet()) {
                 int[] pp = posPurity.get(entry.getKey());
@@ -447,10 +482,11 @@ public class BigDict {
                 } else {
                     pp[0] += entry.getValue()[0];
                     pp[1] += entry.getValue()[1];
+                    pp[2] += entry.getValue()[2];
                 }
             }
         }
-        
+
         String bestPartOfSpeech() {
             int max = 0;
             String maxVal = null;
@@ -462,32 +498,45 @@ public class BigDict {
             }
             return maxVal;
         }
-        
+
         private void updateComparisons() {
             if (total == -1) {
                 totalMatches = 0;
                 total = 0;
+                totalWordLengths = 0;
+                totalWords = 0;
                 for (int[] val : posPurity.values()) {
+                    totalWords++;
                     totalMatches += val[0];
                     total += val[1];
+                    totalWordLengths += val[2];
                 }
+                avgMatchIndex = (double) matchIndices.stream().reduce(Integer::sum).get() / matchIndices.size();
             }
         }
-        
+
         @Override
         public int compareTo(SingleChsCharCandidate o) {
             this.updateComparisons();
             o.updateComparisons();
-            
+
             double purity = (double) totalMatches / total;
             double oPurity = (double) o.totalMatches / o.total;
-            
+
             if (purity < oPurity) return -1;
             else if (purity > oPurity) return 1;
             
+            int indexCmp = Double.compare(this.avgMatchIndex, o.avgMatchIndex);
+            if (indexCmp != 0) return -indexCmp;  // 我们希望正确的字出现在前面
+
             if (totalMatches < o.totalMatches) return -1;
             else if (totalMatches > o.totalMatches) return 1;
-            
+
+            double avgWordLen = (double) totalWordLengths / totalWords;
+            double oAvgWordLen = (double) o.totalWordLengths / o.totalWords;
+            int avgLenCmp = Double.compare(avgWordLen, oAvgWordLen);
+            if (avgLenCmp != 0) return -avgLenCmp;
+
             return -Integer.compare(engWord.length(), o.engWord.length());
         }
 
@@ -500,37 +549,25 @@ public class BigDict {
                         .append(Arrays.toString(entry.getValue()))
                         .append(", ");
             }
-            
+
             return "(" + engWord + ": " + builder + ")";
         }
     }
-    
-    private static void updateCandidatesMap(Map<String, SingleChsCharCandidate> subMap,
-                                            Map<String, SingleChsCharCandidate> fullMap) {
-        for (Map.Entry<String, SingleChsCharCandidate> entry : subMap.entrySet()) {
-            SingleChsCharCandidate can = fullMap.get(entry.getKey());
-            if (can == null) {
-                fullMap.put(entry.getKey(), entry.getValue());
-            } else {
-                can.updatePosPurity(entry.getValue().posPurity);
-            }
-        }
-    }
-    
+
     private static class ChsCharFreq implements Comparable<ChsCharFreq> {
         final char chsChar;
         final int firstOccurIndex;
         final int occurrenceInOtherWords;
         final String anyPos;  // 翻译回中文时词性不太重要，留第一个就行
         int freq;
-        
+
         ChsCharFreq(char chsChar, int firstOccurIndex, int occurrenceInOtherWords, String firstPos) {
             this.chsChar = chsChar;
             this.firstOccurIndex = firstOccurIndex;
             this.occurrenceInOtherWords = occurrenceInOtherWords;
             this.anyPos = firstPos;
         }
-        
+
         @Override
         public int compareTo(ChsCharFreq o) {
             int freqCmp = Integer.compare(this.freq, o.freq);
@@ -541,7 +578,7 @@ public class BigDict {
 
             int indexCmp = Integer.compare(this.firstOccurIndex, o.firstOccurIndex);
             if (indexCmp != 0) return -indexCmp;
-            
+
             return Character.compare(this.chsChar, o.chsChar);
         }
 

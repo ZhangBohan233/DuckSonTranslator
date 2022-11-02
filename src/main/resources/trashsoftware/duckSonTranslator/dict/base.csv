@@ -6,6 +6,7 @@ chn, cq, pinyin, eng, pos
 # C
 陈, cen2, chen2, old, adj
 城, cen2, cheng2, city, n
+传, cuan2, chuan2, spread, v
 出, cu2, chu1, out, v
 
 # D
@@ -13,6 +14,11 @@ chn, cq, pinyin, eng, pos
 
 # E
 儿, er2, er2, son, n
+
+# F
+
+# H
+红, hong2, hong2, red, n
 
 # L
 来, lai2, lai2, come, v
@@ -25,8 +31,13 @@ chn, cq, pinyin, eng, pos
 # K
 壳, ko2, ke2, shell, n
 
+# M
+卖, mai4, mai4, sell, v
+明, min2, ming2, bright, adj
+
 # Q
 去, qi4, qu4, go, v
+琴, qin2, qin2, piano, n
 
 # R
 日, ri2, ri4, sun, n
@@ -46,7 +57,10 @@ chn, cq, pinyin, eng, pos
 
 # Y
 鸭, ya2, ya1, duck, n
+严, yan2, yan2, strict, adj
 要, yao4, yao4, want, v
+一个, yi2 go4, gi2 ge4, a, art
 
 # Z
 子, zi3, zi3, son, n
+张, zang1, zhang1, open, v

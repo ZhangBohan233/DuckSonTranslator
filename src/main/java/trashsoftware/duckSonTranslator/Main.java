@@ -12,5 +12,6 @@ public class Main {
         System.out.println(chs);
 
         System.out.println(translator.chsToGeglish("日了狗了"));
+        System.out.println(translator.chsToGeglish("李思洁"));
     }
 }

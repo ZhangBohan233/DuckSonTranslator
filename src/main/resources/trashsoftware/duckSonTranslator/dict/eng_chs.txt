@@ -4597,7 +4597,7 @@ most   adj.最多的 adv.非常
 mostly   adv.主要地，大多
 motel   n.汽车旅馆
 moth   n.蛾
-mother   n.母亲 adj.出生地的
+mother   n.母亲，妈 adj.出生地的
 mother-in-law   n.岳母，婆婆
 motion   n.运动，议案
 motionless   adj.不动的
@@ -5188,8 +5188,6 @@ permission   n.允许，许可
 permissive   adj.允许的，许可的
 permit   v.允许 n.许可证
 perpendicular   adj.垂直的
-perpetual   adj.永久的，永恒的
-perplex   v.迷惑，难住
 persecute   v.迫害
 persecution   n.迫害
 persevere   v.坚持
