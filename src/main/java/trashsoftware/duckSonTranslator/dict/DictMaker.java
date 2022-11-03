@@ -1,6 +1,9 @@
 package trashsoftware.duckSonTranslator.dict;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class DictMaker {
@@ -56,16 +59,20 @@ public class DictMaker {
         }
         return res;
     }
-    
+
     public static <K, V> Map<V, K> invertMap(Map<K, V> map) {
         Map<V, K> res = new HashMap<>();
         for (Map.Entry<K, V> entry : map.entrySet()) {
             res.put(entry.getValue(), entry.getKey());
         }
         return res;
-    } 
+    }
 
     public static List<String[]> readCsv(InputStream inputStream) throws IOException {
+        return readCsv(inputStream, false);
+    }
+
+    public static List<String[]> readCsv(InputStream inputStream, boolean withTitle) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             List<String[]> res = new ArrayList<>();
             int lineNum = 0;
@@ -76,8 +83,10 @@ public class DictMaker {
 //                line = line.strip();
                 if (!(line.isBlank() || line.strip().startsWith("#"))) {
                     String[] split = line.split(",");
-                    if (nCol == -1) nCol = split.length;
-                    else if (nCol != split.length)
+                    if (nCol == -1) {
+                        nCol = split.length;
+                        if (!withTitle) continue;
+                    } else if (nCol != split.length)
                         throw new IOException(
                                 "Csv widths not consistent at line " + lineNum);
                     for (int i = 0; i < nCol; i++) {
@@ -90,17 +99,17 @@ public class DictMaker {
         }
     }
 
-    public static Map<Character, String> getChsPinyinDict() throws IOException {
-        try (BufferedReader br = new BufferedReader(
+    public static Map<Character, String[]> getChsPinyinDict() throws IOException {
+        try (BufferedReader pinBr = new BufferedReader(
                 new InputStreamReader(Objects.requireNonNull(
                         DictMaker.class.getResourceAsStream("pinyin.txt"))))) {
-            Map<Character, String> result = new TreeMap<>();
+            Map<Character, String[]> result = new TreeMap<>();
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line = pinBr.readLine()) != null) {
                 String[] split = line.split(",");
                 for (String s : split) {
                     s = s.strip();
-                    if (s.length() > 2) {
+                    if (s.length() >= 2) {
                         char chs = s.charAt(0);
                         String pinyin = s.substring(1);
                         int tone = 0;
@@ -114,14 +123,41 @@ public class DictMaker {
                                 tone = replace[1];
                             }
                         }
-                        result.put(chs,
-                                tone == 0 ?
-                                        builder.toString() : builder.append(tone).toString());
+                        String[] arr = new String[2];
+                        arr[0] = tone == 0 ?
+                                builder.toString() : builder.append(tone).toString();
+                        arr[1] = makeDefaultCqPin(arr[0]);  // 先假设重庆话和普通话拼音一样
+                        result.put(chs, arr);
                     }
                 }
             }
             return result;
         }
     }
-    
+
+    private static String makeDefaultCqPin(String pinyin) {
+        char last = pinyin.charAt(pinyin.length() - 1);
+        String pure = pinyin;
+        String tone = "";
+        if (last >= '0' && last <= '4') {
+            pure = pinyin.substring(0, pinyin.length() - 1);
+            tone = String.valueOf(last);
+        }
+        
+        if (pure.charAt(0) == 'n') {  // 鼻音
+            pure = 'l' + pure.substring(1);
+        }
+        
+        if (pure.length() > 2) {
+            if (pure.charAt(1) == 'h') {  // 翘舌音
+                pure = pure.charAt(0) + pure.substring(2);
+            }
+        }
+        
+        if (pure.endsWith("eng") || pure.endsWith("ing")) {
+            pure = pure.substring(0, pure.length() - 1);
+        }
+        
+        return pure + tone;
+    }
 }

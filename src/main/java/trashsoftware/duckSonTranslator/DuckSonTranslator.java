@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
+    public static final String CORE_VERSION = "0.1.0";
 
     public static final Set<String> NOT_BREAK_WORD = Set.of(
             "pun", "unk"
@@ -45,6 +46,14 @@ public class DuckSonTranslator {
 
     public DuckSonTranslator() throws IOException {
         this(true);
+    }
+    
+    public String getCoreVersion() {
+        return CORE_VERSION;
+    }
+    
+    public String getDictionaryVersion() {
+        return baseDict.getVersionStr() + "." + pinyinDict.getVersionStr(); 
     }
 
     private static String[] splitToN(String orig, int n) {
@@ -177,6 +186,7 @@ public class DuckSonTranslator {
     public String chsToGeglish(String chs) {
         SortedMap<Integer, Token> grammars = new TreeMap<>();
 
+        // 处理语法token
         for (int i = 0; i < chs.length(); i++) {
             String len1 = chs.substring(i, i + 1);
             String len2;
@@ -207,6 +217,7 @@ public class DuckSonTranslator {
         StringBuilder numBuilder = new StringBuilder();
         StringBuilder engBuilder = new StringBuilder();
 
+        // 处理直接能翻译的
         int index = 0;
         for (; index < chs.length(); index++) {
             Token grammarToken = grammars.get(index);
@@ -279,11 +290,12 @@ public class DuckSonTranslator {
                     notTrans.setLength(0);
                 }
             } else {
-                String pinyin = pinyinDict.getPinyinByChs(c);
+                String[] pinyin = pinyinDict.getPinyinByChs(c);
                 if (pinyin == null) {
                     throw new NoSuchWordException(cs);
                 }
-                BaseItem sameSoundWord = baseDict.getByPinyin(pinyin);
+                BaseItem sameSoundWord = baseDict.getByCqPin(pinyin[1]);
+                
                 if (sameSoundWord != null) {
                     Token token = new Token(cs, sameSoundWord.eng, sameSoundWord.partOfSpeech);
                     origIndexTokens.put(index, token);
@@ -569,8 +581,8 @@ public class DuckSonTranslator {
 
     private Token bigDictSameSoundTrans(char cur) {
         // 遍历同音字查询，只查一个字
-        String pinyin = pinyinDict.getPinyinByChs(cur);
-        List<Character> sameSound = pinyinDict.getChsListByPinyin(pinyin);
+        String[] pinyin = pinyinDict.getPinyinByChs(cur);
+        List<Character> sameSound = pinyinDict.getChsListByCqPin(pinyin[1]);
         Token tk = pickSameSoundWord(sameSound);
         if (tk == null) {
             String cs = String.valueOf(cur);

@@ -1,7 +1,8 @@
-chn, cq, pinyin, eng, pos
+chs, cq, pinyin, eng, pos
 
 # B
 包, bao1, bao1, bag, n
+不, bu2, bu4, not, adv
 
 # C
 陈, cen2, chen2, old, adj
@@ -18,15 +19,19 @@ chn, cq, pinyin, eng, pos
 # F
 
 # H
+喝, ho1, he1, drink, v
 红, hong2, hong2, red, n
 
 # L
 来, lai2, lai2, come, v
 里, li3, li3, in, prep
+你, li3, ni3, you, pron
+林, lin2, lin2, forest, n
 溜, liu1, liu1, run, v
 
 # J
 解, gai3, jie3, solve, v
+酒, jiu3, jiu3, wine, n
 
 # K
 壳, ko2, ke2, shell, n
@@ -34,6 +39,7 @@ chn, cq, pinyin, eng, pos
 # M
 卖, mai4, mai4, sell, v
 明, min2, ming2, bright, adj
+莫, mo2, mo4, don't, adv
 
 # Q
 去, qi4, qu4, go, v
@@ -46,10 +52,12 @@ chn, cq, pinyin, eng, pos
 什么, sen2 mo1, shen2 me, what, pron
 屎, si3, shi3, shit, n
 是, si4, shi4, is, v
+笋, sen3, sun3, bamboo, n
 
 # W
-无, vu2, wu2, no, adv
-吾, vu2, wu2, my, n
+我, wo3, wo3, me, pron
+无, wu2, wu2, no, adv
+吾, wu2, wu2, my, n
 
 # X
 小, xiao3, xiao3, small, adj

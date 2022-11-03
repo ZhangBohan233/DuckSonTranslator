@@ -30,6 +30,10 @@ public class BaseDict {
         }
     }
     
+    public String getVersionStr() {
+        return String.valueOf(chsMap.size());
+    }
+    
     public BaseItem getByChs(String sentence, int index) {
         for (int len = maxChsWordLen; len >= 1; len--) {
             int endIndex = index + len;
@@ -44,6 +48,10 @@ public class BaseDict {
     
     public BaseItem getByPinyin(String pinyin) {
         return pinyinMap.get(pinyin);
+    }
+    
+    public BaseItem getByCqPin(String cqPin) {
+        return cqMap.get(cqPin);
     }
     
     public BaseItem getByEng(String word) {
