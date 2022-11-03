@@ -58,7 +58,7 @@ public class BigDict {
                             String[] last = poses[poses.length - 1].split("\\.");
                             List<String> posesList = new ArrayList<>(List.of(poses).subList(0, poses.length - 1));
                             posesList.addAll(Arrays.asList(last).subList(0, last.length - 1));
-                            
+
 //                            posesList.addAll(Arrays.stream(last).toList().subList(0, last.length - 1));
                             List<String> des = Arrays.stream(last[last.length - 1]
                                             .split("，"))
@@ -511,7 +511,11 @@ public class BigDict {
                     total += val[1];
                     totalWordLengths += val[2];
                 }
-                avgMatchIndex = (double) matchIndices.stream().reduce(Integer::sum).get() / matchIndices.size();
+                if (matchIndices.size() == 0) {
+                    avgMatchIndex = 0.0;
+                } else {
+                    avgMatchIndex = (double) matchIndices.stream().reduce(Integer::sum).get() / matchIndices.size();
+                }
             }
         }
 
@@ -525,7 +529,7 @@ public class BigDict {
 
             if (purity < oPurity) return -1;
             else if (purity > oPurity) return 1;
-            
+
             int indexCmp = Double.compare(this.avgMatchIndex, o.avgMatchIndex);
             if (indexCmp != 0) return -indexCmp;  // 我们希望正确的字出现在前面
 

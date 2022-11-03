@@ -5,56 +5,102 @@ chs, cq, pinyin, eng, pos
 不, bu2, bu4, not, adv
 
 # C
+车, ce1, che2, car, n
 陈, cen2, chen2, old, adj
 城, cen2, cheng2, city, n
-传, cuan2, chuan2, spread, v
 出, cu2, chu1, out, v
+传, cuan2, chuan2, spread, v
+蠢, cun3, chun3, stupid, adj
 
 # D
 大, da4, da4, big, adj
+得, de2, de2, gain, v
 
 # E
 儿, er2, er2, son, n
 
 # F
+方, fang1, fang1, square, n
+父, fu4, fu4, father, n
+负, fu4, fu4, negative, adj
+
+# G
+解, gai3, jie3, solve, v
+给, ge3, gei3, give, v
+国, gue2, guo2, country, n
 
 # H
+很, hen3, hen3, very, adv
 喝, ho1, he1, drink, v
+火, ho3, huo3, fire, n
 红, hong2, hong2, red, n
+花, hua1, hua1, flower, n
+
+# J
+金, jin1, jin1, gold, n
+酒, jiu3, jiu3, wine, n
+九, jiu3, jiu3, nine, n
+
+# K
+克, ke2, ke4, gram, n
+客, ke2, ke4, guest, n
+科, ko1, ke1, subject, n
+壳, ko2, ke2, shell, n
+快, kuai4, kuai4, fast, adv
+亏, kui1, kui1, loss, n
 
 # L
 来, lai2, lai2, come, v
+力, li2, li4, power, n
 里, li3, li3, in, prep
 你, li3, ni3, you, pron
+脸, lian3, lian3, face, n
 林, lin2, lin2, forest, n
 溜, liu1, liu1, run, v
-
-# J
-解, gai3, jie3, solve, v
-酒, jiu3, jiu3, wine, n
-
-# K
-壳, ko2, ke2, shell, n
+牛, liu2, niu2, cow, n
+乐, lo2, le4, happy, adj
 
 # M
 卖, mai4, mai4, sell, v
 明, min2, ming2, bright, adj
+末, mo2, mo4, end, adj
 莫, mo2, mo4, don't, adv
+母, mu3, mu3, mother, n
+
+# P
+泡, pao4, pao4, bubble, n
+炮, pao4, pao4, cannon, n
+平, pin2, ping2, flat, adj
 
 # Q
+溪, qi1, xi1, stream, n
+起, qi3, qi3, raise, v
 去, qi4, qu4, go, v
 琴, qin2, qin2, piano, n
+请, qin3, qing3, please, v
+球, qiu2, qiu2, ball, n
 
 # R
 日, ri2, ri4, sun, n
 
 # S
+山, san1, shan1, mountain, n
+三, san1, san1, three, n
+笋, sen3, sun3, bamboo, n
 什么, sen2 mo1, shen2 me, what, pron
+石, si2, shi2, stone, n
 屎, si3, shi3, shit, n
 是, si4, shi4, is, v
-笋, sen3, sun3, bamboo, n
+四, si4, si4, four, n
+耍, sua3, shua3, play, v
+
+# T
+弹, tan2, tan2, bounce, v
+头, tou2, tou2, head, n
 
 # W
+挖, wa1, wa1, dig, v
+玩, wan2, wan2, play, v
 我, wo3, wo3, me, pron
 无, wu2, wu2, no, adv
 吾, wu2, wu2, my, n
@@ -68,7 +114,11 @@ chs, cq, pinyin, eng, pos
 严, yan2, yan2, strict, adj
 要, yao4, yao4, want, v
 一个, yi2 go4, gi2 ge4, a, art
+药, yo2, yao4, medicine, n
+园, yuan2, yuan2, garden, n
 
 # Z
 子, zi3, zi3, son, n
+脏, zang1, zang1, dirty, adj
 张, zang1, zhang1, open, v
+桌, zo2, zhuo1, table, n

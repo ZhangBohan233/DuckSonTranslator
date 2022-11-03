@@ -26,7 +26,6 @@ public class PinyinDict extends Translator {
         }
 
         makeRevPinyinDict();
-        System.out.println(Arrays.toString(pinyin.get('饿')));
     }
     
     public String getVersionStr() {

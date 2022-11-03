@@ -12,7 +12,7 @@ public class Main {
         String chs = translator.geglishToChs(geglish);
         System.out.println(chs);
 
-        System.out.println(translator.chsToGeglish("喝酒"));
-        System.out.println(translator.chsToGeglish("你莫豁我"));
+        System.out.println(translator.chsToGeglish("一二三四五六七八九十"));
+        System.out.println(translator.chsToGeglish("期末考试"));
     }
 }

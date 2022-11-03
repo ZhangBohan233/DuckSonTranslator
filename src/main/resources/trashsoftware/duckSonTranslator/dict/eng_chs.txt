@@ -10,12 +10,9 @@ aboard   adv.船(车)上
 abolish   v.废除，取消
 abolition   n.废除，取消
 abortion   n.流产
-abortive   adj.无效果的，失败的
 about   prep.关于，大约
 above   prep.在---之上，高于
-above-mentioned   adj.上述的
 abreast   adv.并肩，并列
-abridge   v.省略，摘要
 abroad   adv.国外，海外
 abrogate   v.取消，废除
 abrogation   n.取消，废除
@@ -31,7 +28,6 @@ absorption   n.吸收，专注
 abstract   adj.抽象的，难懂的
 abstraction   n.抽象，提取
 absurd   adj.荒唐的
-absurdity   n.荒唐(事)
 abundance   n.丰富，大量
 abundant   adj.丰富的，充裕的
 abuse   v.滥用，谩骂
@@ -556,7 +552,7 @@ awfully   adv.可怕地，非常
 awkward   adj.笨拙的，不熟练的
 awkwardly   adv.笨拙地
 awkwardness   n.笨拙
-ax   n.斧子
+axe   n.斧子
 axial   adj.轴的，轴向的
 axis   n.轴，轴线，轴心
 axle   n.(轮)轴
@@ -3074,7 +3070,7 @@ gate   n.大门，门票收入
 gather   v.聚集，收集，采集
 gathering   n.集会，聚集
 gauge   n.规格，计量表
-gay   adj.快活的，快乐的
+gay   adj.快活的，快乐的 n.男同
 gaze   v.,n.凝视，注视
 gear   n.齿轮，用品
 gem   n.宝石

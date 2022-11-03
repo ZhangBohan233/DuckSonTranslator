@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.1.0";
+    public static final String CORE_VERSION = "0.1.1";
 
     public static final Set<String> NOT_BREAK_WORD = Set.of(
             "pun", "unk"
