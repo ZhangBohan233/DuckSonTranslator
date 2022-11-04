@@ -1,6 +1,8 @@
 chs, cq_pin
 
 # A
+崖, ai2
+涯, ai2
 
 # B
 八, ba2
@@ -8,38 +10,59 @@ chs, cq_pin
 百, be2
 柏, be2
 伯, be2
+笔, bi2
+必, bi2
+毕, bi2
+壁, bi2
+璧, bi2
 
 # C
+造, cao4
 吃, ci2
+出, cu2
 
 # D
 戳, duo2
 
 # F
-虎, fu3
 
 # G
 街, gai1
 解, gai3
+哥, go1
+歌, go1
 角, go2
+个, go4
+谷, gu2
+骨, hu2
 国, gue2
 
 # H
 傻, ha3
+下, ha4
 鞋, hai2
+咸, han2
+很, he1
 吓, he2
 黑, he2
-赫, he2
+赫, he2  # 其他如 ”核, he2" 不计，因为和普通话拼音相同
 豁, ho1
 喝, ho1
 和, ho2
 褐, ho2
+河, ho2
+何, ho2
+盒, ho2
+合, ho2
+横, hun2
 
 # J
-吮, juu2
+甲, jia2
+接, jie2
 脚, jio2
 觉, jio2
 扭, jiu3
+吮, juu2
 
 # K
 克, ke2
@@ -56,11 +79,30 @@ chs, cq_pin
 
 # L
 的, li1
+研, lian1
 略, lio2
+业, lie2
+这, le4
 乐, lo2
+落, lo2
+洛, lo2
+络, lo2
+骆, lo2
 六, lu2
+录, lu2
+鹿, lu2
+陆, lu2
+绿, lu2
+氯, lu2
+律, lu2
+率, lu2
+禄, lu2
 
 # M
+墨, me2
+麦, me2
+没, mei1
+摩, mo1
 莫, mo2
 末, mo2
 沫, mo2
@@ -68,11 +110,18 @@ chs, cq_pin
 目, mu2
 
 # O
+屙, o1
 恶, o2
 饿, o4
 
+# P
+屄, pi1
+批, pei1
+披, pei1
+
 # Q
 溪, qi1
+七, qi2
 确, qio2
 雀, qio2
 曲, quu2
@@ -80,25 +129,48 @@ chs, cq_pin
 
 # R
 日, ri2
+肏, ri2
 
 # S
 孙, sen1
+乘, sen2
+湿, si2
+室, si2
+说, so2
+删, suan1
 纯, sun2
 
+# T
+托, to2
+突, tu2
+凸, tu2
+秃, tu2
+
 # W
+微, wei2
+危, wei2
 棵, wo1
+屋, wu1
 
 # X
 学, xio2
 遂, xu4
+鲜, xuan1
 续, xuu2
 蓄, xuu2
+速, xuu2
 
 # Y
 鸭, ya2
+页, ye2
 一, yi2
+译, yi2
+乙, yi2
 药, yo2
+疫, yu2
 育, yuu2
 
 # Z
 着, zo2
+作, zo2
+做, zu4

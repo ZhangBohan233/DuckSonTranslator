@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.1.1";
+    public static final String CORE_VERSION = "0.2.1";
 
     public static final Set<String> NOT_BREAK_WORD = Set.of(
             "pun", "unk"
@@ -34,18 +34,20 @@ public class DuckSonTranslator {
     private final BigDict bigDict;
     private final GrammarDict grammarDict;
     private boolean singleCharMode;
+    private boolean chongqingMode;
 
-    public DuckSonTranslator(boolean singleCharMode) throws IOException {
+    public DuckSonTranslator(boolean singleCharMode, boolean chongqingMode) throws IOException {
         this.baseDict = new BaseDict();
         this.pinyinDict = new PinyinDict();
         this.bigDict = new BigDict();
         this.grammarDict = new GrammarDict();
 
         this.singleCharMode = singleCharMode;
+        this.chongqingMode = chongqingMode;
     }
 
     public DuckSonTranslator() throws IOException {
-        this(true);
+        this(true, true);
     }
     
     public String getCoreVersion() {
@@ -132,6 +134,18 @@ public class DuckSonTranslator {
 
     public void setSingleCharMode(boolean singleCharMode) {
         this.singleCharMode = singleCharMode;
+    }
+
+    public boolean isSingleCharMode() {
+        return singleCharMode;
+    }
+
+    public void setChongqingMode(boolean chongqingMode) {
+        this.chongqingMode = chongqingMode;
+    }
+
+    public boolean isChongqingMode() {
+        return chongqingMode;
     }
 
     private boolean addSpecial(GrammarEffect ge,
@@ -255,7 +269,13 @@ public class DuckSonTranslator {
                 }
             }
 
-            if (interrupt) continue;
+            if (interrupt) {
+                if (notTrans.length() > 0) {
+                    notTranslated.put(index - notTrans.length(), notTrans.toString());
+                    notTrans.setLength(0);
+                }
+                continue;
+            }
 
             if (c < 128) {  // ASCII
                 String pos = "unk";
@@ -284,17 +304,22 @@ public class DuckSonTranslator {
             if (direct != null) {
                 Token token = new Token(direct.chs, direct.eng, direct.partOfSpeech);
                 origIndexTokens.put(index, token);
-                index += direct.chs.length() - 1;
                 if (notTrans.length() > 0) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
                     notTrans.setLength(0);
                 }
+                index += direct.chs.length() - 1;
             } else {
                 String[] pinyin = pinyinDict.getPinyinByChs(c);
                 if (pinyin == null) {
                     throw new NoSuchWordException(cs);
                 }
-                BaseItem sameSoundWord = baseDict.getByCqPin(pinyin[1]);
+                BaseItem sameSoundWord;
+                if (chongqingMode) {
+                    sameSoundWord = baseDict.getByCqPin(pinyin);
+                } else {
+                    sameSoundWord = baseDict.getByPinyin(pinyin);
+                }
                 
                 if (sameSoundWord != null) {
                     Token token = new Token(cs, sameSoundWord.eng, sameSoundWord.partOfSpeech);
@@ -322,6 +347,9 @@ public class DuckSonTranslator {
             origIndexTokens.put(index - engStr.length(), new Token(engStr, engStr, "eng"));
             engBuilder.setLength(0);
         }
+
+//        System.out.println(origIndexTokens);
+//        System.out.println(notTranslated);
 
         // 开始真正的英语翻译
         List<Token> tokens = new ArrayList<>();
@@ -422,14 +450,11 @@ public class DuckSonTranslator {
         OUT_LOOP:
         for (int i = 0; i < tokens.size(); i++) {
             for (int j = i + 1; j < Math.min(tokens.size(), i + grammarDict.getMaxEngCombLength()); j++) {
-//                Token[] comb = new Token[j - i + 1];
-//                String[][] shownForm = new String[comb.length][2];
                 List<String[]>[] possibles = new List[j - i + 1];
                 for (int k = i; k <= j; k++) {
                     List<String[]> possiblesAtK = new ArrayList<>();
                     possibles[k - i] = possiblesAtK;
                     Token token = tokens.get(k);
-//                    comb[k - i] = token;
                     possiblesAtK.add(new String[]{token.getEng(), ""});
 
                     String[][] possibleForms = token.getPossibleBaseEngForm();
@@ -582,13 +607,28 @@ public class DuckSonTranslator {
     private Token bigDictSameSoundTrans(char cur) {
         // 遍历同音字查询，只查一个字
         String[] pinyin = pinyinDict.getPinyinByChs(cur);
-        List<Character> sameSound = pinyinDict.getChsListByCqPin(pinyin[1]);
+        List<Character> sameSound = pinyinDict.getChsListByCqPin(getPin(pinyin));
         Token tk = pickSameSoundWord(sameSound);
         if (tk == null) {
             String cs = String.valueOf(cur);
-            return new Token(cs, cs, "n");
+            String py = getPinNoTone(pinyin);
+            return new Token(cs, py, "n");
         } else {
             return tk;
+        }
+    }
+    
+    private String getPin(String[] pinyin) {
+        return chongqingMode ? pinyin[1] : pinyin[0];
+    }
+    
+    private String getPinNoTone(String[] pinyin) {
+        String pin = getPin(pinyin);
+        char tone = pin.charAt(pin.length() - 1);
+        if (tone >= '0' && tone <= '4') {
+            return pin.substring(0, pin.length() - 1);
+        } else {
+            return pin;
         }
     }
 

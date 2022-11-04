@@ -80,8 +80,13 @@ public class DictMaker {
             String line;
             while ((line = br.readLine()) != null) {
                 lineNum++;
-//                line = line.strip();
-                if (!(line.isBlank() || line.strip().startsWith("#"))) {
+
+                int commentBegin = line.indexOf('#');
+                if (commentBegin != -1) {
+                    line = line.substring(0, commentBegin);
+                }
+                
+                if (!line.isBlank()) {
                     String[] split = line.split(",");
                     if (nCol == -1) {
                         nCol = split.length;
@@ -154,8 +159,24 @@ public class DictMaker {
             }
         }
         
-        if (pure.endsWith("eng") || pure.endsWith("ing")) {
+        if (pure.endsWith("feng")) {  // feng -> fong
+            pure = pure.substring(0, pure.length() - 3) + "ong";
+        }
+        
+        if (pure.endsWith("eng") || pure.endsWith("ing")) {  // ceng -> cen, xing -> xin
             pure = pure.substring(0, pure.length() - 1);
+        }
+        
+        if (pure.endsWith("uo")) {  // tuo -> to
+            pure = pure.substring(0, pure.length() - 2) + 'o';
+        }
+        
+        if (pure.equals("hu")) {  // hu -> fu  这里不能用startwith, 因为hui, hun这些
+            pure = "fu";
+        }
+        
+        if (pure.endsWith("ei")) {  // lei -> lui
+            pure = pure.substring(0, pure.length() - 2) + "ui";
         }
         
         return pure + tone;

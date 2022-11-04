@@ -18,4 +18,13 @@ public class BaseItem {
         this.eng = eng;
         this.partOfSpeech = partOfSpeech;
     }
+
+    @Override
+    public String toString() {
+        return "BaseItem{" + chs + ", " + 
+                cq + ", " + 
+                pinyin + ", " + 
+                eng + ", " +
+                partOfSpeech + '}';
+    }
 }

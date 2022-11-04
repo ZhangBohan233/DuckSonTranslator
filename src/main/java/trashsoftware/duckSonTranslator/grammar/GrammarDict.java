@@ -16,8 +16,12 @@ public class GrammarDict {
                 DictMaker.readCsv(DictMaker.class.getResourceAsStream("grammar.csv"));
 
         for (String[] line : lines) {
-            String keyWord = line[0].strip();
-            if (keyWord.length() > maxKeyLength) maxKeyLength = keyWord.length(); 
+            String[] keyWords = line[0].split(";");
+            for (int i = 0; i < keyWords.length; i++) {
+                String keyWord = keyWords[i].strip();
+                keyWords[i] = keyWord;
+                if (keyWord.length() > maxKeyLength) maxKeyLength = keyWord.length();
+            }
             String tenseName = line[1].strip();
             int effectiveIndex = Integer.parseInt(line[2].strip());
 
@@ -31,14 +35,16 @@ public class GrammarDict {
             Map<String, String[][]> postCombos = analyzeCombo(line[5]);
 
             GrammarEffect grammarEffect = new GrammarEffect(
-                    keyWord,
+                    keyWords[0],
                     tenseName,
                     effectiveIndex,
                     partOfSpeech,
                     preCombos,
                     postCombos
             );
-            tenseInfo.put(keyWord, grammarEffect);
+            for (String keyWord : keyWords) {
+                tenseInfo.put(keyWord, grammarEffect);
+            }
             tenseNameMap.put(tenseName, grammarEffect);
         }
     }
@@ -50,7 +56,7 @@ public class GrammarDict {
             p = p.strip();
             if (p.isEmpty()) continue;
             String[] chsEng = p.split(":");
-            String[] pp = chsEng[1].strip().split("\s");
+            String[] pp = chsEng[1].strip().split(" ");
             String[][] res = new String[pp.length][2];
             for (int i = 0; i < pp.length; i++) {
                 String ppp = pp[i];

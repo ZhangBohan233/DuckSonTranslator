@@ -1,5 +1,5 @@
 chs, tenseMark, effectiveIndex, effectivePos, preSet, postSet
 
 了, past, -1, v, ,解: v.understand
-的, belong, -1, n;pron, 打: v.take n.taxi, 士: n.taxi; 确: v.is v.confirm
+的; 之, belong, -1, n;pron, 打: v.take n.taxi, 士: n.taxi; 确: v.is v.confirm
 正在, ing, 1, v, , 
