@@ -15,6 +15,6 @@ public class Main {
         translator.setChongqingMode(true);
 
         System.out.println(translator.chsToGeglish("这个b理由已经用了两次了"));
-        System.out.println(translator.chsToGeglish("有防疫工作的害群之马，抓起来"));
+        System.out.println(translator.chsToGeglish("上班"));
     }
 }

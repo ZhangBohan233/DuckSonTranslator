@@ -521,6 +521,10 @@ public class BigDict {
 
         @Override
         public int compareTo(SingleChsCharCandidate o) {
+            if (this.engWord.startsWith(o.engWord)) {
+                return -1;
+            }
+            
             this.updateComparisons();
             o.updateComparisons();
 

@@ -7,6 +7,7 @@ chs, cq, pinyin, eng, pos
 按, an4, an4, press, v
 
 # B
+班, ban1, ban1, class, n
 半, ban4, ban4, half, n
 办, ban4, ban4, deal, v
 棒, bang4, bang4, stick, n
@@ -20,6 +21,7 @@ chs, cq, pinyin, eng, pos
 必, bi2, bi4, must, aux
 闭, bi4, bi4, close, v
 表, biao3, biao3, watch, n
+丙, bin3, bing3, C, n
 病, bin4, bing4, illness, n
 薄, bo2, bao2, thin, adj
 不, bu2, bu4, not, adv
@@ -27,6 +29,9 @@ chs, cq, pinyin, eng, pos
 
 # C
 差, ca1, cha1, gap, n
+长, cang2, chang2, long, adj
+场, cang2, chang3, field, n
+藏, cang2, cang2, hide, v
 草, cao3, cao3, grass, n
 造, cao4, zao4, build, v
 车, ce1, che2, car, n
@@ -42,6 +47,7 @@ chs, cq, pinyin, eng, pos
 船, cuan2, chuan2, ship, n
 传, cuan2, chuan2, spread, v
 蠢, cun3, chun3, stupid, adj
+重庆, cong2 qin4, chong2 qing4, double celebrity, n
 
 # D
 打, da3, da3, fight, v
@@ -51,8 +57,10 @@ chs, cq, pinyin, eng, pos
 倒, dao4, dao4, reverse, v
 导, dao4, dao3, navigate, v
 得, de2, de2, gain, v
+等, den3, deng3, wait, v
 地, di4, di4, ground, n
 弟, di4, di4, brother, n
+丁, din1, ding1, D, n
 都, dou1, dou1, both, adv
 度, du4, du4, degree, n
 肚, du4, du4, belly, n
@@ -130,12 +138,15 @@ chs, cq, pinyin, eng, pos
 洁, jie2, jie2, clean, adj
 姐, jie3, jie3, sister, n
 金, jin1, jin1, gold, n
+京, jin1, jing1, capital, n
 紧, jin3, jin3, tight, adj
 仅, jin3, jin3, only, adj
 脚, jio2, jiao2, foot, n
 酒, jiu3, jiu3, wine, n
 九, jiu3, jiu3, nine, n
 卷, juan3, juan3, roll, n
+决, jue2, jue2, curse, v
+经常, jin1 sang2, jing1 chang2, usually, adj
 
 # K
 咔, ka1, ka1, card, v
@@ -202,6 +213,7 @@ chs, cq, pinyin, eng, pos
 瓢, piao2, piao2, spoon, n
 平, pin2, ping2, flat, adj
 屁股, pi4 gu3, pi4 gu3, ass, n
+啤酒, pi2 jiu3, pi2 jiu3, beer, n
 瓢羹, piao2 gen1, piao2 geng1, ticket root, n
 
 # Q
@@ -234,10 +246,14 @@ chs, cq, pinyin, eng, pos
 啥, sa2, sha2, what, prep
 山, san1, shan1, mountain, n
 三, san1, san1, three, n
+常, sang2, chang2, usually, adj
+尝, sang2, chang2, taste, v
+上, sang4, shang4, up, v
 烧, sao1, shao1, burn, v
 神, sen2, shen2, god, n
 乘, sen2, cheng2, multiply, v
 笋, sen3, sun3, bamboo, n
+省, sen3, sheng3, province, n
 思, si1, si1, think, v
 狮, si1, shi1, lion, n
 师, si1, shi1, teacher, n
@@ -249,20 +265,24 @@ chs, cq, pinyin, eng, pos
 室, si2, shi4, room, n
 屎, si3, shi3, shit, n
 死, si3, si3, die, v
+事, si4, si4, thing, n
+市, si4, shi4, market, n
 士, si4, shi4, soldier, n
 是, si4, shi4, is, v
 四, si4, si4, four, n
 说, so2, shuo1, speak, v
 锁, so3, suo3, lock, n
 所, so3, suo3, all, n
-兽, sou3, shou3, animal, n
-艏, sou3, sou3, bow, n
+手, sou3, shou3, hand, n
+艏, sou3, shou3, bow, n
+兽, sou4, shou4, animal, n
 怂, song2, song2, follow heart, v
 送, song4, song4, give, v
 耍, sua3, shua3, play, v
 酸, suan1, suan1, acid, n
 删, suan1, shan1, delete, v
 算, suan4, suan4, calculate, v
+水, sui3, shui3, water, n
 纯, sun2, chun2, pure, adj
 什么, sen2 mo1, shen2 me, what, pron
 十万, si2 wan4, shi2 wan4, hundred thousand, n
@@ -342,6 +362,7 @@ chs, cq, pinyin, eng, pos
 桌, zo2, zhuo1, table, n
 中, zong1, zhong1, mid, adj
 钟, zong1, zhong1, clock, n
+重, zong4, zong4, heavy, adj
 做, zu4, zuo4, do, v
 抓, zua1, zhua1, catch, v
 最, zui4, zui4, most, adv
