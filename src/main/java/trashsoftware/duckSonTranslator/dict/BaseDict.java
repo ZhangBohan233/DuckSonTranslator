@@ -14,7 +14,9 @@ public class BaseDict {
 
     public BaseDict() throws IOException {
         List<String[]> csvContent = DictMaker.readCsv(
-                DictMaker.class.getResourceAsStream("base.csv")
+                DictMaker.class.getResourceAsStream("base.csv"),
+                false,
+                false
         );
         final List<String[]> csvCopy = csvContent;
         csvContent = new ArrayList<>() {

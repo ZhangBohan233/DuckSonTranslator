@@ -69,10 +69,12 @@ public class DictMaker {
     }
 
     public static List<String[]> readCsv(InputStream inputStream) throws IOException {
-        return readCsv(inputStream, false);
+        return readCsv(inputStream, false, false);
     }
 
-    public static List<String[]> readCsv(InputStream inputStream, boolean withTitle) throws IOException {
+    public static List<String[]> readCsv(InputStream inputStream, 
+                                         boolean withTitle, 
+                                         boolean allowDiffWidth) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             List<String[]> res = new ArrayList<>();
             int lineNum = 0;
@@ -91,10 +93,10 @@ public class DictMaker {
                     if (nCol == -1) {
                         nCol = split.length;
                         if (!withTitle) continue;
-                    } else if (nCol != split.length)
+                    } else if (!allowDiffWidth && nCol != split.length)
                         throw new IOException(
                                 "Csv widths not consistent at line " + lineNum);
-                    for (int i = 0; i < nCol; i++) {
+                    for (int i = 0; i < split.length; i++) {
                         split[i] = split[i].strip();
                     }
                     res.add(split);

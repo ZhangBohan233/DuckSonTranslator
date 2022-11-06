@@ -778,7 +778,6 @@ boldness   n.胆略
 bolt   n.螺检，插销 v.闩门
 bomb   n.炸弹 v.轰炸
 bomber   n.轰炸机
-bona fide   adj.真诚的，无欺的
 bond   n.束缚，联结，债券
 bonded   adj.保税的
 bone   n.骨，骨骼
