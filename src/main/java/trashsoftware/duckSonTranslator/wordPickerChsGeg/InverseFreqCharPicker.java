@@ -6,8 +6,8 @@ import trashsoftware.duckSonTranslator.dict.BigDictValue;
 import java.util.*;
 
 public class InverseFreqCharPicker extends SingleCharPicker {
-    protected InverseFreqCharPicker(BigDict bigDict) {
-        super(bigDict);
+    protected InverseFreqCharPicker(BigDict bigDict, PickerFactory factory) {
+        super(bigDict, factory);
     }
 
     private static void updateCandidatesMap(Map<String, SingleChsCharCandidate> subMap,

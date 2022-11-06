@@ -16,7 +16,7 @@ public class BaseDict {
         List<String[]> csvContent = DictMaker.readCsv(
                 DictMaker.class.getResourceAsStream("base.csv"),
                 false,
-                false
+                true
         );
         final List<String[]> csvCopy = csvContent;
         csvContent = new ArrayList<>() {
@@ -68,6 +68,20 @@ public class BaseDict {
         };
         for (String[] line : csvContent) {
             BaseItem bi = new BaseItem(line[0], line[1], line[2], line[3], line[4]);
+            if (line.length > 5) {
+                for (int i = 5; i < line.length; i++) {
+                    String[] kwArgs = line[i].split("=");
+                    if (kwArgs.length == 2) {
+                        String key = kwArgs[0].strip();
+                        if ("cover".equals(key)) {
+                            boolean cover = Boolean.parseBoolean(kwArgs[1].strip());
+                            bi.setCoverSameSound(cover);
+                        }
+                    } else {
+                        throw new RuntimeException("Unrecognized part '" + line[i] + '\'');
+                    }
+                }
+            }
 
             if (line[0].length() > maxChsWordLen) maxChsWordLen = line[0].length();
 
@@ -109,22 +123,28 @@ public class BaseDict {
         List<BaseItem> list = pinyinMap.get(pinyin[0]);
         if (list == null) return null;
 
+        BaseItem defaultItem = list.get(0);  // 如果同音的第一个字不覆盖，那后面的也应该不覆盖
+        if (!defaultItem.isCoverSameSound()) return null;
+
         for (BaseItem item : list) {
-            if (item.cq.endsWith(pinyin[1])) return item;
+            if (item.cq.equals(pinyin[1]) && item.isCoverSameSound()) return item;
         }
 
-        return list.get(0);
+        return defaultItem;
     }
 
     public BaseItem getByCqPin(String[] pinyin) {
         List<BaseItem> list = cqMap.get(pinyin[1]);
         if (list == null) return null;
 
+        BaseItem defaultItem = list.get(0);
+        if (!defaultItem.isCoverSameSound()) return null;
+
         for (BaseItem item : list) {
-            if (item.pinyin.endsWith(pinyin[0])) return item;
+            if (item.pinyin.equals(pinyin[0]) && item.isCoverSameSound()) return item;
         }
 
-        return list.get(0);
+        return defaultItem;
     }
 
     public BaseItem getByEng(String word) {

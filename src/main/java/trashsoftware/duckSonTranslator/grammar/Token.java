@@ -38,6 +38,12 @@ public class Token {
                 case "ing":
                     applyIng();
                     break;
+                case "better":
+                    applyBetter();
+                    break;
+                case "best":
+                    applyBest();
+                    break;
                 default:
                     break;
             }
@@ -71,6 +77,30 @@ public class Token {
         }
     }
     
+    private void applyBetter() {
+        String eng = getEng();
+        if (eng.endsWith("e")) {
+            setEng(eng + "r");
+        } else if (eng.endsWith("y")) {
+            setEng(eng.substring(0, eng.length() - 1) + "ier");
+        }else {
+            setEng(eng + "er");
+        }
+    }
+    
+    private void applyBest() {
+        String eng = getEng();
+        if (eng.endsWith("es")) {
+            setEng(eng + "t");
+        } else if (eng.endsWith("e")) {
+            setEng(eng + "st");
+        } else if (eng.endsWith("y")) {
+            setEng(eng.substring(0, eng.length() - 1) + "iest");
+        } else {
+            setEng(eng + "est");
+        }
+    }
+    
     public List<Token> applyTenseToChs(GrammarDict grammarDict) {
         List<Token> result = new ArrayList<>();
         for (String tense : appliedTenses) {
@@ -83,23 +113,6 @@ public class Token {
         }
         return result;
     }
-    
-//    private Token[] applyTenseToChs(String tenseName) {
-//        switch (tenseName) {
-//            case "past":
-//                return new Token[]{
-//                        new Token("", "了")
-//                };
-//            case "belong":
-//                applyBelong();
-//                break;
-//            case "ing":
-//                applyIng();
-//                break;
-//            default:
-//                break;
-//        }
-//    }
 
     public boolean isUntranslatedEng() {
         return eng != null && chs == null && grammarEffect == null;
@@ -141,6 +154,34 @@ public class Token {
         }
         if (eng.endsWith("'")) {
             if (len > 1) return new String[][]{{eng.substring(0, len - 1), "belong"}};
+        }
+        if (eng.endsWith("ier")) {
+            if (len > 3) return new String[][]{
+                    {eng.substring(0, len - 3) + "y", "better"},
+                    {eng.substring(0, len - 2), "better"},
+                    {eng.substring(0, len - 1), "better"}
+            };
+        }
+        if (eng.endsWith("er")) {
+            if (len > 2) return new String[][]{
+                    {eng.substring(0, len - 2), "better"},
+                    {eng.substring(0, len - 1), "better"}
+            };
+        }
+        if (eng.endsWith("iest")) {
+            if (len > 4) return new String[][]{
+                    {eng.substring(0, len - 4) + "y", "best"},
+                    {eng.substring(0, len - 3), "best"},
+                    {eng.substring(0, len - 2), "best"},
+                    {eng.substring(0, len - 1), "best"},
+            };
+        }
+        if (eng.endsWith("est")) {
+            if (len > 3) return new String[][]{
+                    {eng.substring(0, len - 3), "best"},
+                    {eng.substring(0, len - 2), "best"},
+                    {eng.substring(0, len - 1), "best"}
+            };
         }
         return null;
     }

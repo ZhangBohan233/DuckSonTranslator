@@ -21,7 +21,7 @@ public class Main {
         System.out.println(chs);
 
         System.out.println(translator.chsToGeglish("这个b理由已经用了两次了"));
-        System.out.println(translator.chsToGeglish("夜晚屙野尿"));
-        System.out.println(translator.geglishToChs("runed"));
+        System.out.println(translator.chsToGeglish("最多到哪里了"));
+        System.out.println(translator.geglishToChs("manier arrived where in"));
     }
 }

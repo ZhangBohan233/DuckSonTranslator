@@ -4,8 +4,8 @@ import trashsoftware.duckSonTranslator.dict.BigDict;
 
 public abstract class SingleCharPicker extends WordPicker {
     
-    protected SingleCharPicker(BigDict bigDict) {
-        super(bigDict);
+    protected SingleCharPicker(BigDict bigDict, PickerFactory factory) {
+        super(bigDict, factory);
     }
 
     @Override

@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group 'org.example'
-version '0.2.3'
+group 'com.trashsoftware'
+version '0.3.1'
 
 repositories {
     mavenCentral()
@@ -21,5 +21,5 @@ jar {
 test {
     useJUnitPlatform()
 }
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11

@@ -22,6 +22,7 @@ chs, cq, pinyin, eng, pos
 必, bi2, bi4, must, aux
 闭, bi4, bi4, close, v
 表, biao3, biao3, watch, n
+别, bie2, bie2, other, n
 丙, bin3, bing3, C, n
 病, bin4, bing4, illness, n
 薄, bo2, bao2, thin, adj
@@ -57,12 +58,14 @@ chs, cq, pinyin, eng, pos
 袋, dai4, dai4, bag, n
 代, dai4, dai4, represent, v
 倒, dao4, dao4, reverse, v
+到, dao4, dao4, arrive, v
 导, dao4, dao3, navigate, v
 得, de2, de2, gain, v
 等, den3, deng3, wait, v
 地, di4, di4, ground, n
 弟, di4, di4, brother, n
 丁, din1, ding1, D, n
+多, do1, duo1, many, adj
 都, dou1, dou1, both, adv
 度, du4, du4, degree, n
 肚, du4, du4, belly, n
@@ -70,6 +73,7 @@ chs, cq, pinyin, eng, pos
 # E
 恩, en1, en1, kindness, n
 儿, er2, er2, son, n
+儿子, er2 zi3, er2 zi3, son, n
 
 # F
 烦, fan2, fan2, annoy, v
@@ -102,6 +106,8 @@ chs, cq, pinyin, eng, pos
 更, gen4, geng4, more, adv
 哥, go1, ge1, brother, n
 歌, go1, ge1, song, n
+鸽, go2, ge1, pigeon, n
+各, go2, ge4, each, det
 果, go3, guo3, fruit, n
 弓, gong1, gong1, bow, n
 工, gong1, gong1, job, n
@@ -301,7 +307,7 @@ chs, cq, pinyin, eng, pos
 狮, si1, shi1, lion, n
 师, si1, shi1, teacher, n
 诗, si1, shi1, poem, n
-石, si2, shi2, stone, n
+石, si2, shi2, stone, n, cover=false
 湿, si2, shi1, wet, adj
 食, si2, shi2, food, n
 时, si2, shi2, time, n
@@ -365,6 +371,7 @@ chs, cq, pinyin, eng, pos
 # X
 西, xi1, xi1, west, n
 习, xi2, xi2, practice, v
+吸, xi2, xi1, suck, v
 洗, xi3, xi3, wash, v
 下, xia4, xia4, down, adv
 仙, xian1, xian1, fairy, n
@@ -386,6 +393,7 @@ chs, cq, pinyin, eng, pos
 严, yan2, yan2, strict, adj
 眼, yan3, yan3, eye, n
 羊, yang2, yang2, sheep, n
+阳, yang2, yang2, sun, n
 要, yao4, yao4, want, v
 叶, ye2, ye4, leaf, n
 爷, ye2, ye2, grandfather, n
@@ -410,6 +418,7 @@ chs, cq, pinyin, eng, pos
 雨, yu3, yu3, rain, n
 语, yu3, yu3, language, n
 与, yu3, yu3, and, conj
+玉, yu4, yu4, jade, n, cover=false
 园, yuan2, yuan2, garden, n
 原, yuan2, yuan2, atom, n
 圆, yuan2, yuan2, circle, n
@@ -419,6 +428,9 @@ chs, cq, pinyin, eng, pos
 已经, yi3 jin1, yi3 jing1, already, adv
 
 # Z
+在, zai4, zai4, at, prep
+再, zai4, zai4, again, adv
+载, zai4, zai4, load, v
 嗞, zi1, zi1, erase, v
 子, zi3, zi3, son, n
 字, zi4, zi4, character, n

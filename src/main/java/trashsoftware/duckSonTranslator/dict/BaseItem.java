@@ -6,6 +6,7 @@ public class BaseItem {
     public final String pinyin;
     public final String eng;
     public final String partOfSpeech;
+    private boolean coverSameSound = true;  // 是否覆盖同音字
 
     BaseItem(String chs,
              String cq,
@@ -17,6 +18,14 @@ public class BaseItem {
         this.pinyin = pinyin;
         this.eng = eng;
         this.partOfSpeech = partOfSpeech;
+    }
+
+    public void setCoverSameSound(boolean coverSameSound) {
+        this.coverSameSound = coverSameSound;
+    }
+
+    public boolean isCoverSameSound() {
+        return coverSameSound;
     }
 
     @Override

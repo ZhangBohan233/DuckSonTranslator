@@ -11,8 +11,8 @@ import java.util.Random;
 public class RandomCharPicker extends SingleCharPicker {
     private final Random random = new Random();
     
-    protected RandomCharPicker(BigDict bigDict) {
-        super(bigDict);
+    protected RandomCharPicker(BigDict bigDict, PickerFactory factory) {
+        super(bigDict, factory);
     }
 
     @Override

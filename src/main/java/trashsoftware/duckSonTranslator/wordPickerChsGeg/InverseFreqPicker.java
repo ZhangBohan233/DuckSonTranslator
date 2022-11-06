@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 public class InverseFreqPicker extends WordPicker {
-    protected InverseFreqPicker(BigDict bigDict) {
-        super(bigDict);
+    protected InverseFreqPicker(BigDict bigDict, PickerFactory factory) {
+        super(bigDict, factory);
     }
 
     @Override

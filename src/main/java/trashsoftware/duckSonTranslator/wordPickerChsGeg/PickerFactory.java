@@ -17,7 +17,9 @@ public enum PickerFactory {
     
     public WordPicker create(BigDict bigDict) {
         try {
-            return pickerClass.getDeclaredConstructor(BigDict.class).newInstance(bigDict);
+            return pickerClass
+                    .getDeclaredConstructor(BigDict.class, this.getClass())
+                    .newInstance(bigDict, this);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

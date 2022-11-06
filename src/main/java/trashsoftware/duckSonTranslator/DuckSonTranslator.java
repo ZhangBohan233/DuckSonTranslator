@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.3.0";
+    public static final String CORE_VERSION = "0.3.1";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "unk"
@@ -151,6 +151,14 @@ public class DuckSonTranslator {
 
     public void setChongqingMode(boolean chongqingMode) {
         options.setChongqingMode(chongqingMode);
+    }
+    
+    public boolean isUseSameSoundChar() {
+        return options.isUseSameSoundChar();
+    }
+    
+    public void setUseSameSoundChar(boolean useSameSoundChar) {
+        options.setUseSameSoundChar(useSameSoundChar);
     }
 
     public WordPicker getChsGegPicker() {
@@ -317,6 +325,7 @@ public class DuckSonTranslator {
                 continue;
             }
 
+            // 查小字典
             BaseItem direct = options.isUseBaseDict()
                     ? baseDict.getByChs(chs, index)
                     : null;
