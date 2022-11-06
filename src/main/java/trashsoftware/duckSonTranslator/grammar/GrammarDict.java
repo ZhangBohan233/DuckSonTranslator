@@ -22,20 +22,23 @@ public class GrammarDict {
                 keyWords[i] = keyWord;
                 if (keyWord.length() > maxKeyLength) maxKeyLength = keyWord.length();
             }
-            String tenseName = line[1].strip();
-            int effectiveIndex = Integer.parseInt(line[2].strip());
+            String engDirect = line[1].strip();
+            
+            String tenseName = line[2].strip();
+            int effectiveIndex = Integer.parseInt(line[3].strip());
 
             Set<String> partOfSpeech = new HashSet<>();
-            String[] poses = line[3].split(";");
+            String[] poses = line[4].split(";");
             for (String pos : poses) {
                 partOfSpeech.add(pos.strip());
             }
 
-            Map<String, String[][]> preCombos = analyzeCombo(line[4]);
-            Map<String, String[][]> postCombos = analyzeCombo(line[5]);
+            Map<String, String[][]> preCombos = analyzeCombo(line[5]);
+            Map<String, String[][]> postCombos = analyzeCombo(line[6]);
 
             GrammarEffect grammarEffect = new GrammarEffect(
                     keyWords[0],
+                    engDirect,
                     tenseName,
                     effectiveIndex,
                     partOfSpeech,

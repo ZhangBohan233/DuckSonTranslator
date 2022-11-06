@@ -7,6 +7,7 @@ import java.util.Set;
 public class GrammarEffect {
 
     public final String tenseKeyWord;  // 中文关键字，最关键的一个就行
+    public final String engDirect;
     public final String tenseName;
     public final int effectiveIndex;
     public final Set<String> effectivePos;
@@ -17,12 +18,14 @@ public class GrammarEffect {
 
     public GrammarEffect(
             String tenseKeyWord,
+            String engDirect,
             String tenseName,
             int effectiveIndex,
             Set<String> effectivePos,
             Map<String, String[][]> specialPreComb,
             Map<String, String[][]> specialPostComb) {
         this.tenseKeyWord = tenseKeyWord;
+        this.engDirect = engDirect;
         this.tenseName = tenseName;
         this.effectiveIndex = effectiveIndex;
         this.effectivePos = effectivePos;

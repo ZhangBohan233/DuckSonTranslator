@@ -7,8 +7,9 @@ public class Token {
     private String chs;
     private String eng;
     private String partOfSpeech;
-    private Set<String> appliedTenses = new HashSet<>();
+    private final Set<String> appliedTenses = new HashSet<>();
     private GrammarEffect grammarEffect;
+    private boolean applied = false;  // 语法token是否已被apply
 
     public Token(String chs, String eng, String partOfSpeech) {
         this.chs = chs;
@@ -16,13 +17,23 @@ public class Token {
         this.partOfSpeech = partOfSpeech;
     }
 
-    public Token(String chs, GrammarEffect effect) {
+    public Token(String chs, String eng, GrammarEffect effect) {
         this.chs = chs;
         this.grammarEffect = effect;
+        this.eng = eng;
+        this.partOfSpeech = "det";
     }
 
     public Token(String eng) {
         this.eng = eng;
+    }
+
+    public boolean isApplied() {
+        return applied;
+    }
+    
+    public void setGrammarApplied() {
+        this.applied = true;
     }
 
     public void applyTense(String tenseName) {
@@ -106,9 +117,9 @@ public class Token {
         for (String tense : appliedTenses) {
             GrammarEffect ge = grammarDict.tenseNameMap.get(tense);
             if (ge.effectiveIndex < 0) {
-                return List.of(this, new Token(ge.tenseKeyWord, ge));
+                return List.of(this, new Token(ge.tenseKeyWord, ge.engDirect, ge));
             } else {
-                return List.of(new Token(ge.tenseKeyWord, ge), this);
+                return List.of(new Token(ge.tenseKeyWord, ge.engDirect, ge), this);
             }
         }
         return result;

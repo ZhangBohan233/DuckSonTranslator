@@ -232,7 +232,7 @@ public class DuckSonTranslator {
                 ge = grammarDict.tenseInfo.get(len2);
                 if (ge != null) {
                     if (!addSpecial(ge, chs, i, grammars)) {
-                        grammars.put(i, new Token(len2, ge));
+                        grammars.put(i, new Token(len2, ge.engDirect, ge));
                         i += 1;
                         continue;
                     }
@@ -241,7 +241,7 @@ public class DuckSonTranslator {
             ge = grammarDict.tenseInfo.get(len1);
             if (ge != null) {
                 if (!addSpecial(ge, chs, i, grammars)) {
-                    grammars.put(i, new Token(len1, ge));
+                    grammars.put(i, new Token(len1, ge.engDirect, ge));
                 }
             }
         }
@@ -679,6 +679,14 @@ public class DuckSonTranslator {
                 }
                 builder.append(token.getEng());
                 lastActual = token;
+            } else if (!token.isApplied()) {
+                if (lastActual != null &&
+                        !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
+                        !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
+                    builder.append(' ');
+                }
+                builder.append(token.getEng());
+                lastActual = token;
             }
 
         }
@@ -706,6 +714,7 @@ public class DuckSonTranslator {
                             rem -= 1;
                             if (rem == 0) {
                                 tk.applyTense(effect.tenseName);
+                                token.setGrammarApplied();
                                 break;
                             }
                         }
@@ -718,6 +727,7 @@ public class DuckSonTranslator {
                             rem -= 1;
                             if (rem == 0) {
                                 tk.applyTense(effect.tenseName);
+                                token.setGrammarApplied();
                                 break;
                             }
                         }

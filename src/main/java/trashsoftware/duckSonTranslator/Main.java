@@ -21,7 +21,7 @@ public class Main {
         System.out.println(chs);
 
         System.out.println(translator.chsToGeglish("这个b理由已经用了两次了"));
-        System.out.println(translator.chsToGeglish("最多到哪里了"));
+        System.out.println(translator.chsToGeglish("完了"));
         System.out.println(translator.geglishToChs("manier arrived where in"));
     }
 }
