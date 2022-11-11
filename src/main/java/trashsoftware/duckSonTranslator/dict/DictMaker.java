@@ -89,13 +89,18 @@ public class DictMaker {
                 }
                 
                 if (!line.isBlank()) {
-                    String[] split = line.split(",");
+                    String[] split = line.split(",", -1);
                     if (nCol == -1) {
                         nCol = split.length;
                         if (!withTitle) continue;
                     } else if (!allowDiffWidth && nCol != split.length)
                         throw new IOException(
-                                "Csv widths not consistent at line " + lineNum);
+                                String.format("Csv widths not consistent at line %d. " +
+                                        "Title has %d columns, " +
+                                        "while this line has %d.", 
+                                        lineNum, 
+                                        nCol, 
+                                        split.length));
                     for (int i = 0; i < split.length; i++) {
                         split[i] = split[i].strip();
                     }
@@ -177,8 +182,8 @@ public class DictMaker {
             pure = "fu";
         }
         
-        if (pure.endsWith("ei")) {  // lei -> lui
-            pure = pure.substring(0, pure.length() - 2) + "ui";
+        if (pure.equals("lei")) {  // lei -> lui
+            pure = "lui";
         }
         
         return pure + tone;

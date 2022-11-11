@@ -1,14 +1,13 @@
 package trashsoftware.duckSonTranslator;
 
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.PickerFactory;
-import trashsoftware.duckSonTranslator.wordPickerChsGeg.WordPicker;
 
 public class TranslatorOptions {
     
     private boolean chongqingMode = true;
     private boolean useBaseDict = true;
     private boolean useSameSoundChar = true;
-    private PickerFactory chsGegPicker = PickerFactory.SINGLE_CHAR_INVERSE_FREQ;
+    private PickerFactory chsGegPicker = PickerFactory.COMBINED_CHAR;
     
     public TranslatorOptions() {
     }

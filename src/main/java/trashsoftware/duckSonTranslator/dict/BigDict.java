@@ -5,6 +5,7 @@ import trashsoftware.duckSonTranslator.trees.Trie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,198 @@ public class BigDict {
     protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
 
     public BigDict() throws IOException {
+        readHighSchoolDict();
+    }
+    
+    private void readHighSchoolDict() throws IOException {
+        List<String[]> csvContent = DictMaker.readCsv(
+                DictMaker.class.getResourceAsStream("voc.csv")
+        );
+        for (String[] line : csvContent) {
+            String eng = line[1].strip().toLowerCase(Locale.ROOT);
+            for (int c = 2; c < line.length; c++) {
+                String rawDes = line[c].strip();
+                if (!rawDes.isEmpty()) {
+                    if (rawDes.startsWith("[同]")) continue;
+                    rawDes = rawDes.replace(" ", "+");
+                    rawDes = removeInsideParenthesis(rawDes);
+                    rawDes = addSpaceToFoolishOfHighSchoolTeacher(rawDes);
+                    String[] sameMeanDiffPosSplit = rawDes.split("\\./");
+                    String[] posMeans;
+                    Set<String> sameMeaningDivision = new HashSet<>();
+                    if (sameMeanDiffPosSplit.length >= 2) {
+                        // 有那种多个词性同义的
+                        String[] dumb = sameMeanDiffPosSplit[sameMeanDiffPosSplit.length - 1].split(" ");
+                        if (dumb.length != 1) {
+                            // 把两个词性放在一个格子里了
+                            // 处理方式: 归位
+                            int ncStart = c + 1;
+                            for (int nc = c + 1; nc < line.length; nc++) {
+                                if (line[nc].strip().isBlank()) {
+                                    ncStart = nc;
+                                    break;
+                                }
+                            }
+                            for (int nc = 1; nc < dumb.length; nc++) {
+                                int cInLine = nc + ncStart - 1;
+                                line[cInLine] = dumb[nc];
+                            }
+                        }
+                        String[] lastPosAndMean = dumb[0].split("\\.");
+                        if (lastPosAndMean.length != 2) {
+                            throw new RuntimeException("Unknown syntax at " + eng);
+                        }
+                        String lastPos = lastPosAndMean[0];
+                        String des = lastPosAndMean[1];
+//                        System.out.println(Arrays.toString(lastPosAndMean));
+                        posMeans = new String[sameMeanDiffPosSplit.length * 2];
+                        for (int p = 0; p < sameMeanDiffPosSplit.length - 1; p++) {
+                            String pos = sameMeanDiffPosSplit[p];
+                            posMeans[p * 2] = pos;
+                            sameMeaningDivision.add(pos);
+                            posMeans[p * 2 + 1] = des;
+                        }
+                        posMeans[posMeans.length - 2] = lastPos;
+                        posMeans[posMeans.length - 1] = des;
+                    } else {
+                        posMeans = sameMeanDiffPosSplit[0].split("\\.");
+                        List<String> parts = new ArrayList<>();
+                        for (String s : posMeans) {
+                            String[] spaceSplit = s.split(" ");
+                            parts.addAll(Arrays.asList(spaceSplit));
+                        }
+                        posMeans = parts.toArray(new String[0]);
+//                        System.out.println(posMeans.length + Arrays.toString(posMeans));
+                        if (posMeans.length % 2 != 0) {
+//                            System.out.println(line[c]);
+                            throw new RuntimeException(Arrays.toString(posMeans) + " at line " + line[c]);
+                        }
+                    }
+
+                    BigDictValue engAsKey = engChsMap.computeIfAbsent(eng, 
+                            k -> new BigDictValue(new HashMap<>()));  // 因为eng可能被之前的列加了
+                    engAsKey.sameMeaningDivision.addAll(sameMeaningDivision);
+                    Map<String, List<String>> posMapChsValue = engAsKey.value;  // pos: 中文释义
+                    for (int cc = 0; cc < posMeans.length; cc += 2) {
+                        // 长度已经确定偶数了
+                        String pos = replaceWeirdPos(posMeans[cc]);
+                        
+                        String[] chsDes = posMeans[cc + 1].split(";");
+                        List<String> chsDesList = new ArrayList<>();
+                        if (posMapChsValue.containsKey(pos)) {
+                            chsDesList.addAll(posMapChsValue.get(pos));
+                        }
+                        for (String chs : chsDes) {
+                            chs = standardizeChs(chs.strip());
+                            if (!chs.isEmpty()) {
+                                chsDesList.add(chs);
+                            }
+                        }
+                        if (!chsDesList.isEmpty()) {
+                            posMapChsValue.put(pos, chsDesList);
+                        }
+                    }
+                    engChsMap.put(eng, new BigDictValue(posMapChsValue));
+                    
+                    for (var posDes : posMapChsValue.entrySet()) {
+                        String pos = posDes.getKey();  // pos
+                        for (String chs : posDes.getValue()) {
+                            BigDictValue chsKey = chsEngMap.get(chs);
+                            if (chsKey == null) {
+                                chsKey = new BigDictValue(new HashMap<>());
+                                chsEngMap.put(chs, chsKey);
+                            }
+                            List<String> posEngMap = 
+                                    chsKey.value.computeIfAbsent(pos, k -> new ArrayList<>());
+                            if (!posEngMap.contains(eng)) {
+                                posEngMap.add(eng);
+                            }
+//                            System.out.println(chs + posEngMap);
+                        }
+                    }
+                }
+            }
+        }
+        for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
+            chsEngTrie.insert(entry.getKey(), entry.getValue());
+        }
+//        System.out.println(getAllMatches('蝇'));
+//        System.out.println(chsEngMap.get("因此"));
+//        System.out.println(engChsMap.size());
+//        System.out.println(chsEngMap);
+    }
+    
+    private static String standardizeChs(String chsWord) {
+        if (chsWord.length() > 1 && chsWord.endsWith("的")) {
+            chsWord = chsWord.substring(0, chsWord.length() - 1);
+        }
+        
+        if (chsWord.length() > 1 && chsWord.startsWith("使")) {
+            chsWord = chsWord.substring(1);
+        }
+        
+        return chsWord;
+    }
+    
+    private static String replaceWeirdPos(String orig) {
+        if (orig.startsWith("*")) orig = orig.substring(1);
+        
+        if (orig.startsWith("v")) return "v";
+        if (orig.equals("a")) return "adj";
+        if (orig.equals("ad")) return "adv";
+        
+        return orig;
+    }
+    
+    private static String addSpaceToFoolishOfHighSchoolTeacher(String s) {
+        if (s.length() == 0) return s;
+        StringBuilder builder = new StringBuilder();
+        char last = s.charAt(0);
+        for (char c : s.toCharArray()) {
+            if ((last > 255 || last == ')' || last == ']') && c >= 'a' && c <= 'z') {
+                builder.append(' ');
+            }
+            builder.append(c);
+            last = c;
+        }
+        return builder.toString();
+    }
+    
+    private static String removeInsideParenthesis(String s) {
+        boolean inPar = false;
+        boolean inSquare = false;
+        boolean inArrow = false;
+        StringBuilder builder = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            switch (c) {
+                case '(':
+                    inPar = true;
+                    break;
+                case ')':
+                    inPar = false;
+                    break;
+                case '[':
+                    inSquare = true;
+                    break;
+                case ']':
+                    inSquare = false;
+                    break;
+                case '<':
+                    inArrow = true;
+                    break;
+                case '>':
+                    inArrow = false;
+                    break;
+                default:
+                    if (!inPar && !inSquare && !inArrow) {
+                        builder.append(c);
+                    }
+            }
+        }
+        return builder.toString();
+    }
+    
+    private void readFullDict() throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 Objects.requireNonNull(
                         DictMaker.class.getResourceAsStream("eng_chs.txt"))))) {

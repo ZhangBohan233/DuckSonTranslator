@@ -10,10 +10,10 @@ public class InverseFreqCharPicker extends SingleCharPicker {
         super(bigDict, factory);
     }
 
-    private static void updateCandidatesMap(Map<String, SingleChsCharCandidate> subMap,
-                                            Map<String, SingleChsCharCandidate> fullMap) {
-        for (Map.Entry<String, SingleChsCharCandidate> entry : subMap.entrySet()) {
-            SingleChsCharCandidate can = fullMap.get(entry.getKey());
+    private static void updateCandidatesMap(Map<String, Candidate> subMap,
+                                            Map<String, Candidate> fullMap) {
+        for (Map.Entry<String, Candidate> entry : subMap.entrySet()) {
+            Candidate can = fullMap.get(entry.getKey());
             if (can == null) {
                 fullMap.put(entry.getKey(), entry.getValue());
             } else {
@@ -34,37 +34,37 @@ public class InverseFreqCharPicker extends SingleCharPicker {
     protected Result translateChar(char chs) {
         Map<String, BigDictValue> allMatches = bigDict.getAllMatches(chs);
 //        SortedMap<Double, List<Purity2>> purityMap = new TreeMap<>();
-        Map<String, SingleChsCharCandidate> candidates = new HashMap<>();
+        Map<String, Candidate> candidates = new HashMap<>();
         for (Map.Entry<String, BigDictValue> entry : allMatches.entrySet()) {
-//            String chsWord = entry.getKey();
-//            if (chsWord.length() == 1 && chsWord.charAt(0) == chs) {
-//                System.out.println("Exact match!");
-//                return new Result()  todo: try this
-//            }
             Map<String, List<String>> engPosDes = entry.getValue().value;
 
-            Map<String, SingleChsCharCandidate> thisCandidate = createCandidate(chs, engPosDes);
+            Map<String, Candidate> thisCandidate = createCandidate(chs, engPosDes);
             updateCandidatesMap(thisCandidate, candidates);
         }
         if (candidates.isEmpty()) return null;
 //        System.out.println(candidates);
-        List<SingleChsCharCandidate> candidateList = new ArrayList<>(candidates.values());
+        List<Candidate> candidateList = new ArrayList<>(candidates.values());
+        
+        for (Candidate scc : candidateList) {
+            scc.updateComparisons();
+        }
+//        System.out.println(candidateList);
         Collections.sort(candidateList);
         Collections.reverse(candidateList);
 //        System.out.println(candidateList);
-        SingleChsCharCandidate candidate = candidateList.get(0);
+        Candidate candidate = candidateList.get(0);
         return new Result(candidate.engWord, candidate.bestPartOfSpeech(), 1);
     }
 
-    private Map<String, SingleChsCharCandidate> createCandidate(char chsChar,
-                                                                        Map<String, List<String>> engPosDes) {
-        Map<String, SingleChsCharCandidate> engAndCandidates = new HashMap<>();
+    private Map<String, Candidate> createCandidate(char chsChar,
+                                                   Map<String, List<String>> engPosDes) {
+        Map<String, Candidate> engAndCandidates = new HashMap<>();
         for (Map.Entry<String, List<String>> posDes : engPosDes.entrySet()) {
             String pos = posDes.getKey();
 
             for (String eng : posDes.getValue()) {
                 BigDictValue reverse = bigDict.getEngChsMap().get(eng);
-                SingleChsCharCandidate can = engAndCandidates.computeIfAbsent(eng, SingleChsCharCandidate::new);
+                Candidate can = engAndCandidates.computeIfAbsent(eng, Candidate::new);
 
                 for (Map.Entry<String, List<String>> chsPosDes : reverse.value.entrySet()) {
 //                    System.out.println(chsPosDes);
@@ -96,11 +96,12 @@ public class InverseFreqCharPicker extends SingleCharPicker {
                 }
             }
         }
+//        System.out.println(engAndCandidates);
 
         return engAndCandidates;
     }
 
-    private static class SingleChsCharCandidate implements Comparable<SingleChsCharCandidate> {
+    private static class Candidate implements Comparable<Candidate> {
 
         final Map<String, int[]> posPurity = new HashMap<>();
         final String engWord;
@@ -111,7 +112,7 @@ public class InverseFreqCharPicker extends SingleCharPicker {
         private int totalMatches = -1;
         private double avgMatchIndex = -1.0;
 
-        SingleChsCharCandidate(String engWord) {
+        Candidate(String engWord) {
             this.engWord = engWord;
         }
 
@@ -137,6 +138,7 @@ public class InverseFreqCharPicker extends SingleCharPicker {
                     maxVal = entry.getKey();
                 }
             }
+            if (maxVal == null) throw new RuntimeException(this.toString());
             return maxVal;
         }
 
@@ -161,13 +163,10 @@ public class InverseFreqCharPicker extends SingleCharPicker {
         }
 
         @Override
-        public int compareTo(SingleChsCharCandidate o) {
+        public int compareTo(Candidate o) {
             if (this.engWord.startsWith(o.engWord)) {
                 return -1;
             }
-
-            this.updateComparisons();
-            o.updateComparisons();
 
             double purity = (double) totalMatches / total;
             double oPurity = (double) o.totalMatches / o.total;

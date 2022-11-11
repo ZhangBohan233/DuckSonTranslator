@@ -7,7 +7,7 @@ import java.util.*;
 
 public class CommonPrefixCharPicker extends SingleCharPicker {
 
-    public static final int MIN_SUBSTRING_LENGTH = 3;
+    public static final int MIN_SUBSTRING_LENGTH = 4;
     
     public static final Map<Integer, Set<String>> NOT_AS_COMMON_STR = Map.of(
             3, Set.of("ion", "tio", "sio"),
@@ -89,7 +89,7 @@ public class CommonPrefixCharPicker extends SingleCharPicker {
         for (Candidate candidate : candidateList) {
             candidate.findAllSuperStrings(candidateList);
         }
-        
+//        System.out.println(candidateList);
         Collections.sort(candidateList);
         Collections.reverse(candidateList);
 //        System.out.println(chs + " " + candidateList);
@@ -118,6 +118,7 @@ public class CommonPrefixCharPicker extends SingleCharPicker {
                     }
                 }
             }
+            updatePosFreq();
         }
 
         private void updatePosFreq() {
@@ -135,9 +136,6 @@ public class CommonPrefixCharPicker extends SingleCharPicker {
 
         @Override
         public int compareTo(Candidate o) {
-            this.updatePosFreq();
-            o.updatePosFreq();
-            
             if (this.superStrings.contains(o.eng)) return 1;
             if (o.superStrings.contains(this.eng)) return -1;
             
@@ -153,7 +151,7 @@ public class CommonPrefixCharPicker extends SingleCharPicker {
         @Override
         public String toString() {
             return "Candidate{" + eng + " " + 
-                    totalPosFreq + ", " + superStrings.size() + ": " + posMeanings + '}';
+                    totalPosFreq + ", " + superStrings.size() + ": " + posMeanings + bestPartOfSpeech + '}';
         }
     }
 }

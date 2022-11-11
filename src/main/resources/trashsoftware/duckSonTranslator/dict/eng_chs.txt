@@ -3302,7 +3302,6 @@ hardship   n.困苦，艰难
 hardware   n.硬件
 hard-working   adj.勤劳的
 hardy   adj.耐劳的，耐寒的
-hare   n.野兔
 harm   n.,v.损害，伤害
 harmful   adj.有害的
 harmless   adj.无害的，无恶意的
@@ -5760,7 +5759,7 @@ reader   n.读者，读本
 readily   adv.容易地，乐意地
 reading   n.读书，读数，读本
 ready   adj.准备好的，乐意的
-real   adj.真的，纯粹的
+real   adj.真的
 realism   n.现实主义，写实主义
 realist   n.,adj.现实主义者
 realistic   adj.现实的，实在的

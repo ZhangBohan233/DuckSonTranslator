@@ -28,7 +28,7 @@ public class Token {
         this.eng = eng;
     }
 
-    public boolean isApplied() {
+    public boolean isGrammarApplied() {
         return applied;
     }
     
@@ -44,6 +44,7 @@ public class Token {
                     applyPast();
                     break;
                 case "belong":
+                case "home":
                     applyBelong();
                     break;
                 case "ing":

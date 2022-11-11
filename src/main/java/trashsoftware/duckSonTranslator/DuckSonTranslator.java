@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.3.1";
+    public static final String CORE_VERSION = "0.4.0";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "unk"
@@ -121,6 +121,7 @@ public class DuckSonTranslator {
         this.chsToGegPicker = options.getChsGegPicker().create(bigDict);
     }
 
+    @SuppressWarnings("unused")
     public String autoDetectLanguage(String input) {
         int totalLen = input.length();
         int chsCount = 0;
@@ -145,26 +146,32 @@ public class DuckSonTranslator {
         return "unk";
     }
 
+    @SuppressWarnings("unused")
     public boolean isChongqingMode() {
         return options.isChongqingMode();
     }
 
+    @SuppressWarnings("unused")
     public void setChongqingMode(boolean chongqingMode) {
         options.setChongqingMode(chongqingMode);
     }
-    
+
+    @SuppressWarnings("unused")
     public boolean isUseSameSoundChar() {
         return options.isUseSameSoundChar();
     }
-    
+
+    @SuppressWarnings("unused")
     public void setUseSameSoundChar(boolean useSameSoundChar) {
         options.setUseSameSoundChar(useSameSoundChar);
     }
 
+    @SuppressWarnings("unused")
     public WordPicker getChsGegPicker() {
         return this.chsToGegPicker;
     }
 
+    @SuppressWarnings("unused")
     public void setChsGegPicker(PickerFactory chsGegPicker) {
         options.setChsGegPicker(chsGegPicker);
         createPicker();
@@ -650,14 +657,14 @@ public class DuckSonTranslator {
     }
 
     private Token pickSameSoundWord(List<Character> chsChars) {
-        int minLen = Integer.MAX_VALUE;
+        double maxPre = -Double.MAX_VALUE;
         String minChs = null;
         Result minVal = null;
         for (Character c : chsChars) {
             String s = String.valueOf(c);
             Result result = chsToGegPicker.translateWord(s);
-            if (result != null && result.translated.length() < minLen) {
-                minLen = result.translated.length();
+            if (result != null && result.precedence > maxPre) {
+                maxPre = result.precedence;
                 minChs = s;
                 minVal = result;
             }
@@ -671,15 +678,14 @@ public class DuckSonTranslator {
         Token lastActual = null;
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
-            if (token.isActual()) {
-                if (lastActual != null &&
-                        !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
-                        !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
-                    builder.append(' ');
+            if (token.isActual() || !token.isGrammarApplied()) {
+                if (lastActual != null && 
+                        lastActual.getEng().equals(token.getEng()) && 
+                        !lastActual.getChs().equals(token.getChs())) {
+                    // 连续两个的英文一样但中文不一样
+                    lastActual = token;
+                    continue;
                 }
-                builder.append(token.getEng());
-                lastActual = token;
-            } else if (!token.isApplied()) {
                 if (lastActual != null &&
                         !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
                         !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
@@ -688,17 +694,8 @@ public class DuckSonTranslator {
                 builder.append(token.getEng());
                 lastActual = token;
             }
-
         }
         return builder.toString();
-    }
-
-    private Token findNextActual(List<Token> tokens, int currentIndex) {
-        for (int i = currentIndex + 1; i < tokens.size(); i++) {
-            Token next = tokens.get(i);
-            if (next.isActual()) return next;
-        }
-        return null;
     }
 
     private void applyGrammar(List<Token> tokens) {
