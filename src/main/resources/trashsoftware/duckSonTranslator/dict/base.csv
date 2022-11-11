@@ -119,6 +119,7 @@ chs, cq, pinyin, eng, pos
 干, gan1, gan1, dry, adj
 杆, gan1, gan1, cue, n
 甘, gan1, gan1, sweet, adj
+高, gao1, gao1, high, adj
 给, ge3, gei3, give, v
 更, gen4, geng4, more, adv
 哥, go1, ge1, brother, n
@@ -426,7 +427,7 @@ chs, cq, pinyin, eng, pos
 习, xi2, xi2, practice, v
 吸, xi2, xi1, suck, v
 洗, xi3, xi3, wash, v
-下, xia4, xia4, down, adv
+下, xia4, xia4, down, v
 夏, xia4, xia4, summer, n
 仙, xian1, xian1, fairy, n
 先, xian1, xian1, before, prep
@@ -448,7 +449,7 @@ chs, cq, pinyin, eng, pos
 小什字, xiao3 si2 zi4, xiao3 shi2 zi4, small stone word, n
 
 # Y
-鸭, ya2, ya1, duck, n
+鸭, ya2, ya1, duck, n, cover=true
 盐, yan2, yan2, salt, n
 严, yan2, yan2, strict, adj
 眼, yan3, yan3, eye, n

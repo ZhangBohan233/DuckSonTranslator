@@ -6,7 +6,7 @@ public class BaseItem {
     public final String pinyin;
     public final String eng;
     public final String partOfSpeech;
-    private boolean coverSameSound = true;  // 是否覆盖同音字
+    private boolean coverSameSound = false;  // 是否覆盖同音字
 
     BaseItem(String chs,
              String cq,

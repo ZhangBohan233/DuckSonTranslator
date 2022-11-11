@@ -52,4 +52,8 @@ public class PinyinDict extends Translator {
     public List<Character> getChsListByCqPin(String cqPin) {
         return cqPinToChs.get(cqPin);
     }
+
+    public List<Character> getChsListByPinyin(String pinyin) {
+        return pinyinToChs.get(pinyin);
+    }
 }

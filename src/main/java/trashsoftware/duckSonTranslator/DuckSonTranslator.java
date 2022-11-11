@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.4.0";
+    public static final String CORE_VERSION = "0.4.1";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "unk"
@@ -144,6 +144,16 @@ public class DuckSonTranslator {
         if ((double) engCount / subTotal > 0.8) return "geg";
 
         return "unk";
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isUseBaseDict() {
+        return options.isUseBaseDict();
+    }
+
+    @SuppressWarnings("unused")
+    public void setUseBaseDict(boolean useSameSoundChar) {
+        options.setUseBaseDict(useSameSoundChar);
     }
 
     @SuppressWarnings("unused")
@@ -333,7 +343,7 @@ public class DuckSonTranslator {
             }
 
             // 查小字典
-            BaseItem direct = options.isUseBaseDict()
+            BaseItem direct = isUseBaseDict()
                     ? baseDict.getByChs(chs, index)
                     : null;
             if (direct != null) {
@@ -345,20 +355,7 @@ public class DuckSonTranslator {
                 }
                 index += direct.chs.length() - 1;
             } else {
-                String[] pinyin = pinyinDict.getPinyinByChs(c);
-                if (pinyin == null) {
-                    throw new NoSuchWordException(cs);
-                }
-                BaseItem sameSoundWord;
-                if (options.isUseBaseDict()) {
-                    if (options.isChongqingMode()) {
-                        sameSoundWord = baseDict.getByCqPin(pinyin);
-                    } else {
-                        sameSoundWord = baseDict.getByPinyin(pinyin);
-                    }
-                } else {
-                    sameSoundWord = null;
-                }
+                BaseItem sameSoundWord = baseDictSameSound(c, false);
 
                 if (options.isUseSameSoundChar() && sameSoundWord != null) {
                     Token token = new Token(cs, sameSoundWord.eng, sameSoundWord.partOfSpeech);
@@ -619,22 +616,50 @@ public class DuckSonTranslator {
                 tokens.add(token);
 
                 notTransSeg = notTransSeg.substring(match.matchLength);
-            } else {
+            } else if (isUseSameSoundChar()) {
                 char cur = notTransSeg.charAt(0);
-                tokens.add(bigDictSameSoundTrans(cur));
+                BaseItem sameSoundBase = baseDictSameSound(cur, true);
+                if (sameSoundBase != null) {
+                    tokens.add(new Token(sameSoundBase.chs, sameSoundBase.eng, sameSoundBase.partOfSpeech));
+                } else {
+                    tokens.add(bigDictSameSoundTrans(cur));
+                }
 
                 notTransSeg = notTransSeg.substring(1);
             }
         }
     }
+    
+    private BaseItem baseDictSameSound(char chs, boolean forcedCover) {
+        String[] pinyin = pinyinDict.getPinyinByChs(chs);
+        if (pinyin == null) {
+            throw new NoSuchWordException(String.valueOf(chs));
+        }
+        BaseItem sameSoundWord;
+        if (options.isUseBaseDict()) {
+            if (options.isChongqingMode()) {
+                sameSoundWord = baseDict.getByCqPin(pinyin, forcedCover);
+            } else {
+                sameSoundWord = baseDict.getByPinyin(pinyin, forcedCover);
+            }
+        } else {
+            sameSoundWord = null;
+        }
+        return sameSoundWord;
+    }
 
-    private Token bigDictSameSoundTrans(char cur) {
+    private Token bigDictSameSoundTrans(char chs) {
         // 遍历同音字查询，只查一个字
-        String[] pinyin = pinyinDict.getPinyinByChs(cur);
-        List<Character> sameSound = pinyinDict.getChsListByCqPin(getPin(pinyin));
+        String[] pinyin = pinyinDict.getPinyinByChs(chs);
+        List<Character> sameSound;
+        if (isChongqingMode()) {
+            sameSound = pinyinDict.getChsListByCqPin(getPin(pinyin));
+        } else {
+            sameSound = pinyinDict.getChsListByPinyin(getPin(pinyin));
+        }
         Token tk = pickSameSoundWord(sameSound);
         if (tk == null) {
-            String cs = String.valueOf(cur);
+            String cs = String.valueOf(chs);
             String py = getPinNoTone(pinyin);
             return new Token(cs, py, "n");
         } else {
@@ -679,8 +704,8 @@ public class DuckSonTranslator {
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
             if (token.isActual() || !token.isGrammarApplied()) {
-                if (lastActual != null && 
-                        lastActual.getEng().equals(token.getEng()) && 
+                if (lastActual != null &&
+                        lastActual.getEng().equals(token.getEng()) &&
                         !lastActual.getChs().equals(token.getChs())) {
                     // 连续两个的英文一样但中文不一样
                     lastActual = token;

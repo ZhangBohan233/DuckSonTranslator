@@ -113,18 +113,26 @@ public class BaseDict {
         return null;
     }
 
+    public BaseItem getByPinyin(String[] pinyin) {
+        return getByPinyin(pinyin, false);
+    }
+
+    public BaseItem getByCqPin(String[] pinyin) {
+        return getByCqPin(pinyin, false);
+    }
+
     /**
      * 找到第一个同音字，以普通话拼音为第一标准，重庆话拼音为第二标准。
      * 若有多个，返回普通话与重庆话都相同的第一个。若没有，则不管。
      *
      * @param pinyin [普通话, 重庆话]
      */
-    public BaseItem getByPinyin(String[] pinyin) {
+    public BaseItem getByPinyin(String[] pinyin, boolean forcedCover) {
         List<BaseItem> list = pinyinMap.get(pinyin[0]);
         if (list == null) return null;
 
         BaseItem defaultItem = list.get(0);  // 如果同音的第一个字不覆盖，那后面的也应该不覆盖
-        if (!defaultItem.isCoverSameSound()) return null;
+        if (!forcedCover && !defaultItem.isCoverSameSound()) return null;
 
         for (BaseItem item : list) {
             if (item.cq.equals(pinyin[1]) && item.isCoverSameSound()) return item;
@@ -133,12 +141,12 @@ public class BaseDict {
         return defaultItem;
     }
 
-    public BaseItem getByCqPin(String[] pinyin) {
+    public BaseItem getByCqPin(String[] pinyin, boolean forcedCover) {
         List<BaseItem> list = cqMap.get(pinyin[1]);
         if (list == null) return null;
 
         BaseItem defaultItem = list.get(0);
-        if (!defaultItem.isCoverSameSound()) return null;
+        if (!forcedCover && !defaultItem.isCoverSameSound()) return null;
 
         for (BaseItem item : list) {
             if (item.pinyin.equals(pinyin[0]) && item.isCoverSameSound()) return item;
