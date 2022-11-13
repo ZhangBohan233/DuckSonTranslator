@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.4.3";
+    public static final String CORE_VERSION = "0.4.4";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "unk"

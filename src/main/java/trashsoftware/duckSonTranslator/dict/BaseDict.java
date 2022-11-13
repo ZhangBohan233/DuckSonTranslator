@@ -67,6 +67,9 @@ public class BaseDict {
             }
         };
         for (String[] line : csvContent) {
+            if (line.length < 5) {
+                throw new IndexOutOfBoundsException("Line " + Arrays.toString(line) + " not good.");
+            }
             BaseItem bi = new BaseItem(line[0], line[1], line[2], line[3], line[4]);
             if (line.length > 5) {
                 for (int i = 5; i < line.length; i++) {
