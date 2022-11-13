@@ -302,6 +302,10 @@ public class BigDict {
 //            System.out.println(chsEngTrie.get("经济学人"));
         }
     }
+    
+    public String getVersionStr() {
+        return String.valueOf(engChsMap.size());
+    }
 
     public Trie<BigDictValue> getChsEngTrie() {
         return chsEngTrie;

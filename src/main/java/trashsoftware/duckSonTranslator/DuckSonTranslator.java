@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.4.2";
+    public static final String CORE_VERSION = "0.4.3";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "unk"
@@ -114,7 +114,7 @@ public class DuckSonTranslator {
     }
 
     public String getDictionaryVersion() {
-        return baseDict.getVersionStr() + "." + pinyinDict.getVersionStr();
+        return baseDict.getVersionStr() + "." + pinyinDict.getVersionStr() + "." + bigDict.getVersionStr();
     }
 
     private void createPicker() {
