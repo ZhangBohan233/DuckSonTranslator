@@ -705,10 +705,23 @@ public class DuckSonTranslator {
             Token token = tokens.get(i);
             if (token.isActual() || !token.isGrammarApplied()) {
                 if (lastActual != null &&
-                        lastActual.getEng().equals(token.getEng()) &&
+                        lastActual.getOrigEng().equals(token.getOrigEng()) &&
                         !lastActual.getChs().equals(token.getChs())) {
                     // 连续两个的英文一样但中文不一样
-                    lastActual = token;
+                    if (lastActual.getEngAfterTense() == null) {
+                        if (token.getEngAfterTense() == null) {
+                            // 无事发生
+                            lastActual = token;
+                        } else {
+                            // 不要上一个了，替换为这一个
+                            builder.setLength(builder.length() - lastActual.getEng().length());
+                            builder.append(token.getEngAfterTense());
+                        }
+                    } else {
+                        // 无事发生
+                        lastActual = token;
+                    }
+                    
                     continue;
                 }
                 if (lastActual != null &&

@@ -22,8 +22,8 @@ public class Main {
         System.out.println(chs);
 
         System.out.println(translator.chsToGeglish("这个b理由已经用了两次了"));
-        System.out.println(translator.chsToGeglish("深"));
-        System.out.println(translator.chsToGeglish("忘亡"));
+        System.out.println(translator.chsToGeglish("阳日了"));
+        System.out.println(translator.chsToGeglish("佛耶戈"));
         System.out.println(translator.geglishToChs("manier arrived where in"));
     }
 }

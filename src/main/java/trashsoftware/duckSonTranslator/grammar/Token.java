@@ -6,6 +6,7 @@ public class Token {
 
     private String chs;
     private String eng;
+    private String engAfterTense;
     private String partOfSpeech;
     private final Set<String> appliedTenses = new HashSet<>();
     private GrammarEffect grammarEffect;
@@ -65,51 +66,51 @@ public class Token {
     private void applyPast() {
         String eng = getEng();
         if (eng.endsWith("e")) {
-            setEng(eng + "d");
+            setEngAfterTense(eng + "d");
         } else {
-            setEng(eng + "ed");
+            setEngAfterTense(eng + "ed");
         }
     }
 
     private void applyBelong() {
         String eng = getEng();
         if (eng.endsWith("s")) {
-            setEng(eng + "'");
+            setEngAfterTense(eng + "'");
         } else {
-            setEng(eng + "'s");
+            setEngAfterTense(eng + "'s");
         }
     }
 
     private void applyIng() {
         String eng = getEng();
         if (eng.endsWith("e")) {
-            setEng(eng.substring(0, eng.length() - 1) + "ing");
+            setEngAfterTense(eng.substring(0, eng.length() - 1) + "ing");
         } else {
-            setEng(eng + "ing");
+            setEngAfterTense(eng + "ing");
         }
     }
     
     private void applyBetter() {
         String eng = getEng();
         if (eng.endsWith("e")) {
-            setEng(eng + "r");
+            setEngAfterTense(eng + "r");
         } else if (eng.endsWith("y")) {
-            setEng(eng.substring(0, eng.length() - 1) + "ier");
+            setEngAfterTense(eng.substring(0, eng.length() - 1) + "ier");
         }else {
-            setEng(eng + "er");
+            setEngAfterTense(eng + "er");
         }
     }
     
     private void applyBest() {
         String eng = getEng();
         if (eng.endsWith("es")) {
-            setEng(eng + "t");
+            setEngAfterTense(eng + "t");
         } else if (eng.endsWith("e")) {
-            setEng(eng + "st");
+            setEngAfterTense(eng + "st");
         } else if (eng.endsWith("y")) {
-            setEng(eng.substring(0, eng.length() - 1) + "iest");
+            setEngAfterTense(eng.substring(0, eng.length() - 1) + "iest");
         } else {
-            setEng(eng + "est");
+            setEngAfterTense(eng + "est");
         }
     }
     
@@ -211,11 +212,19 @@ public class Token {
     }
 
     public String getEng() {
+        return engAfterTense == null ? eng : engAfterTense;
+    }
+
+    public String getEngAfterTense() {
+        return engAfterTense;
+    }
+
+    public String getOrigEng() {
         return eng;
     }
 
-    public void setEng(String eng) {
-        this.eng = eng;
+    public void setEngAfterTense(String eng) {
+        this.engAfterTense = eng;
     }
 
     public void setChs(String chs) {
