@@ -1,6 +1,7 @@
 package trashsoftware.duckSonTranslator;
 
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.PickerFactory;
+import trashsoftware.duckSonTranslator.wordPickerGegChs.ChsPickerFactory;
 
 public class TranslatorOptions {
     
@@ -8,6 +9,7 @@ public class TranslatorOptions {
     private boolean useBaseDict = true;
     private boolean useSameSoundChar = true;
     private PickerFactory chsGegPicker = PickerFactory.COMBINED_CHAR;
+    private ChsPickerFactory gegChsPicker = ChsPickerFactory.NAIVE_PICKER;
     
     public TranslatorOptions() {
     }
@@ -42,5 +44,13 @@ public class TranslatorOptions {
 
     public void setChsGegPicker(PickerFactory chsGegPicker) {
         this.chsGegPicker = chsGegPicker;
+    }
+
+    public ChsPickerFactory getGegChsPicker() {
+        return gegChsPicker;
+    }
+
+    public void setGegChsPicker(ChsPickerFactory gegChsPicker) {
+        this.gegChsPicker = gegChsPicker;
     }
 }

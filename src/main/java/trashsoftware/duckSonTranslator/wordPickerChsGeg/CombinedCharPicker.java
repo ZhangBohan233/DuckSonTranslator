@@ -20,6 +20,7 @@ public class CombinedCharPicker extends SingleCharPicker {
     @Override
     protected Result translateChar(char chs) {
         var allMatches = bigDict.getAllMatches(chs);
+        if (allMatches.isEmpty()) return Result.NOT_FOUND;
         Map<String, Candidate> candidateMap = new HashMap<>();  // eng: {pos: [含chs的词数, 不含的词数]}
         for (var chsWordDes : allMatches.entrySet()) {
 //            var chsWord = chsWordDes.getKey();
@@ -58,7 +59,7 @@ public class CombinedCharPicker extends SingleCharPicker {
                 }
             }
         }
-        if (candidateMap.isEmpty()) return null;
+        if (candidateMap.isEmpty()) return Result.NOT_FOUND;
         List<Candidate> candidateList = new ArrayList<>(candidateMap.values());
         for (Candidate candidate : candidateList) {
             candidate.findAllSuperStrings(candidateList);

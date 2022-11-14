@@ -3,6 +3,8 @@ package trashsoftware.duckSonTranslator;
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.PickerFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
@@ -22,8 +24,8 @@ public class Main {
         System.out.println(chs);
 
         System.out.println(translator.chsToGeglish("这个b理由已经用了两次了"));
-        System.out.println(translator.chsToGeglish("通宵"));
-        System.out.println(translator.chsToGeglish("石井坡"));
-        System.out.println(translator.geglishToChs("manier arrived where in"));
+        System.out.println(translator.chsToGeglish("对比敏感度 视觉 感觉"));
+        System.out.println(translator.chsToGeglish("刮痧"));
+        System.out.println(translator.geglishToChs("no shell's manier arrived where in, shave, shave"));
     }
 }

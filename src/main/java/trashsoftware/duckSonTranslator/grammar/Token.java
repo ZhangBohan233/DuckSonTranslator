@@ -27,6 +27,7 @@ public class Token {
 
     public Token(String eng) {
         this.eng = eng;
+        this.engAfterTense = eng;
     }
 
     public boolean isGrammarApplied() {
@@ -199,6 +200,13 @@ public class Token {
         return null;
     }
 
+    /**
+     * 结合上面这个用的，给译中
+     */
+    public void setOriginalEng(String eng) {
+        this.eng = eng;
+    }
+
     public boolean isActual() {
         return this.grammarEffect == null;
     }
@@ -245,6 +253,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return "Token{" + chs + ", " + eng + ", " + partOfSpeech + '}';
+        return "Token{" + chs + ", " + eng + "(" + engAfterTense + ")" + ", " + partOfSpeech + '}';
     }
 }

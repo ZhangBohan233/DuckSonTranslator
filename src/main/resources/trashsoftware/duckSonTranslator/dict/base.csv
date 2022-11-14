@@ -88,6 +88,7 @@ chs, cq, pinyin, eng, pos
 都, dou1, dou1, both, adv
 度, du4, du4, degree, n
 肚, du4, du4, belly, n
+达死, da2 si3, da2 di3, fall die, v
 电视, dian4 si4, dian4 shi4, tv, n
 
 # E
@@ -128,6 +129,7 @@ chs, cq, pinyin, eng, pos
 干, gan1, gan1, dry, adj
 杆, gan1, gan1, cue, n
 甘, gan1, gan1, sweet, adj
+感, gan3, gan3, feel, v
 高, gao1, gao1, high, adj
 给, ge3, gei3, give, v
 更, gen4, geng4, more, adv
@@ -307,10 +309,11 @@ chs, cq, pinyin, eng, pos
 瓢, piao2, piao2, spoon, n
 平, pin2, ping2, flat, adj
 坡, po1, po1, slope, n
+铺, pu4, pu4, shop, n
 屁股, pi4 gu3, pi4 gu3, ass, n
+皮肤, pi2 fu1, pi2 fu1, skin, n
 啤酒, pi2 jiu3, pi2 jiu3, beer, n
 瓢羹, piao2 gen1, piao2 geng1, ticket root, n
-铺, pu4, pu4, store, n
 
 # Q
 溪, qi1, xi1, stream, n

@@ -16,7 +16,7 @@ public class InverseFreqPicker extends WordPicker {
     @Override
     public Result translateWord(String sentence) {
         Trie.Get<BigDictValue> results = bigDict.getChsEngTrie().get(sentence);
-        if (results.matchLength == 0) return null;
+        if (results.matchLength == 0) return Result.NOT_FOUND;
         Map<String, Map<String, Integer>> freqMap = new HashMap<>();  // 英文: {词性: 频次}
         for (Map.Entry<String, Trie.Match<BigDictValue>> entry : results.value.entrySet()) {
             for (Map.Entry<String, List<String>> posDes : entry.getValue().value.value.entrySet()) {

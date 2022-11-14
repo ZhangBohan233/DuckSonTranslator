@@ -33,6 +33,7 @@ public class InverseFreqCharPicker extends SingleCharPicker {
     @Override
     protected Result translateChar(char chs) {
         Map<String, BigDictValue> allMatches = bigDict.getAllMatches(chs);
+        if (allMatches.isEmpty()) return Result.NOT_FOUND;
 //        SortedMap<Double, List<Purity2>> purityMap = new TreeMap<>();
         Map<String, Candidate> candidates = new HashMap<>();
         for (Map.Entry<String, BigDictValue> entry : allMatches.entrySet()) {
@@ -41,10 +42,10 @@ public class InverseFreqCharPicker extends SingleCharPicker {
             Map<String, Candidate> thisCandidate = createCandidate(chs, engPosDes);
             updateCandidatesMap(thisCandidate, candidates);
         }
-        if (candidates.isEmpty()) return null;
+        if (candidates.isEmpty()) return Result.NOT_FOUND;
 //        System.out.println(candidates);
         List<Candidate> candidateList = new ArrayList<>(candidates.values());
-        
+
         for (Candidate scc : candidateList) {
             scc.updateComparisons();
         }

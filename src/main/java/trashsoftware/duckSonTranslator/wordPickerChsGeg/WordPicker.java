@@ -1,5 +1,6 @@
 package trashsoftware.duckSonTranslator.wordPickerChsGeg;
 
+import trashsoftware.duckSonTranslator.TranslatorOptions;
 import trashsoftware.duckSonTranslator.dict.BigDict;
 
 public abstract class WordPicker {

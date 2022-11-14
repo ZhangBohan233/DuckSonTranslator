@@ -5,15 +5,11 @@ import trashsoftware.duckSonTranslator.trees.Trie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class BigDict {
-
-    public static final Set<Character> CHS_EXCEPTIONS = Set.of(
-            '的', '（', '）', '(', ')'
-    );
+    
     protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
     protected final Map<String, BigDictValue> engChsMap = new HashMap<>();
     protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
@@ -21,7 +17,77 @@ public class BigDict {
     public BigDict() throws IOException {
         readHighSchoolDict();
     }
-    
+
+    private static String standardizeChs(String chsWord) {
+        if (chsWord.length() > 1 && chsWord.endsWith("的")) {
+            chsWord = chsWord.substring(0, chsWord.length() - 1);
+        }
+
+        if (chsWord.length() > 1 && chsWord.startsWith("使")) {
+            chsWord = chsWord.substring(1);
+        }
+
+        return chsWord;
+    }
+
+    private static String replaceWeirdPos(String orig) {
+        if (orig.startsWith("*")) orig = orig.substring(1);
+
+        if (orig.startsWith("v")) return "v";
+        if (orig.equals("a")) return "adj";
+        if (orig.equals("ad")) return "adv";
+
+        return orig;
+    }
+
+    private static String addSpaceToFoolishOfHighSchoolTeacher(String s) {
+        if (s.length() == 0) return s;
+        StringBuilder builder = new StringBuilder();
+        char last = s.charAt(0);
+        for (char c : s.toCharArray()) {
+            if ((last > 255 || last == ')' || last == ']') && c >= 'a' && c <= 'z') {
+                builder.append(' ');
+            }
+            builder.append(c);
+            last = c;
+        }
+        return builder.toString();
+    }
+
+    private static String removeInsideParenthesis(String s) {
+        boolean inPar = false;
+        boolean inSquare = false;
+        boolean inArrow = false;
+        StringBuilder builder = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            switch (c) {
+                case '(':
+                    inPar = true;
+                    break;
+                case ')':
+                    inPar = false;
+                    break;
+                case '[':
+                    inSquare = true;
+                    break;
+                case ']':
+                    inSquare = false;
+                    break;
+                case '<':
+                    inArrow = true;
+                    break;
+                case '>':
+                    inArrow = false;
+                    break;
+                default:
+                    if (!inPar && !inSquare && !inArrow) {
+                        builder.append(c);
+                    }
+            }
+        }
+        return builder.toString();
+    }
+
     private void readHighSchoolDict() throws IOException {
         List<String[]> csvContent = DictMaker.readCsv(
                 DictMaker.class.getResourceAsStream("voc.csv")
@@ -87,14 +153,14 @@ public class BigDict {
                         }
                     }
 
-                    BigDictValue engAsKey = engChsMap.computeIfAbsent(eng, 
+                    BigDictValue engAsKey = engChsMap.computeIfAbsent(eng,
                             k -> new BigDictValue(new HashMap<>()));  // 因为eng可能被之前的列加了
                     engAsKey.sameMeaningDivision.addAll(sameMeaningDivision);
                     Map<String, List<String>> posMapChsValue = engAsKey.value;  // pos: 中文释义
                     for (int cc = 0; cc < posMeans.length; cc += 2) {
                         // 长度已经确定偶数了
                         String pos = replaceWeirdPos(posMeans[cc]);
-                        
+
                         String[] chsDes = posMeans[cc + 1].split(";");
                         List<String> chsDesList = new ArrayList<>();
                         if (posMapChsValue.containsKey(pos)) {
@@ -111,7 +177,7 @@ public class BigDict {
                         }
                     }
                     engChsMap.put(eng, new BigDictValue(posMapChsValue));
-                    
+
                     for (var posDes : posMapChsValue.entrySet()) {
                         String pos = posDes.getKey();  // pos
                         for (String chs : posDes.getValue()) {
@@ -120,7 +186,7 @@ public class BigDict {
                                 chsKey = new BigDictValue(new HashMap<>());
                                 chsEngMap.put(chs, chsKey);
                             }
-                            List<String> posEngMap = 
+                            List<String> posEngMap =
                                     chsKey.value.computeIfAbsent(pos, k -> new ArrayList<>());
                             if (!posEngMap.contains(eng)) {
                                 posEngMap.add(eng);
@@ -134,82 +200,13 @@ public class BigDict {
         for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
             chsEngTrie.insert(entry.getKey(), entry.getValue());
         }
+//        System.out.println(engChsMap.get("feel"));
 //        System.out.println(getAllMatches('蝇'));
 //        System.out.println(chsEngMap.get("因此"));
 //        System.out.println(engChsMap.size());
 //        System.out.println(chsEngMap);
     }
-    
-    private static String standardizeChs(String chsWord) {
-        if (chsWord.length() > 1 && chsWord.endsWith("的")) {
-            chsWord = chsWord.substring(0, chsWord.length() - 1);
-        }
-        
-        if (chsWord.length() > 1 && chsWord.startsWith("使")) {
-            chsWord = chsWord.substring(1);
-        }
-        
-        return chsWord;
-    }
-    
-    private static String replaceWeirdPos(String orig) {
-        if (orig.startsWith("*")) orig = orig.substring(1);
-        
-        if (orig.startsWith("v")) return "v";
-        if (orig.equals("a")) return "adj";
-        if (orig.equals("ad")) return "adv";
-        
-        return orig;
-    }
-    
-    private static String addSpaceToFoolishOfHighSchoolTeacher(String s) {
-        if (s.length() == 0) return s;
-        StringBuilder builder = new StringBuilder();
-        char last = s.charAt(0);
-        for (char c : s.toCharArray()) {
-            if ((last > 255 || last == ')' || last == ']') && c >= 'a' && c <= 'z') {
-                builder.append(' ');
-            }
-            builder.append(c);
-            last = c;
-        }
-        return builder.toString();
-    }
-    
-    private static String removeInsideParenthesis(String s) {
-        boolean inPar = false;
-        boolean inSquare = false;
-        boolean inArrow = false;
-        StringBuilder builder = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            switch (c) {
-                case '(':
-                    inPar = true;
-                    break;
-                case ')':
-                    inPar = false;
-                    break;
-                case '[':
-                    inSquare = true;
-                    break;
-                case ']':
-                    inSquare = false;
-                    break;
-                case '<':
-                    inArrow = true;
-                    break;
-                case '>':
-                    inArrow = false;
-                    break;
-                default:
-                    if (!inPar && !inSquare && !inArrow) {
-                        builder.append(c);
-                    }
-            }
-        }
-        return builder.toString();
-    }
-    
+
     private void readFullDict() throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 Objects.requireNonNull(
@@ -302,7 +299,7 @@ public class BigDict {
 //            System.out.println(chsEngTrie.get("经济学人"));
         }
     }
-    
+
     public String getVersionStr() {
         return String.valueOf(engChsMap.size());
     }
@@ -390,63 +387,6 @@ public class BigDict {
         return new Purity2(pos, eng, chsDesOfPos, purity);
     }
 
-    
-
-    public ChsResult translateEngToChs(String engWord) {
-        BigDictValue chs = engChsMap.get(engWord);
-        if (chs == null) return null;
-        String[] chsPos = pickBestChs(chs);
-        if (chsPos == null) return null;
-        return new ChsResult(chsPos[0], chsPos[1]);
-    }
-
-//    private int occurrenceInOtherWords(char chsChar) {
-//        
-//    }
-
-    private String[] pickBestChs(BigDictValue dictValue) {
-        Map<Character, ChsCharFreq> charFreq = new HashMap<>();  // 要保持顺序
-        for (Map.Entry<String, List<String>> posChs : dictValue.value.entrySet()) {
-            for (String chs : posChs.getValue()) {
-                int index = 0;
-                for (char c : chs.toCharArray()) {
-                    if (!CHS_EXCEPTIONS.contains(c)) {
-                        ChsCharFreq ccf = charFreq.get(c);
-                        if (ccf == null) {
-                            Map<String, BigDictValue> allMatches = getAllMatches(c);
-                            ccf = new ChsCharFreq(c, index, allMatches.size(), posChs.getKey());
-                            charFreq.put(c, ccf);
-                        }
-                        ccf.freq++;
-                    }
-                    index++;
-                }
-            }
-        }
-        List<ChsCharFreq> chsCharFreqList = new ArrayList<>(charFreq.values());
-        Collections.sort(chsCharFreqList);
-        Collections.reverse(chsCharFreqList);
-        ChsCharFreq result = chsCharFreqList.get(0);
-        return new String[]{String.valueOf(result.chsChar), result.anyPos};
-    }
-
-
-
-    public static class ChsResult {
-        public final String translated;
-        public final String partOfSpeech;
-
-        ChsResult(String translated, String partOfSpeech) {
-            this.translated = translated;
-            this.partOfSpeech = partOfSpeech;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("(%s)%s", partOfSpeech, translated);
-        }
-    }
-
     private static class Purity implements Comparable<Purity> {
         final String pos;
         final String des;
@@ -489,46 +429,6 @@ public class BigDict {
         @Override
         public String toString() {
             return super.toString() + ", " + chsWords;
-        }
-    }
-
-
-
-    private static class ChsCharFreq implements Comparable<ChsCharFreq> {
-        final char chsChar;
-        final int firstOccurIndex;
-        final int occurrenceInOtherWords;
-        final String anyPos;  // 翻译回中文时词性不太重要，留第一个就行
-        int freq;
-
-        ChsCharFreq(char chsChar, int firstOccurIndex, int occurrenceInOtherWords, String firstPos) {
-            this.chsChar = chsChar;
-            this.firstOccurIndex = firstOccurIndex;
-            this.occurrenceInOtherWords = occurrenceInOtherWords;
-            this.anyPos = firstPos;
-        }
-
-        @Override
-        public int compareTo(ChsCharFreq o) {
-            int freqCmp = Integer.compare(this.freq, o.freq);
-            if (freqCmp != 0) return freqCmp;
-
-            int otherOccCmp = Integer.compare(this.occurrenceInOtherWords, o.occurrenceInOtherWords);
-            if (otherOccCmp != 0) return -otherOccCmp;
-
-            int indexCmp = Integer.compare(this.firstOccurIndex, o.firstOccurIndex);
-            if (indexCmp != 0) return -indexCmp;
-
-            return Character.compare(this.chsChar, o.chsChar);
-        }
-
-        @Override
-        public String toString() {
-            return "ChsCharFreq{" + chsChar +
-                    "@" + firstOccurIndex +
-                    ", freq=" + freq +
-                    ", other=" + occurrenceInOtherWords +
-                    '}';
         }
     }
 }

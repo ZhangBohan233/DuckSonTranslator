@@ -68,6 +68,7 @@ public class CommonPrefixCharPicker extends SingleCharPicker {
     @Override
     protected Result translateChar(char chs) {
         var matches = bigDict.getAllMatches(chs);
+        if (matches.isEmpty()) return Result.NOT_FOUND;
         Map<String, Candidate> engCandidates = new HashMap<>();
         for (var entry : matches.entrySet()) {
             for (var posDesList : entry.getValue().value.entrySet()) {
@@ -84,7 +85,7 @@ public class CommonPrefixCharPicker extends SingleCharPicker {
             }
         }
 //        System.out.println(engCandidates);
-        if (engCandidates.isEmpty()) return null;
+        if (engCandidates.isEmpty()) return Result.NOT_FOUND;;
         List<Candidate> candidateList = new ArrayList<>(engCandidates.values());
         for (Candidate candidate : candidateList) {
             candidate.findAllSuperStrings(candidateList);

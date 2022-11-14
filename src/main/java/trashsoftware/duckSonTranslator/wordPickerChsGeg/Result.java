@@ -1,6 +1,9 @@
 package trashsoftware.duckSonTranslator.wordPickerChsGeg;
 
 public class Result {
+    public static final Result NOT_FOUND = 
+            new Result(null, null, 0, 0.0);
+    
     public final String translated;
     public final String partOfSpeech;
     public final int matchLength;

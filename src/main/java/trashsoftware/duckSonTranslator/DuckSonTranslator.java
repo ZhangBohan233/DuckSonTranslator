@@ -8,12 +8,15 @@ import trashsoftware.duckSonTranslator.translators.NoSuchWordException;
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.PickerFactory;
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.Result;
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.WordPicker;
+import trashsoftware.duckSonTranslator.wordPickerGegChs.ChsCharPicker;
+import trashsoftware.duckSonTranslator.wordPickerGegChs.ChsPickerFactory;
+import trashsoftware.duckSonTranslator.wordPickerGegChs.ChsResult;
 
 import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.4.4";
+    public static final String CORE_VERSION = "0.4.5";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "unk"
@@ -44,6 +47,7 @@ public class DuckSonTranslator {
     private final GrammarDict grammarDict;
     private final TranslatorOptions options;
     private WordPicker chsToGegPicker;
+    private ChsCharPicker gegToChsPicker;
 
     public DuckSonTranslator(TranslatorOptions options) throws IOException {
         this.options = options;
@@ -52,7 +56,8 @@ public class DuckSonTranslator {
         this.bigDict = new BigDict();
         this.grammarDict = new GrammarDict();
 
-        createPicker();
+        createChsGegPicker();
+        createGegChsPicker();
     }
 
     public DuckSonTranslator() throws IOException {
@@ -117,8 +122,12 @@ public class DuckSonTranslator {
         return baseDict.getVersionStr() + "." + pinyinDict.getVersionStr() + "." + bigDict.getVersionStr();
     }
 
-    private void createPicker() {
+    private void createChsGegPicker() {
         this.chsToGegPicker = options.getChsGegPicker().create(bigDict);
+    }
+
+    private void createGegChsPicker() {
+        this.gegToChsPicker = options.getGegChsPicker().create(bigDict);
     }
 
     @SuppressWarnings("unused")
@@ -184,7 +193,18 @@ public class DuckSonTranslator {
     @SuppressWarnings("unused")
     public void setChsGegPicker(PickerFactory chsGegPicker) {
         options.setChsGegPicker(chsGegPicker);
-        createPicker();
+        createChsGegPicker();
+    }
+
+    @SuppressWarnings("unused")
+    public ChsCharPicker getGegToChsPicker() {
+        return gegToChsPicker;
+    }
+
+    @SuppressWarnings("unused")
+    public void setGegChsPicker(ChsPickerFactory gegChsPicker) {
+        options.setGegChsPicker(gegChsPicker);
+        createGegChsPicker();
     }
 
     private boolean addSpecial(GrammarEffect ge,
@@ -435,7 +455,7 @@ public class DuckSonTranslator {
             StringBuilder word = new StringBuilder();
             StringBuilder number = new StringBuilder();
             for (char c : baseWord.toCharArray()) {
-                if (c >= 'A' && c <= 'z') {
+                if ((c >= 'A' && c <= 'z') || c == '\'') {
                     if (number.length() > 0) {
                         String nonWordS = number.toString();
                         number.setLength(0);
@@ -552,6 +572,7 @@ public class DuckSonTranslator {
             for (String[] engTense : possibleForms) {
                 baseItem = baseDict.getByEng(engTense[0]);
                 if (baseItem != null) {
+                    token.setOriginalEng(engTense[0]);
                     token.setChs(baseItem.chs);
                     token.setPartOfSpeech(baseItem.partOfSpeech);
                     token.addTense(engTense[1]);
@@ -561,7 +582,7 @@ public class DuckSonTranslator {
         }
 
         // 检查bigDict
-        BigDict.ChsResult chsDirect = bigDict.translateEngToChs(eng);
+        ChsResult chsDirect = gegToChsPicker.translateOneWord(eng);
         if (chsDirect != null) {
             token.setChs(chsDirect.translated);
             token.setPartOfSpeech(chsDirect.partOfSpeech);
@@ -569,8 +590,9 @@ public class DuckSonTranslator {
         }
         if (possibleForms != null) {
             for (String[] engTense : possibleForms) {
-                chsDirect = bigDict.translateEngToChs(engTense[0]);
+                chsDirect = gegToChsPicker.translateOneWord(engTense[0]);
                 if (chsDirect != null) {
+                    token.setOriginalEng(engTense[0]);
                     token.setChs(chsDirect.translated);
                     token.setPartOfSpeech(chsDirect.partOfSpeech);
                     token.addTense(engTense[1]);
@@ -606,7 +628,8 @@ public class DuckSonTranslator {
         return builder.toString();
     }
 
-    private void bigDictTrans(String notTransSeg, List<Token> tokens) {
+    private void bigDictTrans(String notTransSeg,
+                              List<Token> tokens) {
         while (!notTransSeg.isEmpty()) {
             Result match = chsToGegPicker.translateWord(notTransSeg);
             if (match != null) {
@@ -629,7 +652,7 @@ public class DuckSonTranslator {
             }
         }
     }
-    
+
     private BaseItem baseDictSameSound(char chs, boolean forcedCover) {
         String[] pinyin = pinyinDict.getPinyinByChs(chs);
         if (pinyin == null) {
@@ -721,7 +744,7 @@ public class DuckSonTranslator {
                         // 无事发生
                         lastActual = token;
                     }
-                    
+
                     continue;
                 }
                 if (lastActual != null &&
