@@ -1,11 +1,9 @@
 package trashsoftware.duckSonTranslator.dict;
 
-import trashsoftware.duckSonTranslator.translators.Translator;
-
 import java.io.IOException;
 import java.util.*;
 
-public class PinyinDict extends Translator {
+public class PinyinDict {
 
     protected int cqPinCount = 0;
     protected Map<Character, String[]> pinyin;  // 长度2, [拼音，重庆拼音]

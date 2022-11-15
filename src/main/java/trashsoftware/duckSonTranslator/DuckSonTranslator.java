@@ -4,6 +4,8 @@ import trashsoftware.duckSonTranslator.dict.*;
 import trashsoftware.duckSonTranslator.grammar.GrammarDict;
 import trashsoftware.duckSonTranslator.grammar.GrammarEffect;
 import trashsoftware.duckSonTranslator.grammar.Token;
+import trashsoftware.duckSonTranslator.tokenList.TextToken;
+import trashsoftware.duckSonTranslator.tokenList.TranslationResult;
 import trashsoftware.duckSonTranslator.translators.NoSuchWordException;
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.PickerFactory;
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.Result;
@@ -16,7 +18,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.4.6";
+    public static final String CORE_VERSION = "0.5.0";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "unk"
@@ -259,7 +261,7 @@ public class DuckSonTranslator {
         return false;
     }
 
-    public String chsToGeglish(String chs) {
+    public TranslationResult chsToGeglish(String chs) {
         SortedMap<Integer, Token> grammars = new TreeMap<>();
 
         // 处理语法token
@@ -435,7 +437,7 @@ public class DuckSonTranslator {
         return integrateToGeglish(tokens);
     }
 
-    public String geglishToChs(String geglish) {
+    public TranslationResult geglishToChs(String geglish) {
         String[] baseWords = geglish.strip().split(" ");
         List<Token> tokens = deriveGeglishTokens(baseWords);
 
@@ -443,7 +445,10 @@ public class DuckSonTranslator {
 
         for (Token token : tokens) {
             if (token.isUntranslatedEng()) {
-                translateTokenGegToChs(token);
+                if (!translateTokenGegToChs(token)) {
+                    token.setChs(token.getEng());
+                    token.setPartOfSpeech("eng");
+                }
             }
         }
 //        System.out.println(tokens);
@@ -561,14 +566,14 @@ public class DuckSonTranslator {
         return newTokens;
     }
 
-    private void translateTokenGegToChs(Token token) {
+    private boolean translateTokenGegToChs(Token token) {
         // 检查baseDict
         String eng = token.getEng();
         BaseItem baseItem = baseDict.getByEng(eng);
         if (baseItem != null) {
             token.setChs(baseItem.chs);
             token.setPartOfSpeech(baseItem.partOfSpeech);
-            return;
+            return true;
         }
         String[][] possibleForms = token.getPossibleBaseEngForm();
         if (possibleForms != null) {
@@ -579,7 +584,7 @@ public class DuckSonTranslator {
                     token.setChs(baseItem.chs);
                     token.setPartOfSpeech(baseItem.partOfSpeech);
                     token.addTense(engTense[1]);
-                    return;
+                    return true;
                 }
             }
         }
@@ -589,7 +594,7 @@ public class DuckSonTranslator {
         if (chsDirect != null) {
             token.setChs(chsDirect.translated);
             token.setPartOfSpeech(chsDirect.partOfSpeech);
-            return;
+            return true;
         }
         if (possibleForms != null) {
             for (String[] engTense : possibleForms) {
@@ -599,10 +604,11 @@ public class DuckSonTranslator {
                     token.setChs(chsDirect.translated);
                     token.setPartOfSpeech(chsDirect.partOfSpeech);
                     token.addTense(engTense[1]);
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     private List<Token> insertTokensByGrammar(List<Token> tokens) {
@@ -612,23 +618,11 @@ public class DuckSonTranslator {
                 tokensAfterGrammar.add(token);
             } else {
 //                System.out.println(token);
-                tokensAfterGrammar.addAll(token.applyTenseToChs(grammarDict));
+//                tokensAfterGrammar.addAll(token.applyTenseToChs(grammarDict));  // todo
+                tokensAfterGrammar.add(token.applyTenseToChsSingleRes(grammarDict));
             }
         }
         return tokensAfterGrammar;
-    }
-
-    private String integrateChsTokens(List<Token> tokens) {
-        StringBuilder builder = new StringBuilder();
-        for (Token token : tokens) {
-            if (token.isActual()) {
-                if (token.getChs() != null) builder.append(token.getChs());
-                else builder.append(token.getEng());
-            } else {
-                builder.append(token.getChs());
-            }
-        }
-        return builder.toString();
     }
 
     private void bigDictTrans(String notTransSeg,
@@ -724,8 +718,47 @@ public class DuckSonTranslator {
         return new Token(minChs, minVal.translated, minVal.partOfSpeech);
     }
 
-    private String integrateToGeglish(List<Token> tokens) {
-        StringBuilder builder = new StringBuilder();
+
+    private TranslationResult integrateChsTokens(List<Token> tokens) {
+        TranslationResult result = new TranslationResult();
+        Token lastActual = null;
+        for (Token token : tokens) {
+            TextToken src;
+            if (token.isActual()) {
+                src = new TextToken(token.getEng());
+                if (lastActual != null &&
+                        !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
+                        !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
+                    src.setPre(" ");
+                }
+                if (token.getChs() != null) {
+                    TextToken dst = new TextToken(token.getChs());
+                    result.addOne(src, dst);
+                }
+                else {
+                    result.addOnlySrc(src);
+                }
+            } else {
+                src = new TextToken(token.getEng());
+                TextToken dst = new TextToken(token.getChs());
+                result.addOne(src, dst);
+//                result.addOnlySrc(src);
+//                builder.append(token.getChs());
+            }
+            if (lastActual != null &&
+                    !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
+                    !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
+                src.setPre(" ");
+            }
+            if (token.isActual()) {
+                lastActual = token;  // 必须放下来
+            }
+        }
+        return result;
+    }
+
+    private TranslationResult integrateToGeglish(List<Token> tokens) {
+        TranslationResult result = new TranslationResult();
         Token lastActual = null;
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
@@ -735,13 +768,17 @@ public class DuckSonTranslator {
                         !lastActual.getChs().equals(token.getChs())) {
                     // 连续两个的英文一样但中文不一样
                     if (lastActual.getEngAfterTense() == null) {
+                        TextToken lastSrc = result.getLastSrc();
                         if (token.getEngAfterTense() == null) {
                             // 无事发生
                             lastActual = token;
                         } else {
                             // 不要上一个了，替换为这一个
-                            builder.setLength(builder.length() - lastActual.getEng().length());
-                            builder.append(token.getEngAfterTense());
+                            TextToken newTrans = new TextToken(token.getEng());
+                            result.replaceLastDst(newTrans);
+                            lastSrc.append(token.getChs(), newTrans);
+//                            builder.setLength(builder.length() - lastActual.getEng().length());
+//                            builder.append(token.getEngAfterTense());
                         }
                     } else {
                         // 无事发生
@@ -750,16 +787,26 @@ public class DuckSonTranslator {
 
                     continue;
                 }
+                String pre = "";
                 if (lastActual != null &&
                         !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
                         !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
-                    builder.append(' ');
+//                    builder.append(' ');
+                    pre = " ";
                 }
-                builder.append(token.getEng());
+//                builder.append(token.getEng());
+                TextToken orig = new TextToken(token.getChs());
+                TextToken trans = new TextToken(token.getEng());
+                trans.setPre(pre);
+                result.addOne(orig, trans);
                 lastActual = token;
+            } else {
+                TextToken orig = new TextToken(token.getChs());
+                result.addOnlySrc(orig);
             }
         }
-        return builder.toString();
+        return result;
+//        return builder.toString();
     }
 
     private void applyGrammar(List<Token> tokens) {

@@ -1,8 +1,12 @@
 package trashsoftware.duckSonTranslator.grammar;
 
+import trashsoftware.duckSonTranslator.translators.NoSuchWordException;
+
 import java.util.*;
 
 public class Token {
+    
+    public static final Token SPACE_TOKEN = new Token(" ", "", "etc");
 
     private String chs;
     private String eng;
@@ -113,6 +117,20 @@ public class Token {
         } else {
             setEngAfterTense(eng + "est");
         }
+    }
+
+    public Token applyTenseToChsSingleRes(GrammarDict grammarDict) {
+        for (String tense : appliedTenses) {
+            GrammarEffect ge = grammarDict.tenseNameMap.get(tense);
+            if (ge.effectiveIndex < 0) {
+                return new Token(this.chs + ge.tenseKeyWord, ge.engDirect, ge);
+//                return List.of(this, new Token(ge.tenseKeyWord, ge.engDirect, ge));
+            } else {
+//                return List.of(new Token(ge.tenseKeyWord, ge.engDirect, ge), this);
+                return new Token(ge.tenseKeyWord + this.chs, ge.engDirect, ge);
+            }
+        }
+        throw new NoSuchWordException();
     }
     
     public List<Token> applyTenseToChs(GrammarDict grammarDict) {
