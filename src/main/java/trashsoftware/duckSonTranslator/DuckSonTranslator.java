@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.4.5";
+    public static final String CORE_VERSION = "0.4.6";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "unk"
@@ -27,6 +27,9 @@ public class DuckSonTranslator {
     public static final Set<Character> ETC = Set.of(
             '\n', '\t', '\r', ' '
     );
+    public static final Set<String> GRAMMAR_TERMINATOR = Util.mergeSets(
+            NO_SPACE_BEFORE, NO_SPACE_AFTER, Set.of("num")
+    );
     private static final Map<Character, Character> PUNCTUATIONS_REGULAR = Map.of(
             '，', ',', '。', '.', '：', ':', '；', ';',
             '！', '!', '？', '?', '、', ',', '·', ' '
@@ -36,11 +39,11 @@ public class DuckSonTranslator {
             '《', '"', '》', '"', '【', '[', '】', ']',
             '『', '"', '』', '"'
     );
-    public static final Map<Character, Character> CHS_PUNCTUATIONS = DictMaker.mergeMaps(
+    public static final Map<Character, Character> CHS_PUNCTUATIONS = Util.mergeMaps(
             PUNCTUATIONS_REGULAR, PUNCTUATIONS_QUOTE
     );
     public static final Map<Character, Character> ENG_PUNCTUATIONS =
-            DictMaker.invertMap(CHS_PUNCTUATIONS);
+            Util.invertMap(CHS_PUNCTUATIONS);
     private final BaseDict baseDict;
     private final PinyinDict pinyinDict;
     private final BigDict bigDict;
@@ -775,6 +778,8 @@ public class DuckSonTranslator {
                                 token.setGrammarApplied();
                                 break;
                             }
+                        } else if (tk.isActual() && GRAMMAR_TERMINATOR.contains(tk.getPartOfSpeech())) {
+                            break;
                         }
                     }
                 } else if (effect.effectiveIndex > 0) {  // 往未来找
@@ -788,6 +793,8 @@ public class DuckSonTranslator {
                                 token.setGrammarApplied();
                                 break;
                             }
+                        } else if (tk.isActual() && GRAMMAR_TERMINATOR.contains(tk.getPartOfSpeech())) {
+                            break;
                         }
                     }
                 }

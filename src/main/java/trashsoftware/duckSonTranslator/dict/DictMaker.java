@@ -47,26 +47,9 @@ public class DictMaker {
             'ǜ', new char[]{'v', 4}
     );
 
-    public static final Map<Character, char[]> TONE_DICT = mergeMaps(
+    public static final Map<Character, char[]> TONE_DICT = Util.mergeMaps(
             TONE_DICT_A, TONE_DICT_O, TONE_DICT_E, TONE_DICT_I, TONE_DICT_U, TONE_DICT_V
     );
-
-    @SafeVarargs
-    public static <K, V> Map<K, V> mergeMaps(Map<K, V>... maps) {
-        Map<K, V> res = new HashMap<>();
-        for (Map<K, V> map : maps) {
-            res.putAll(map);
-        }
-        return res;
-    }
-
-    public static <K, V> Map<V, K> invertMap(Map<K, V> map) {
-        Map<V, K> res = new HashMap<>();
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            res.put(entry.getValue(), entry.getKey());
-        }
-        return res;
-    }
 
     public static List<String[]> readCsv(InputStream inputStream) throws IOException {
         return readCsv(inputStream, false, false);

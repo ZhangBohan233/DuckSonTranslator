@@ -10,9 +10,10 @@ import java.util.stream.Collectors;
 
 public class BigDict {
     
-    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
+//    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
     protected final Map<String, BigDictValue> engChsMap = new HashMap<>();
     protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
+    protected final Map<Character, Map<String, BigDictValue>> chsCharEngMap = new HashMap<>();
 
     public BigDict() throws IOException {
         readHighSchoolDict();
@@ -197,9 +198,10 @@ public class BigDict {
                 }
             }
         }
-        for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
-            chsEngTrie.insert(entry.getKey(), entry.getValue());
-        }
+        createChsCharMap();
+//        for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
+//            chsEngTrie.insert(entry.getKey(), entry.getValue());
+//        }
 //        System.out.println(engChsMap.get("feel"));
 //        System.out.println(getAllMatches('蝇'));
 //        System.out.println(chsEngMap.get("因此"));
@@ -292,11 +294,23 @@ public class BigDict {
                     }
                 }
             }
-            for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
-                chsEngTrie.insert(entry.getKey(), entry.getValue());
-            }
+//            for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
+//                chsEngTrie.insert(entry.getKey(), entry.getValue());
+//            }
 //            System.out.println(engChsMap);
 //            System.out.println(chsEngTrie.get("经济学人"));
+        }
+    }
+    
+    private void createChsCharMap() {
+        for (var wordValue : chsEngMap.entrySet()) {
+            String word = wordValue.getKey();
+            BigDictValue value = wordValue.getValue();
+            for (char c : word.toCharArray()) {
+                Map<String, BigDictValue> wordsContainThis = 
+                        chsCharEngMap.computeIfAbsent(c, k -> new HashMap<>());
+                wordsContainThis.putIfAbsent(word, value);
+            }
         }
     }
 
@@ -304,9 +318,9 @@ public class BigDict {
         return String.valueOf(engChsMap.size());
     }
 
-    public Trie<BigDictValue> getChsEngTrie() {
-        return chsEngTrie;
-    }
+//    public Trie<BigDictValue> getChsEngTrie() {
+//        return chsEngTrie;
+//    }
 
     public Map<String, BigDictValue> getEngChsMap() {
         return engChsMap;
@@ -366,13 +380,8 @@ public class BigDict {
     }
 
     public Map<String, BigDictValue> getAllMatches(char chs) {
-        Map<String, BigDictValue> allMatches = new HashMap<>();
-        for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
-            if (entry.getKey().indexOf(chs) != -1) {
-                allMatches.put(entry.getKey(), entry.getValue());
-            }
-        }
-        return allMatches;
+        Map<String, BigDictValue> allMatches = chsCharEngMap.get(chs);
+        return allMatches == null ? new HashMap<>() : allMatches;
     }
 
     private Purity2 purityOfWord(char chsChar, String pos, String eng, List<String> chsDesOfPos) {
