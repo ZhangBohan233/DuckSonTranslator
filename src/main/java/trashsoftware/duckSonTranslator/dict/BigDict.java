@@ -156,7 +156,7 @@ public class BigDict {
 
                     BigDictValue engAsKey = engChsMap.computeIfAbsent(eng,
                             k -> new BigDictValue(new HashMap<>()));  // 因为eng可能被之前的列加了
-                    engAsKey.sameMeaningDivision.addAll(sameMeaningDivision);
+//                    engAsKey.sameMeaningDivision.addAll(sameMeaningDivision);
                     Map<String, List<String>> posMapChsValue = engAsKey.value;  // pos: 中文释义
                     for (int cc = 0; cc < posMeans.length; cc += 2) {
                         // 长度已经确定偶数了
