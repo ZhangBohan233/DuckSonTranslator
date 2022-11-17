@@ -1,5 +1,7 @@
 package trashsoftware.duckSonTranslator.result;
 
+import trashsoftware.duckSonTranslator.dict.Util;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,9 +45,6 @@ public class ResultToken implements Serializable {
     }
     
     public void print() {
-        System.out.print(translated + " ");
-        for (int[] range : origRanges) {
-            System.out.print(Arrays.toString(range) + "; ");
-        }
+        System.out.print(translated + " " + Util.listOfArrayToString(origRanges));
     }
 }

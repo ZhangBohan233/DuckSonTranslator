@@ -88,6 +88,10 @@ public class TranslationResult implements Serializable {
         return resultTokens.remove(resultTokens.size() - 1);
     }
 
+    public ResultToken getLast() {
+        return resultTokens.get(resultTokens.size() - 1);
+    }
+
     public void printTokens() {
         for (ResultToken rt : resultTokens) {
             rt.print();

@@ -83,6 +83,7 @@ chs, cq, pinyin, eng, pos
 等, den3, deng3, wait, v
 地, di4, di4, ground, n
 弟, di4, di4, brother, n
+点, dian3, dian3, point, n
 丁, din1, ding1, D, n
 多, do1, duo1, many, adj
 都, dou1, dou1, both, adv
@@ -170,6 +171,7 @@ chs, cq, pinyin, eng, pos
 核, he2, he2, nuclear, n
 吓, he2, xia4, scare, v
 喝, ho1, he1, drink, v
+呵, ho1, he1, he, int
 河, ho2, he2, river, n
 和, ho2, he2, and, conj
 合, ho2, he2, merge, v
@@ -195,6 +197,7 @@ chs, cq, pinyin, eng, pos
 技, ji4, ji4, technology, n
 季, ji4, ji4, season, n
 寄, ji4, ji4, send, v
+记, ji4, ji4, remember, v
 家, jia1, jia1, home, n
 加, jia1, jia1, add, v
 甲, jia2, jia3, A, n
@@ -219,7 +222,8 @@ chs, cq, pinyin, eng, pos
 卷, juan3, juan3, roll, n
 决, jue2, jue2, curse, v
 绝, jue2, jue2, absolute, adj
-间谍, jian4 die2, jian4 die2, spy cat, n
+间谍, jian4 die2, jian4 die2, spy; cat, n; n
+结果, jie2 guo3, jie2 guo3, matchResult, n
 经常, jin1 sang2, jing1 chang2, usually, adj
 
 # K
@@ -247,9 +251,11 @@ chs, cq, pinyin, eng, pos
 蓝, lan2, lan2, blue, adj
 男, lan2, nan2, man, n
 南, lan2, nan2, south, n
+浪, lang4, lang4, wave, n, eng_default=true
 老, lao3, lao3, old, adj
 这, le4, zhe4, this, pron
 冷, len3, leng3, cold, adj
+的, li, de, de, det
 力, li2, li4, power, n
 里, li3, li3, in, prep
 你, li3, ni3, you, pron
@@ -407,9 +413,10 @@ chs, cq, pinyin, eng, pos
 时间, si2 jian1, shi2 jian1, time, n
 十万, si2 wan4, shi2 wan4, hundred thousand, n
 十亿, si2 yi4, shi2 yi4, billion, n
+睡着, sui4 zo2, shui4 zhao2, sleep; table, v; n
 
 # T
-他, ta1, ta1, he, pron
+他, ta1, ta1, he, pron, eng_default=true
 她, ta1, ta1, she, pron
 它, ta1, ta1, it, pron
 台, tai2, tai2, platform, n
@@ -421,6 +428,7 @@ chs, cq, pinyin, eng, pos
 图, tu2, tu2, graph, n
 突, tu2, tu1, sudden, adj
 兔, tu4, tu4, rabbit, n
+团, tuan2, tuan2, group, n
 推, tui1, tui1, push, v
 腿, tui3, tui3, leg, n
 退, tui4, tui4, back, v
@@ -526,6 +534,8 @@ chs, cq, pinyin, eng, pos
 一哈, yi2 ha1, yi4 ha1, wait a minute, v
 一下, yi2 ha4, yi2 xia4, once, adv
 已经, yi3 jin1, yi3 jing1, already, adv
+一起, yi2 qi3, yi4 qi3, together, adv
+游戏, you2 xi4, you2 xi4, game, n
 
 # Z
 炸, za4, zha4, explode, v
@@ -559,3 +569,4 @@ chs, cq, pinyin, eng, pos
 醉, zui4, zui4, drunk, adj
 罪, zui4, zui4, crime, n
 装, zuang1, zhuang1, pretend, v
+怎么, zen3 mo1, zen3 me, how, conj

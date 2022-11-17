@@ -1,7 +1,7 @@
 chs, eng_direct, tenseMark, effectiveIndex, effectivePos, preSet, postSet
 
 了, already, past, -1, v, ,解: v.understand
-的; 之, 's, belong, -1, n;pron, 打: v.take n.taxi, 士: n.taxi; 确: v.is v.confirm
+的; 之, de, belong, -1, n;pron;v, 打: v.take n.taxi, 士: n.taxi; 确: v.is v.confirm  # n/pron加's，v加en
 正在, is doing, ing, 1, v, , 
 更, more, better, 1, adj, , 
 最, most, best, 1, adj, , 

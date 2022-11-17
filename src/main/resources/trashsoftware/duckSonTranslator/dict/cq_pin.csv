@@ -20,6 +20,7 @@ chs, cq_pin
 # C
 造, cao4
 吃, ci2
+凿, co2
 出, cu2
 
 # D
@@ -31,6 +32,7 @@ chs, cq_pin
 
 # G
 街, gai1
+皆, gai1
 解, gai3
 哥, go1
 歌, go1
@@ -59,6 +61,7 @@ chs, cq_pin
 赫, he2  # 其他如 ”核, he2" 不计，因为和普通话拼音相同
 豁, ho1
 喝, ho1
+呵, ho1
 和, ho2
 褐, ho2
 河, ho2
@@ -70,6 +73,7 @@ chs, cq_pin
 # J
 甲, jia2
 接, jie2
+揭, jie2
 脚, jio2
 觉, jio2
 扭, jiu3
@@ -204,6 +208,10 @@ chs, cq_pin
 欲, yuu2
 
 # Z
+质, zi2
+织, zi2
+汁, zi2
+翅, zi4
 着, zo2
 作, zo2
 做, zu4

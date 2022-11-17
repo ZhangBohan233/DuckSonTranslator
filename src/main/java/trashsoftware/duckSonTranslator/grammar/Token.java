@@ -94,8 +94,10 @@ public class Token {
                     applyPast();
                     break;
                 case "belong":
+                    applyBelong(true);
+                    break;
                 case "home":
-                    applyBelong();
+                    applyBelong(false);
                     break;
                 case "ing":
                     applyIng();
@@ -121,12 +123,22 @@ public class Token {
         }
     }
 
-    private void applyBelong() {
+    private void applyBelong(boolean checkVerb) {
         String eng = getEng();
-        if (eng.endsWith("s")) {
-            setEngAfterTense(eng + "'");
+        if (partOfSpeech.equals("v")) {
+            if (checkVerb) {
+                if (eng.endsWith("e")) {
+                    setEngAfterTense(eng + "n");
+                } else {
+                    setEngAfterTense(eng + "en");
+                }
+            }
         } else {
-            setEngAfterTense(eng + "'s");
+            if (eng.endsWith("s")) {
+                setEngAfterTense(eng + "'");
+            } else {
+                setEngAfterTense(eng + "'s");
+            }
         }
     }
 
@@ -201,6 +213,15 @@ public class Token {
             };
             else return new String[][]{
                     {eng.substring(0, len - 1), "past"}
+            };
+        }
+        if (eng.endsWith("en")) {
+            if (len > 2) return new String[][]{
+                    {eng.substring(0, len - 2), "belong"},
+                    {eng.substring(0, len - 1), "belong"}
+            };
+            else return new String[][]{
+                    {eng.substring(0, len - 1), "belong"}
             };
         }
         if (eng.endsWith("ing")) {

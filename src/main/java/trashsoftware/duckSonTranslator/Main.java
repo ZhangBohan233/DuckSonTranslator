@@ -21,26 +21,32 @@ public class Main {
         DuckSonTranslator translator = new DuckSonTranslator(options);
         System.out.println(translator.getCoreVersion() + "." + translator.getDictionaryVersion());
 
-//        TranslationResult geglish = translator.chsToGeglish("什么鸡巴东西正在打的GE1234，真是吃了屎了，的确。");
-//        System.out.println(geglish);
-//        geglish.printTokens();
+        TranslationResult geglish = translator.chsToGeglish("什么鸡巴东西的人正在打的GE1234，真是吃了屎了，的确。");
+        System.out.println(geglish);
+        geglish.printTokens();
+
+        TranslationResult geglish2 = translator.chsToGeglish("♣是啥，睡着了");
+        System.out.println(geglish2);
+        geglish2.printTokens();
+
+        System.out.println(translator.geglishToChs("de he is fight comen"));
 //        System.out.println(geglish.findTokensInRange(3, 5));
 //        String chs = translator.geglishToChs(geglish);
 //        System.out.println(chs);
 //
 //        System.out.println(translator.chsToGeglish("这个b理由已经用了两次了"));
 //        System.out.println(translator.chsToGeglish("对比敏感度 视觉 感觉"));
-//        System.out.println(translator.chsToGeglish("刮痧"));
-        var chs = translator.geglishToChs(
-                "no shell's manier arrived where in, \n" +
-                "we shaving and iron shave.\n" + 
-                "then taking taxi to where. is confirm fuck");
-        System.out.println(chs);
-        chs.printTokens();  // todo
-        List<ResultToken> engRange = chs.findTokensInRange(3, 4);
-        System.out.println(engRange);
-        var chsRange = TranslationResult.rangeOf(engRange);
-        System.out.println(Util.listOfArrayToString(chsRange));
+//        System.out.println(translator.chsToGeglish("是打来的"));
+//        var chs = translator.geglishToChs(
+//                "no shell's manier arrived where in, \n" +
+//                "we shaving and iron shave.\n" + 
+//                "then taking taxi to where. is confirm fuck");
+//        System.out.println(chs);
+//        chs.printTokens();  // todo
+//        List<ResultToken> engRange = chs.findTokensInRange(3, 4);
+//        System.out.println(engRange);
+//        var chsRange = TranslationResult.rangeOf(engRange);
+//        System.out.println(Util.listOfArrayToString(chsRange));
 
 //        List<ResultToken> rts = new ArrayList<>();
 //        rts.add(new ResultToken("a", 0, 2));
