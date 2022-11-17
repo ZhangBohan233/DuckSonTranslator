@@ -1,6 +1,7 @@
 package trashsoftware.duckSonTranslator.dict;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Util {
     
@@ -37,5 +38,13 @@ public class Util {
             res.addAll(set);
         }
         return res;
+    }
+    
+    public static String listOfDeepArrayToString(List<Object[]> list) {
+        return '[' + list.stream().map(Arrays::deepToString).collect(Collectors.joining(", ")) + ']';
+    }
+
+    public static String listOfArrayToString(List<int[]> list) {
+        return '[' + list.stream().map(Arrays::toString).collect(Collectors.joining(", ")) + ']';
     }
 }

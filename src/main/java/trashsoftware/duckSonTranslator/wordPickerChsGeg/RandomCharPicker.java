@@ -16,9 +16,9 @@ public class RandomCharPicker extends SingleCharPicker {
     }
 
     @Override
-    protected Result translateChar(char chs) {
+    protected MatchResult translateChar(char chs) {
         Map<String, BigDictValue> matches = bigDict.getAllMatches(chs);
-        if (matches.isEmpty()) return Result.NOT_FOUND;
+        if (matches.isEmpty()) return MatchResult.NOT_FOUND;
         
         List<BigDictValue> values = new ArrayList<>(matches.values());
         int keyIndex = random.nextInt(values.size());
@@ -31,6 +31,6 @@ public class RandomCharPicker extends SingleCharPicker {
         
         int engIndex = random.nextInt(engList.size());
         
-        return new Result(engList.get(engIndex), pickedPos, 1);
+        return new MatchResult(engList.get(engIndex), pickedPos, 1);
     }
 }

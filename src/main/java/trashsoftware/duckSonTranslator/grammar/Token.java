@@ -11,11 +11,25 @@ public class Token {
     private final Set<String> appliedTenses = new HashSet<>();
     private GrammarEffect grammarEffect;
     private boolean applied = false;  // 语法token是否已被apply
+    
+    // 只在grammar token里用, 记载哪个actual token被这个grammar token上了
+    private Token tokenAppliedThisGrammar;
+    
+    private int posInOrig;
+    private int lengthInOrig;
 
     public Token(String chs, String eng, String partOfSpeech) {
         this.chs = chs;
         this.eng = eng;
         this.partOfSpeech = partOfSpeech;
+    }
+
+    public Token(String chs, String eng, String partOfSpeech, int posInOrig, int lengthInOrig) {
+        this.chs = chs;
+        this.eng = eng;
+        this.partOfSpeech = partOfSpeech;
+        this.posInOrig = posInOrig;
+        this.lengthInOrig = lengthInOrig;
     }
 
     public Token(String chs, String eng, GrammarEffect effect) {
@@ -25,17 +39,51 @@ public class Token {
         this.partOfSpeech = "det";
     }
 
+    public Token(String chs, String eng, GrammarEffect effect, int posInOrig, int lengthInOrig) {
+        this.chs = chs;
+        this.grammarEffect = effect;
+        this.eng = eng;
+        this.partOfSpeech = "det";
+        this.posInOrig = posInOrig;
+        this.lengthInOrig = lengthInOrig;
+    }
+
     public Token(String eng) {
         this.eng = eng;
         this.engAfterTense = eng;
+    }
+
+    public Token(String eng, int posInOrig, int lengthInOrig) {
+        this.eng = eng;
+        this.engAfterTense = eng;
+        this.posInOrig = posInOrig;
+        this.lengthInOrig = lengthInOrig;
+    }
+
+    public int getLengthInOrig() {
+        return lengthInOrig;
+    }
+
+    public int getPosInOrig() {
+        return posInOrig;
+    }
+
+    public void setPosInOrig(int posInOrig, int lengthInOrig) {
+        this.posInOrig = posInOrig;
+        this.lengthInOrig = lengthInOrig;
     }
 
     public boolean isGrammarApplied() {
         return applied;
     }
     
-    public void setGrammarApplied() {
+    public void setGrammarApplied(Token tokenAppliedThisGrammar) {
         this.applied = true;
+        this.tokenAppliedThisGrammar = tokenAppliedThisGrammar;
+    }
+
+    public Token getTokenAppliedThisGrammar() {
+        return tokenAppliedThisGrammar;
     }
 
     public void applyTense(String tenseName) {
@@ -46,8 +94,13 @@ public class Token {
                     applyPast();
                     break;
                 case "belong":
+                    applyBelong(true);
+                    break;
                 case "home":
-                    applyBelong();
+                    applyBelong(false);
+                    break;
+                case "plural":
+                    applyPlural();
                     break;
                 case "ing":
                     applyIng();
@@ -73,12 +126,22 @@ public class Token {
         }
     }
 
-    private void applyBelong() {
+    private void applyBelong(boolean checkVerb) {
         String eng = getEng();
-        if (eng.endsWith("s")) {
-            setEngAfterTense(eng + "'");
+        if (partOfSpeech.equals("v")) {
+            if (checkVerb) {
+                if (eng.endsWith("e")) {
+                    setEngAfterTense(eng + "n");
+                } else {
+                    setEngAfterTense(eng + "en");
+                }
+            }
         } else {
-            setEngAfterTense(eng + "'s");
+            if (eng.endsWith("s")) {
+                setEngAfterTense(eng + "'");
+            } else {
+                setEngAfterTense(eng + "'s");
+            }
         }
     }
 
@@ -102,6 +165,13 @@ public class Token {
         }
     }
     
+    private void applyPlural() {
+        String eng = getEng();
+        if (!eng.endsWith("s")) {
+            setEngAfterTense(eng + "s");
+        }
+    }
+    
     private void applyBest() {
         String eng = getEng();
         if (eng.endsWith("es")) {
@@ -120,9 +190,10 @@ public class Token {
         for (String tense : appliedTenses) {
             GrammarEffect ge = grammarDict.tenseNameMap.get(tense);
             if (ge.effectiveIndex < 0) {
-                return List.of(this, new Token(ge.tenseKeyWord, ge.engDirect, ge));
+                return List.of(this, new Token(ge.tenseKeyWord, ge.engDirect, ge, posInOrig, lengthInOrig));
             } else {
-                return List.of(new Token(ge.tenseKeyWord, ge.engDirect, ge), this);
+//                System.out.println(eng + " " + engAfterTense);
+                return List.of(new Token(ge.tenseKeyWord, ge.engDirect, ge, posInOrig, lengthInOrig), this);
             }
         }
         return result;
@@ -154,6 +225,15 @@ public class Token {
                     {eng.substring(0, len - 1), "past"}
             };
         }
+        if (eng.endsWith("en")) {
+            if (len > 2) return new String[][]{
+                    {eng.substring(0, len - 2), "belong"},
+                    {eng.substring(0, len - 1), "belong"}
+            };
+            else return new String[][]{
+                    {eng.substring(0, len - 1), "belong"}
+            };
+        }
         if (eng.endsWith("ing")) {
             if (len > 3) return new String[][]{
                     {eng.substring(0, len - 3), "ing"},
@@ -168,6 +248,9 @@ public class Token {
         }
         if (eng.endsWith("'")) {
             if (len > 1) return new String[][]{{eng.substring(0, len - 1), "belong"}};
+        }
+        if (eng.endsWith("s")) {
+            if (len > 1) return new String[][]{{eng.substring(0, len - 1), "plural"}};
         }
         if (eng.endsWith("ier")) {
             if (len > 3) return new String[][]{

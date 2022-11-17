@@ -1,6 +1,5 @@
 package trashsoftware.duckSonTranslator.wordPickerChsGeg;
 
-import trashsoftware.duckSonTranslator.TranslatorOptions;
 import trashsoftware.duckSonTranslator.dict.BigDict;
 
 public abstract class WordPicker {
@@ -12,7 +11,7 @@ public abstract class WordPicker {
         this.factory = factory;
     }
     
-    public abstract Result translateWord(String sentence);
+    public abstract MatchResult translateWord(String sentence);
 
     public PickerFactory getFactory() {
         return factory;

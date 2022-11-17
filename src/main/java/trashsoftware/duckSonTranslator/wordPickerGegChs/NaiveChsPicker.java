@@ -14,12 +14,12 @@ public class NaiveChsPicker extends ChsCharPicker {
     protected ChsResult translateOneWordInner(String engWord) {
         BigDictValue chs = bigDict.getEngChsMap().get(engWord);
         if (chs == null) return ChsResult.NOT_FOUND;
-        String[] chsPos = pickBestChs(chs);
+        String[] chsPos = pickBestChs(engWord, chs);
 //        if (chsPos == null) return null;
         return new ChsResult(chsPos[0], chsPos[1]);
     }
 
-    private String[] pickBestChs(BigDictValue dictValue) {
+    private String[] pickBestChs(String engWord, BigDictValue dictValue) {
         Map<Character, ChsCharFreq> charFreq = new HashMap<>();  // 要保持顺序
         for (Map.Entry<String, List<String>> posChs : dictValue.value.entrySet()) {
             for (String chs : posChs.getValue()) {
@@ -30,6 +30,23 @@ public class NaiveChsPicker extends ChsCharPicker {
                         if (ccf == null) {
                             Map<String, BigDictValue> allMatches = bigDict.getAllMatches(c);
                             ccf = new ChsCharFreq(c, index, allMatches.size(), posChs.getKey());
+                            
+                            for (var entry : allMatches.entrySet()) {
+                                String chsWord = entry.getKey();
+                                if (chsWord.length() == 1) {
+                                    for (var posDes : entry.getValue().value.entrySet()) {
+                                        String ep = posDes.getKey();
+                                        for (String engDes : posDes.getValue()) {
+                                            if (engDes.equals(engWord)) {
+                                                ccf.exact = true;
+                                                ccf.anyPos = ep;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
                             charFreq.put(c, ccf);
                         }
                         ccf.freq++;
@@ -49,7 +66,8 @@ public class NaiveChsPicker extends ChsCharPicker {
         final char chsChar;
         final int firstOccurIndex;
         final int occurrenceInOtherWords;
-        final String anyPos;  // 翻译回中文时词性不太重要，留第一个就行
+        String anyPos;  // 翻译回中文时词性不太重要，留第一个就行
+        boolean exact;  // 是不是有个中文字正好就是这个意思。如果有，顺便把词性也改了
         int freq;
 
         ChsCharFreq(char chsChar, int firstOccurIndex, int occurrenceInOtherWords, String firstPos) {
@@ -61,6 +79,9 @@ public class NaiveChsPicker extends ChsCharPicker {
 
         @Override
         public int compareTo(ChsCharFreq o) {
+            if (this.exact && !o.exact) return 1;
+            else if (!this.exact && o.exact) return -1;
+            
             int freqCmp = Integer.compare(this.freq, o.freq);
             if (freqCmp != 0) return freqCmp;
 

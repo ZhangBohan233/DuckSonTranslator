@@ -6013,7 +6013,7 @@ restraint   n.抑制，自制
 restrict   v.限制，约束
 restriction   n.限制，约束
 restrictive   n.限制的
-result   n.结果，效果，后果
+matchResult   n.结果，效果，后果
 resultant   adj.结果的，合成的
 resume   v.继续，再度
 resume   n.个人简历，摘要

@@ -4,9 +4,10 @@ import trashsoftware.duckSonTranslator.dict.*;
 import trashsoftware.duckSonTranslator.grammar.GrammarDict;
 import trashsoftware.duckSonTranslator.grammar.GrammarEffect;
 import trashsoftware.duckSonTranslator.grammar.Token;
-import trashsoftware.duckSonTranslator.translators.NoSuchWordException;
+import trashsoftware.duckSonTranslator.result.ResultToken;
+import trashsoftware.duckSonTranslator.result.TranslationResult;
+import trashsoftware.duckSonTranslator.wordPickerChsGeg.MatchResult;
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.PickerFactory;
-import trashsoftware.duckSonTranslator.wordPickerChsGeg.Result;
 import trashsoftware.duckSonTranslator.wordPickerChsGeg.WordPicker;
 import trashsoftware.duckSonTranslator.wordPickerGegChs.ChsCharPicker;
 import trashsoftware.duckSonTranslator.wordPickerGegChs.ChsPickerFactory;
@@ -16,16 +17,16 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.4.6";
+    public static final String CORE_VERSION = "0.5.3";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
-            "pun", "unk"
+            "pun", "etc", "unk"
     );
     public static final Set<String> NO_SPACE_AFTER = Set.of(
-            "etc"
+            "etc", "unk"
     );
     public static final Set<Character> ETC = Set.of(
-            '\n', '\t', '\r', ' '
+            '\n', '\t', '\r'
     );
     public static final Set<String> GRAMMAR_TERMINATOR = Util.mergeSets(
             NO_SPACE_BEFORE, NO_SPACE_AFTER, Set.of("num")
@@ -225,12 +226,14 @@ public class DuckSonTranslator {
                     String[] sss = splitToN(ss, desPos.length);
                     int acc = 0;
                     for (int i = 0; i < sss.length; i++) {
-                        Token token = new Token(sss[i], desPos[i][0], desPos[i][1]);
+                        Token token = new Token(sss[i], desPos[i][0], desPos[i][1],
+                                beginIndex + acc, sss[i].length());
                         grammarTokens.put(beginIndex + acc, token);
                         acc += sss[i].length();
                     }
                 } else {
-                    grammarTokens.put(beginIndex, new Token(ss, desPos[0][0], desPos[0][1]));
+                    grammarTokens.put(beginIndex, new Token(ss, desPos[0][0], desPos[0][1],
+                            beginIndex, ss.length()));
                 }
                 return true;
             }
@@ -246,12 +249,14 @@ public class DuckSonTranslator {
                     String[] sss = splitToN(ss, desPos.length);
                     int acc = 0;
                     for (int i = 0; i < sss.length; i++) {
-                        Token token = new Token(sss[i], desPos[i][0], desPos[i][1]);
+                        Token token = new Token(sss[i], desPos[i][0], desPos[i][1],
+                                index + acc, sss[i].length());
                         grammarTokens.put(index + acc, token);
                         acc += sss[i].length();
                     }
                 } else {
-                    grammarTokens.put(index, new Token(ss, desPos[0][0], desPos[0][1]));
+                    grammarTokens.put(index, new Token(ss, desPos[0][0], desPos[0][1],
+                            index, ss.length()));
                 }
                 return true;
             }
@@ -259,7 +264,7 @@ public class DuckSonTranslator {
         return false;
     }
 
-    public String chsToGeglish(String chs) {
+    public TranslationResult chsToGeglish(String chs) {
         SortedMap<Integer, Token> grammars = new TreeMap<>();
 
         // 处理语法token
@@ -272,7 +277,7 @@ public class DuckSonTranslator {
                 ge = grammarDict.tenseInfo.get(len2);
                 if (ge != null) {
                     if (!addSpecial(ge, chs, i, grammars)) {
-                        grammars.put(i, new Token(len2, ge.engDirect, ge));
+                        grammars.put(i, new Token(len2, ge.engDirect, ge, i, 2));
                         i += 1;
                         continue;
                     }
@@ -281,7 +286,7 @@ public class DuckSonTranslator {
             ge = grammarDict.tenseInfo.get(len1);
             if (ge != null) {
                 if (!addSpecial(ge, chs, i, grammars)) {
-                    grammars.put(i, new Token(len1, ge.engDirect, ge));
+                    grammars.put(i, new Token(len1, ge.engDirect, ge, i, 1));
                 }
             }
         }
@@ -315,7 +320,9 @@ public class DuckSonTranslator {
             } else {
                 if (numBuilder.length() > 0) {
                     String numStr = numBuilder.toString();
-                    origIndexTokens.put(index - numStr.length(), new Token(numStr, numStr, "num"));
+                    int index2 = index - numStr.length();
+                    origIndexTokens.put(index2, new Token(numStr, numStr, "num", 
+                                    index2, numStr.length()));
                     numBuilder.setLength(0);
                 }
             }
@@ -326,7 +333,9 @@ public class DuckSonTranslator {
             } else {
                 if (engBuilder.length() > 0) {
                     String engStr = engBuilder.toString();
-                    origIndexTokens.put(index - engStr.length(), new Token(engStr, engStr, "eng"));
+                    int index2 = index - engStr.length();
+                    origIndexTokens.put(index2, new Token(engStr, engStr, "eng", 
+                            index2, engStr.length()));
                     engBuilder.setLength(0);
                 }
             }
@@ -345,7 +354,7 @@ public class DuckSonTranslator {
                 if (ETC.contains(c)) {
                     pos = "etc";
                 }
-                Token token = new Token(cs, cs, pos);
+                Token token = new Token(cs, cs, pos, index, 1);
                 origIndexTokens.put(index, token);
                 if (notTrans.length() > 0) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
@@ -356,7 +365,7 @@ public class DuckSonTranslator {
 
             Character pun = CHS_PUNCTUATIONS.get(c);
             if (pun != null) {
-                Token token = new Token(cs, String.valueOf(pun), "pun");
+                Token token = new Token(cs, String.valueOf(pun), "pun", index, 1);
                 origIndexTokens.put(index, token);
                 if (notTrans.length() > 0) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
@@ -370,7 +379,8 @@ public class DuckSonTranslator {
                     ? baseDict.getByChs(chs, index)
                     : null;
             if (direct != null) {
-                Token token = new Token(direct.chs, direct.eng, direct.partOfSpeech);
+                Token token = new Token(direct.chs, direct.eng, direct.partOfSpeech,
+                        index, direct.chs.length());
                 origIndexTokens.put(index, token);
                 if (notTrans.length() > 0) {
                     notTranslated.put(index - notTrans.length(), notTrans.toString());
@@ -381,7 +391,8 @@ public class DuckSonTranslator {
                 BaseItem sameSoundWord = baseDictSameSound(c, false);
 
                 if (options.isUseSameSoundChar() && sameSoundWord != null) {
-                    Token token = new Token(cs, sameSoundWord.eng, sameSoundWord.partOfSpeech);
+                    Token token = new Token(cs, sameSoundWord.eng, sameSoundWord.partOfSpeech,
+                            index, sameSoundWord.chs.length());
                     origIndexTokens.put(index, token);
                     if (notTrans.length() > 0) {
                         notTranslated.put(index - notTrans.length(), notTrans.toString());
@@ -398,12 +409,16 @@ public class DuckSonTranslator {
         }
         if (numBuilder.length() > 0) {
             String numStr = numBuilder.toString();
-            origIndexTokens.put(index - numStr.length(), new Token(numStr, numStr, "num"));
+            int index2 = index - numStr.length();
+            origIndexTokens.put(index2, new Token(numStr, numStr, "num", 
+                    index2, numStr.length()));
             numBuilder.setLength(0);
         }
         if (engBuilder.length() > 0) {
             String engStr = engBuilder.toString();
-            origIndexTokens.put(index - engStr.length(), new Token(engStr, engStr, "eng"));
+            int index2 = index - engStr.length();
+            origIndexTokens.put(index2, new Token(engStr, engStr, "eng", 
+                    index2, engStr.length()));
             engBuilder.setLength(0);
         }
 
@@ -416,7 +431,7 @@ public class DuckSonTranslator {
             Token tk = origIndexTokens.get(i);
             if (tk != null) {
                 tokens.add(tk);
-                i += tk.getChs().length() - 1;
+                i += tk.getChs().length() - 1;  // fixme: risky
                 continue;
             }
             tk = grammars.get(i);
@@ -427,20 +442,22 @@ public class DuckSonTranslator {
             }
             String notTransSeg = notTranslated.get(i);
             if (notTransSeg != null) {
-                bigDictTrans(notTransSeg, tokens);
+                bigDictTrans(notTransSeg, tokens, i);
             }
         }
         applyGrammar(tokens);
 
-        return integrateToGeglish(tokens);
+        return integrateToGeglish(tokens, chs);
     }
 
-    public String geglishToChs(String geglish) {
-        String[] baseWords = geglish.strip().split(" ");
-        List<Token> tokens = deriveGeglishTokens(baseWords);
+    public TranslationResult geglishToChs(String geglish) {
+//        String[] baseWords = geglish.strip().split(" ");
+        List<Token> tokens = deriveGeglishTokens(geglish);
 
+        // 把和语法有关的翻译了
         tokens = translateCombineTokensGegToChs(tokens);
 
+        // 翻译重要的
         for (Token token : tokens) {
             if (token.isUntranslatedEng()) {
                 translateTokenGegToChs(token);
@@ -449,53 +466,80 @@ public class DuckSonTranslator {
 //        System.out.println(tokens);
         tokens = insertTokensByGrammar(tokens);
 //        System.out.println(tokens);
-        return integrateChsTokens(tokens);
+        return integrateChsTokens(tokens, geglish);
     }
 
-    private List<Token> deriveGeglishTokens(String[] baseWords) {
+    private List<Token> deriveGeglishTokens(String geglish) {
         List<Token> words = new ArrayList<>();
-        for (String baseWord : baseWords) {
-            StringBuilder word = new StringBuilder();
-            StringBuilder number = new StringBuilder();
-            for (char c : baseWord.toCharArray()) {
-                if ((c >= 'A' && c <= 'z') || c == '\'') {
+        StringBuilder word = new StringBuilder();
+        StringBuilder number = new StringBuilder();
+        int index = 0;
+        for (; index < geglish.length(); index++) {
+            char c = geglish.charAt(index);
+            if (c == ' ' || c == '\n') {
+                if (number.length() > 0) {
+                    String nonWordS = number.toString();
+                    number.setLength(0);
+                    words.add(new Token(nonWordS, nonWordS, "num",
+                            index - nonWordS.length(), nonWordS.length()));
+                }
+                if (word.length() > 0) {
+                    String wordS = word.toString();
+                    words.add(new Token(wordS,
+                            index - wordS.length(), wordS.length()));
+                    word.setLength(0);
+                }
+                if (c == '\n') {
+                    words.add(new Token("\n", "\n", "lf", index, 1));
+                }
+            } else if ((c >= 'A' && c <= 'z') || c == '\'') {
+                if (number.length() > 0) {
+                    String nonWordS = number.toString();
+                    number.setLength(0);
+                    words.add(new Token(nonWordS, nonWordS, "num",
+                            index - nonWordS.length(), nonWordS.length()));
+                }
+                word.append(c);
+            } else {
+                if (word.length() > 0) {
+                    String wordS = word.toString();
+                    words.add(new Token(wordS, index - wordS.length(), wordS.length()));
+                    word.setLength(0);
+                }
+                if (c >= '0' && c <= '9') {
+                    number.append(c);
+                } else {
                     if (number.length() > 0) {
                         String nonWordS = number.toString();
                         number.setLength(0);
-                        words.add(new Token(nonWordS, nonWordS, "num"));
+                        words.add(new Token(nonWordS, nonWordS, "num",
+                                index - nonWordS.length(), nonWordS.length()));
                     }
-                    word.append(c);
-                } else {
-                    if (word.length() > 0) {
-                        words.add(new Token(word.toString()));
-                        word.setLength(0);
-                    }
-                    if (c >= '0' && c <= '9') {
-                        number.append(c);
+                    Character pun = ENG_PUNCTUATIONS.get(c);
+                    if (pun != null) {
+                        words.add(new Token(String.valueOf(pun), String.valueOf(c), "pun",
+                                index, 1));
                     } else {
-                        if (number.length() > 0) {
-                            String nonWordS = number.toString();
-                            number.setLength(0);
-                            words.add(new Token(nonWordS, nonWordS, "num"));
-                        }
-                        Character pun = ENG_PUNCTUATIONS.get(c);
-                        if (pun != null) {
-                            words.add(new Token(String.valueOf(pun), String.valueOf(c), "pun"));
-                        } else {
-                            words.add(new Token(String.valueOf(c), String.valueOf(c), "unk"));
-                        }
+                        words.add(new Token(String.valueOf(c), String.valueOf(c), "unk",
+                                index, 1));
                     }
-
                 }
+
             }
-            if (number.length() > 0) {
-                String nonWordS = number.toString();
-                words.add(new Token(nonWordS, nonWordS, "num"));
-            }
-            if (word.length() > 0) {
-                words.add(new Token(word.toString()));
-            }
+//            }
         }
+        if (number.length() > 0) {
+            String nonWordS = number.toString();
+            words.add(new Token(nonWordS, nonWordS, "num",
+                    index - nonWordS.length(), nonWordS.length()));
+            number.setLength(0);
+        }
+        if (word.length() > 0) {
+            String wordS = word.toString();
+            words.add(new Token(wordS, index - wordS.length(), wordS.length()));
+            word.setLength(0);
+        }
+//        System.out.println(words);
         return words;
     }
 
@@ -544,8 +588,14 @@ public class DuckSonTranslator {
                                 }
 
                                 for (int x = 0; x < engPos.length; x++) {
-                                    Token tk = new Token(chsSplit[x], engPos[x][0], engPos[x][1]);
-                                    if (!poss[x][1].isEmpty()) tk.addTense(poss[x][1]);
+                                    // fixme: 存疑
+                                    Token token = tokens.get(i - engPos.length + x + 1);
+                                    Token tk = new Token(chsSplit[x], engPos[x][0], engPos[x][1],
+                                            token.getPosInOrig(), token.getLengthInOrig());
+//                                    System.out.println(tk);
+                                    if (!poss[x][1].isEmpty()) {
+                                        tk.addTense(poss[x][1]);
+                                    }
 
                                     newTokens.add(tk);
                                 }
@@ -618,48 +668,78 @@ public class DuckSonTranslator {
         return tokensAfterGrammar;
     }
 
-    private String integrateChsTokens(List<Token> tokens) {
-        StringBuilder builder = new StringBuilder();
-        for (Token token : tokens) {
-            if (token.isActual()) {
-                if (token.getChs() != null) builder.append(token.getChs());
-                else builder.append(token.getEng());
-            } else {
-                builder.append(token.getChs());
-            }
-        }
-        return builder.toString();
-    }
-
     private void bigDictTrans(String notTransSeg,
-                              List<Token> tokens) {
+                              List<Token> tokens,
+                              int startIndex) {
+        int index = startIndex;
         while (!notTransSeg.isEmpty()) {
-            Result match = chsToGegPicker.translateWord(notTransSeg);
-            if (match != null) {
+            MatchResult match = chsToGegPicker.translateWord(notTransSeg);
+            if (match != null && (match.strong || !isUseSameSoundChar())) {
+                // 不strong的时候就先放一放，去检查小字典同音字
                 String thisWord = notTransSeg.substring(0, match.matchLength);
 
-                Token token = new Token(thisWord, match.translated, match.partOfSpeech);
+                Token token = new Token(thisWord, match.translated, match.partOfSpeech,
+                        index, match.matchLength);
                 tokens.add(token);
 
                 notTransSeg = notTransSeg.substring(match.matchLength);
-            } else if (isUseSameSoundChar()) {
+                index += match.matchLength;
+                continue;
+            } 
+            
+            Token trans;
+            int pushLen;
+            if (isUseSameSoundChar()) {
                 char cur = notTransSeg.charAt(0);
                 BaseItem sameSoundBase = baseDictSameSound(cur, true);
                 if (sameSoundBase != null) {
-                    tokens.add(new Token(sameSoundBase.chs, sameSoundBase.eng, sameSoundBase.partOfSpeech));
-                } else {
-                    tokens.add(bigDictSameSoundTrans(cur));
-                }
+                    trans = new Token(sameSoundBase.chs, sameSoundBase.eng, sameSoundBase.partOfSpeech,
+                            index, 1);
+                    pushLen = 1;
+                } else if (match != null) {
+                    String thisWord = notTransSeg.substring(0, match.matchLength);
 
-                notTransSeg = notTransSeg.substring(1);
+                    trans = new Token(thisWord, match.translated, match.partOfSpeech,
+                            index, match.matchLength);
+                    pushLen = match.matchLength;
+                } else {
+                    trans = bigDictSameSoundTrans(cur, index);  // todo: 如果要查连续词，这里要改
+                    if (trans == null) {
+                        String curStr = String.valueOf(cur);
+                        trans = new Token(curStr, curStr, "unk", index, 1);
+                    }
+                    pushLen = 1;
+                }
+            } else {
+                if (match != null) {
+                    String thisWord = notTransSeg.substring(0, match.matchLength);
+
+                    trans = new Token(thisWord, match.translated, match.partOfSpeech,
+                            index, match.matchLength);
+                    pushLen = match.matchLength;
+                } else {
+                    char cur = notTransSeg.charAt(0);
+                    String curStr = String.valueOf(cur);
+                    String[] pinyin = pinyinDict.getPinyinByChs(cur);
+                    if (pinyin != null) {
+                        String py = getPinNoTone(pinyin);
+                        trans = new Token(curStr, py, "n", index, 1);
+                    } else {
+                        trans = new Token(curStr, curStr, "unk", index, 1);
+                    }
+                    pushLen = 1;
+                }
             }
+            tokens.add(trans);
+            notTransSeg = notTransSeg.substring(pushLen);
+            index += pushLen;
         }
     }
 
     private BaseItem baseDictSameSound(char chs, boolean forcedCover) {
         String[] pinyin = pinyinDict.getPinyinByChs(chs);
         if (pinyin == null) {
-            throw new NoSuchWordException(String.valueOf(chs));
+            return null;
         }
         BaseItem sameSoundWord;
         if (options.isUseBaseDict()) {
@@ -673,21 +753,30 @@ public class DuckSonTranslator {
         }
         return sameSoundWord;
     }
-
-    private Token bigDictSameSoundTrans(char chs) {
-        // 遍历同音字查询，只查一个字
+    
+    private List<Character> getSameSoundChsChars(char chs) {
         String[] pinyin = pinyinDict.getPinyinByChs(chs);
+        if (pinyin == null) return null;
         List<Character> sameSound;
         if (isChongqingMode()) {
             sameSound = pinyinDict.getChsListByCqPin(getPin(pinyin));
         } else {
             sameSound = pinyinDict.getChsListByPinyin(getPin(pinyin));
         }
-        Token tk = pickSameSoundWord(sameSound);
+        return sameSound;
+    }
+
+    private Token bigDictSameSoundTrans(char chs, int index) {
+        // 遍历同音字查询，只查一个字
+        String[] pinyin = pinyinDict.getPinyinByChs(chs);
+        if (pinyin == null) return null;
+        List<Character> sameSound = getSameSoundChsChars(chs);
+        if (sameSound == null) return null;  // 其实和上面的重了
+        Token tk = pickSameSoundWord(sameSound, index);
         if (tk == null) {
             String cs = String.valueOf(chs);
             String py = getPinNoTone(pinyin);
-            return new Token(cs, py, "n");
+            return new Token(cs, py, "n", index, 1);
         } else {
             return tk;
         }
@@ -707,26 +796,53 @@ public class DuckSonTranslator {
         }
     }
 
-    private Token pickSameSoundWord(List<Character> chsChars) {
+    private Token pickSameSoundWord(List<Character> chsChars, int index) {
         double maxPre = -Double.MAX_VALUE;
         String minChs = null;
-        Result minVal = null;
+        MatchResult minVal = null;
         for (Character c : chsChars) {
             String s = String.valueOf(c);
-            Result result = chsToGegPicker.translateWord(s);
-            if (result != null && result.precedence > maxPre) {
-                maxPre = result.precedence;
+            MatchResult matchResult = chsToGegPicker.translateWord(s);
+            if (matchResult != null && matchResult.precedence > maxPre) {
+                maxPre = matchResult.precedence;
                 minChs = s;
-                minVal = result;
+                minVal = matchResult;
             }
         }
         if (minVal == null) return null;
-        return new Token(minChs, minVal.translated, minVal.partOfSpeech);
+        return new Token(minChs, minVal.translated, minVal.partOfSpeech, index, 1);
     }
 
-    private String integrateToGeglish(List<Token> tokens) {
-        StringBuilder builder = new StringBuilder();
+    private TranslationResult integrateChsTokens(List<Token> tokens, String original) {
+//        StringBuilder builder = new StringBuilder();
+        TranslationResult result = new TranslationResult(original);
+        for (Token token : tokens) {
+            if (token.isActual()) {
+                ResultToken resultToken;
+                if (token.getChs() != null) {
+                    resultToken =
+                            new ResultToken(token.getChs(), token.getPosInOrig(), token.getLengthInOrig());
+                } else {
+                    resultToken =
+                            new ResultToken(token.getEng(), token.getPosInOrig(), token.getLengthInOrig());
+                }
+                result.add(resultToken);
+            } else {
+//                builder.append(token.getChs());
+                ResultToken resultToken =
+                        new ResultToken(token.getChs(), token.getPosInOrig(), token.getLengthInOrig());
+                result.add(resultToken);
+            }
+        }
+//        return builder.toString();
+        return result;
+    }
+
+    private TranslationResult integrateToGeglish(List<Token> tokens, String original) {
+//        StringBuilder builder = new StringBuilder();
+        TranslationResult result = new TranslationResult(original);
         Token lastActual = null;
+        List<Token> grammarTokens = new ArrayList<>();
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
             if (token.isActual() || !token.isGrammarApplied()) {
@@ -736,12 +852,21 @@ public class DuckSonTranslator {
                     // 连续两个的英文一样但中文不一样
                     if (lastActual.getEngAfterTense() == null) {
                         if (token.getEngAfterTense() == null) {
-                            // 无事发生
+                            // 把这个token原文的range附加上去
+                            ResultToken last = result.getLast();
+                            last.addRange(token.getPosInOrig(), token.getLengthInOrig());
                             lastActual = token;
                         } else {
                             // 不要上一个了，替换为这一个
-                            builder.setLength(builder.length() - lastActual.getEng().length());
-                            builder.append(token.getEngAfterTense());
+//                            builder.setLength(builder.length() - lastActual.getEng().length());
+//                            builder.append(token.getEngAfterTense());
+                            ResultToken last = result.removeLast();
+                            ResultToken mergedToken = new ResultToken(
+                                    token.getEngAfterTense(),
+                                    last.getOrigRanges(),
+                                    token.getPosInOrig(),
+                                    token.getLengthInOrig());
+                            result.add(mergedToken);
                         }
                     } else {
                         // 无事发生
@@ -750,16 +875,34 @@ public class DuckSonTranslator {
 
                     continue;
                 }
+                String pre = "";
                 if (lastActual != null &&
                         !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
                         !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
-                    builder.append(' ');
+//                    builder.append(' ');
+                    pre = " ";
                 }
-                builder.append(token.getEng());
+//                System.out.println(token);
+//                builder.append(token.getEng());
+                result.add(new ResultToken(pre + token.getEng(), token.getPosInOrig(), token.getLengthInOrig()));
                 lastActual = token;
+            } else if (token.isEffect()) {
+                grammarTokens.add(token);
             }
         }
-        return builder.toString();
+        for (Token gt : grammarTokens) {
+//            System.out.println(gt.getPosInOrig() + " " + gt.getLengthInOrig());
+            Token applied = gt.getTokenAppliedThisGrammar();
+//            System.out.println(applied);
+            ResultToken rt = result.findTokenAt(applied.getPosInOrig(), applied.getLengthInOrig());
+            if (rt != null) {
+                rt.addRange(gt.getPosInOrig(), gt.getLengthInOrig());
+            } else {
+                System.err.println("Why im null");
+            }
+        }
+//        return builder.toString();
+        return result;
     }
 
     private void applyGrammar(List<Token> tokens) {
@@ -775,7 +918,7 @@ public class DuckSonTranslator {
                             rem -= 1;
                             if (rem == 0) {
                                 tk.applyTense(effect.tenseName);
-                                token.setGrammarApplied();
+                                token.setGrammarApplied(tk);
                                 break;
                             }
                         } else if (tk.isActual() && GRAMMAR_TERMINATOR.contains(tk.getPartOfSpeech())) {
@@ -790,7 +933,7 @@ public class DuckSonTranslator {
                             rem -= 1;
                             if (rem == 0) {
                                 tk.applyTense(effect.tenseName);
-                                token.setGrammarApplied();
+                                token.setGrammarApplied(tk);
                                 break;
                             }
                         } else if (tk.isActual() && GRAMMAR_TERMINATOR.contains(tk.getPartOfSpeech())) {

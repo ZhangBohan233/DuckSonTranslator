@@ -9,8 +9,10 @@ import static trashsoftware.duckSonTranslator.wordPickerChsGeg.CommonPrefixCharP
 
 public class CombinedCharPicker extends SingleCharPicker {
     
+    public final static double STRONG_MATCH_THRESHOLD = 0.05;
+    
     private static final List<String> POS_PRECEDENCE = List.of(
-            "v", "pron", "n"
+            "v", "pron", "n", "adj", "adv"
     );
     
     protected CombinedCharPicker(BigDict bigDict, PickerFactory factory) {
@@ -18,9 +20,9 @@ public class CombinedCharPicker extends SingleCharPicker {
     }
 
     @Override
-    protected Result translateChar(char chs) {
+    protected MatchResult translateChar(char chs) {
         var allMatches = bigDict.getAllMatches(chs);
-        if (allMatches.isEmpty()) return Result.NOT_FOUND;
+        if (allMatches.isEmpty()) return MatchResult.NOT_FOUND;
         Map<String, Candidate> candidateMap = new HashMap<>();  // eng: {pos: [含chs的词数, 不含的词数]}
         for (var chsWordDes : allMatches.entrySet()) {
 //            var chsWord = chsWordDes.getKey();
@@ -59,7 +61,7 @@ public class CombinedCharPicker extends SingleCharPicker {
                 }
             }
         }
-        if (candidateMap.isEmpty()) return Result.NOT_FOUND;
+        if (candidateMap.isEmpty()) return MatchResult.NOT_FOUND;
         List<Candidate> candidateList = new ArrayList<>(candidateMap.values());
         for (Candidate candidate : candidateList) {
             candidate.findAllSuperStrings(candidateList);
@@ -70,8 +72,11 @@ public class CombinedCharPicker extends SingleCharPicker {
 //        System.out.println(candidateList);
 
         Candidate best = candidateList.get(0);
+        double precedence = best.resultPrecedence();
+//        System.out.println(best + " " + precedence);
 
-        return new Result(best.eng, best.bestPos, 1, best.resultPrecedence());
+        return new MatchResult(best.eng, best.bestPos, 1, 
+                precedence, precedence >= STRONG_MATCH_THRESHOLD);
     }
 
     /**
