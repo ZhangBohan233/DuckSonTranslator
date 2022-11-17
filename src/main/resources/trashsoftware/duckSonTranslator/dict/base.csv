@@ -219,10 +219,11 @@ chs, cq, pinyin, eng, pos
 酒, jiu3, jiu3, wine, n
 九, jiu3, jiu3, nine, n
 旧, jiu4, jiu4, old, adj
+就, jiu4, jiu4, then, conj
 卷, juan3, juan3, roll, n
 决, jue2, jue2, curse, v
 绝, jue2, jue2, absolute, adj
-间谍, jian4 die2, jian4 die2, spy; cat, n; n
+间谍, jian4 die2, jian4 die2, spy cat, n
 结果, jie2 guo3, jie2 guo3, matchResult, n
 经常, jin1 sang2, jing1 chang2, usually, adj
 
@@ -413,7 +414,8 @@ chs, cq, pinyin, eng, pos
 时间, si2 jian1, shi2 jian1, time, n
 十万, si2 wan4, shi2 wan4, hundred thousand, n
 十亿, si2 yi4, shi2 yi4, billion, n
-睡着, sui4 zo2, shui4 zhao2, sleep; table, v; n
+睡着, sui4 zo2, shui4 zhao2, sleep table, v
+睡不着, sui4 bu2 zo2, shui4 bu4 zhao2, sleep not table, v
 
 # T
 他, ta1, ta1, he, pron, eng_default=true
@@ -432,9 +434,6 @@ chs, cq, pinyin, eng, pos
 推, tui1, tui1, push, v
 腿, tui3, tui3, leg, n
 退, tui4, tui4, back, v
-他们, ta1 men1, ta1 men, they, pron
-她们, ta1 men1, ta1 men, they, pron
-它们, ta1 men1, ta1 men, they, pron
 太阳, tai4 yang2, tai4 yang2, sun, n
 
 # W
@@ -457,7 +456,6 @@ chs, cq, pinyin, eng, pos
 吾, wu2, wu2, my, n
 完了, wan2 lao3, wan2 le, gg, v
 危险, wei2 xian3, wei1 xian3, single foot poop shit, adj
-我们, wo3 men1, wo3 men, we, pron
 为什么, wei4 sen2 mo1, wei4 shen2 me, why, conj
 
 # X
@@ -535,6 +533,7 @@ chs, cq, pinyin, eng, pos
 一下, yi2 ha4, yi2 xia4, once, adv
 已经, yi3 jin1, yi3 jing1, already, adv
 一起, yi2 qi3, yi4 qi3, together, adv
+因为, yin1 wei4, yin1 wei2, because, conj
 游戏, you2 xi4, you2 xi4, game, n
 
 # Z
@@ -550,6 +549,7 @@ chs, cq, pinyin, eng, pos
 子, zi3, zi3, son, n
 紫, zi3, zi3, purple, n
 指, zi3, zhi3, finger, n
+只, zi3, zhi3, only, adv
 字, zi4, zi4, character, n
 自, zi4, zi4, self, n
 脏, zang1, zang1, dirty, adj

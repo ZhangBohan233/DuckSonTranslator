@@ -6,3 +6,4 @@ chs, eng_direct, tenseMark, effectiveIndex, effectivePos, preSet, postSet
 更, more, better, 1, adj, , 
 最, most, best, 1, adj, , 
 家, home, home, -1, name, , 
+们, all, plural, -1, n;pron, 我: pron.we; 他: pron.they; 她: pron.they; 它: pron.they, 

@@ -11,7 +11,6 @@ public class BaseDict {
     protected final Map<String, List<BaseItem>> pinyinMap = new HashMap<>();
     protected final Map<String, List<BaseItem>> engMap = new HashMap<>();
     protected int maxChsWordLen = 0;
-    protected int maxEngWordLen = 0;
 
     public BaseDict() throws IOException {
         List<String[]> csvContent = DictMaker.readCsv(
@@ -71,20 +70,8 @@ public class BaseDict {
             if (line.length < 5) {
                 throw new IndexOutOfBoundsException("Line " + Arrays.toString(line) + " not good.");
             }
-            String[] engDivide = line[3].split(";");
-            String[] posDivide = line[4].split(";");
-            String[] engWords = new String[engDivide.length];
-            String[] engPos = new String[engDivide.length];
             
-            for (int i = 0 ; i < engDivide.length; i++) {
-                engWords[i] = engDivide[i].strip();
-                engPos[i] = posDivide[i].strip();
-            }
-            if (engWords.length > maxEngWordLen) {
-                maxEngWordLen = engWords.length;
-            }
-            
-            BaseItem bi = new BaseItem(line[0], line[1], line[2], engWords, engPos);
+            BaseItem bi = new BaseItem(line[0], line[1], line[2], line[3], line[4]);
             if (line.length > 5) {
                 for (int i = 5; i < line.length; i++) {
                     String[] kwArgs = line[i].split("=");
@@ -190,9 +177,5 @@ public class BaseDict {
 
     public int getMaxChsWordLen() {
         return maxChsWordLen;
-    }
-
-    public int getMaxEngWordLen() {
-        return maxEngWordLen;
     }
 }

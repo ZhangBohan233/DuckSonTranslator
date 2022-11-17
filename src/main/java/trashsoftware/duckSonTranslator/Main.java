@@ -25,7 +25,7 @@ public class Main {
         System.out.println(geglish);
         geglish.printTokens();
 
-        TranslationResult geglish2 = translator.chsToGeglish("♣是啥，睡着了");
+        TranslationResult geglish2 = translator.chsToGeglish("我们你们她们♣是啥，睡着了，日薪越亿");
         System.out.println(geglish2);
         geglish2.printTokens();
 

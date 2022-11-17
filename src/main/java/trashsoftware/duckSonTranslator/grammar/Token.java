@@ -99,6 +99,9 @@ public class Token {
                 case "home":
                     applyBelong(false);
                     break;
+                case "plural":
+                    applyPlural();
+                    break;
                 case "ing":
                     applyIng();
                     break;
@@ -159,6 +162,13 @@ public class Token {
             setEngAfterTense(eng.substring(0, eng.length() - 1) + "ier");
         }else {
             setEngAfterTense(eng + "er");
+        }
+    }
+    
+    private void applyPlural() {
+        String eng = getEng();
+        if (!eng.endsWith("s")) {
+            setEngAfterTense(eng + "s");
         }
     }
     
@@ -238,6 +248,9 @@ public class Token {
         }
         if (eng.endsWith("'")) {
             if (len > 1) return new String[][]{{eng.substring(0, len - 1), "belong"}};
+        }
+        if (eng.endsWith("s")) {
+            if (len > 1) return new String[][]{{eng.substring(0, len - 1), "plural"}};
         }
         if (eng.endsWith("ier")) {
             if (len > 3) return new String[][]{
