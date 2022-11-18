@@ -21,9 +21,11 @@ public class Main {
         DuckSonTranslator translator = new DuckSonTranslator(options);
         System.out.println(translator.getCoreVersion() + "." + translator.getDictionaryVersion());
 
-        TranslationResult geglish = translator.chsToGeglish("什么鸡巴东西的人正在打的GE1234，真是吃了屎了，的确。");
-        System.out.println(geglish);
-        geglish.printTokens();
+//        TranslationResult geglish = translator.chsToGeglish("什么鸡巴东西的人正在打的GE1234，真是吃了屎了，的确。");
+//        System.out.println(geglish);
+//        geglish.printTokens();
+
+        System.out.println(translator.chsToGeglish("鸣谢名字输入"));
 
         TranslationResult geglish2 = translator.chsToGeglish("我们你们她们♣是啥，睡着了，日薪越亿");
         System.out.println(geglish2);

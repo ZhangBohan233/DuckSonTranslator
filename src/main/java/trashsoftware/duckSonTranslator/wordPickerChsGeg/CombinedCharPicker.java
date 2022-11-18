@@ -108,6 +108,7 @@ public class CombinedCharPicker extends SingleCharPicker {
 
         private String bestPos;
         private double bestPosPurity;
+        private int totalMatchCount;
         private double totalPurity;
 
         Candidate(String eng, char chs) {
@@ -143,15 +144,15 @@ public class CombinedCharPicker extends SingleCharPicker {
             if (bestPos == null) throw new RuntimeException();
 
             int allPosTotal = 0;
-            int allPosMatch = 0;
+            totalMatchCount = 0;
             for (var entry : posMatches.entrySet()) {
 //                if (!entry.getKey().equals(bestPos)) {
                     Set<String> posAllDes = posDes.get(entry.getKey());
                     allPosTotal += posAllDes.size();
-                    allPosMatch += entry.getValue().size();
+                totalMatchCount += entry.getValue().size();
 //                }
             }
-            totalPurity = (double) allPosMatch / allPosTotal;
+            totalPurity = (double) totalMatchCount / allPosTotal;
 //            if (Double.isNaN(otherPosPurity)) otherPosPurity = 0.99;
 
             Set<String> bestPosDes = posMatches.get(bestPos);
@@ -179,6 +180,9 @@ public class CombinedCharPicker extends SingleCharPicker {
 
             int purityCmp = Double.compare(this.bestPosPurity, o.bestPosPurity);
             if (purityCmp != 0) return purityCmp;
+
+            int matchCountCmp = Integer.compare(this.totalMatchCount, o.totalMatchCount);
+            if (matchCountCmp != 0) return matchCountCmp;
 
             int avgOccurIndex = Double.compare(this.minOccurIndex, o.minOccurIndex);
             if (avgOccurIndex != 0) return -avgOccurIndex;
