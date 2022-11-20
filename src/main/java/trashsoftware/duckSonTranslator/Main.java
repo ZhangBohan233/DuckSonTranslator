@@ -1,13 +1,9 @@
 package trashsoftware.duckSonTranslator;
 
-import trashsoftware.duckSonTranslator.dict.Util;
-import trashsoftware.duckSonTranslator.result.ResultToken;
 import trashsoftware.duckSonTranslator.result.TranslationResult;
-import trashsoftware.duckSonTranslator.wordPickerChsGeg.PickerFactory;
+import trashsoftware.duckSonTranslator.translators.DuckSonTranslator;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
 
 public class Main {
 

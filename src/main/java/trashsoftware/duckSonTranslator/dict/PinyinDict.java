@@ -1,11 +1,12 @@
 package trashsoftware.duckSonTranslator.dict;
 
-import trashsoftware.duckSonTranslator.translators.Translator;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class PinyinDict extends Translator {
+public class PinyinDict {
 
     protected int cqPinCount = 0;
     protected Map<Character, String[]> pinyin;  // 长度2, [拼音，重庆拼音]
@@ -27,7 +28,7 @@ public class PinyinDict extends Translator {
 
         makeRevPinyinDict();
     }
-    
+
     public String getVersionStr() {
         return String.valueOf(cqPinCount);
     }
@@ -38,7 +39,7 @@ public class PinyinDict extends Translator {
             List<Character> samePinyinChar =
                     pinyinToChs.computeIfAbsent(pinAndCq[0], k -> new ArrayList<>());
             samePinyinChar.add(entry.getKey());
-            
+
             List<Character> sameCqChar =
                     cqPinToChs.computeIfAbsent(pinAndCq[1], k -> new ArrayList<>());
             sameCqChar.add(entry.getKey());
