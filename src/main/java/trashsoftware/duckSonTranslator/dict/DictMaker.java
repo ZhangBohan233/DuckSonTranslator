@@ -54,6 +54,12 @@ public class DictMaker {
     public static List<String[]> readCsv(InputStream inputStream) throws IOException {
         return readCsv(inputStream, false, false);
     }
+    
+    public static List<String[]> readDictCsv(String fileName,
+                                             boolean withTitle,
+                                             boolean allowDiffWidth) throws IOException {
+        return readCsv(DictMaker.class.getResourceAsStream(fileName), withTitle, allowDiffWidth);
+    }
 
     public static List<String[]> readCsv(InputStream inputStream, 
                                          boolean withTitle, 

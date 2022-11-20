@@ -1,6 +1,7 @@
 package trashsoftware.duckSonTranslator;
 
 import trashsoftware.duckSonTranslator.dict.*;
+import trashsoftware.duckSonTranslator.grammar.ChsToGegCase;
 import trashsoftware.duckSonTranslator.grammar.GrammarDict;
 import trashsoftware.duckSonTranslator.grammar.GrammarEffect;
 import trashsoftware.duckSonTranslator.grammar.Token;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.5.4";
+    public static final String CORE_VERSION = "0.6.0";
 
     public static final Set<String> NO_SPACE_BEFORE = Set.of(
             "pun", "etc", "unk"
@@ -52,6 +53,7 @@ public class DuckSonTranslator {
     private final TranslatorOptions options;
     private WordPicker chsToGegPicker;
     private ChsCharPicker gegToChsPicker;
+    private ChsToGegCase chsToGegCaseAnalyzer;
 
     public DuckSonTranslator(TranslatorOptions options) throws IOException {
         this.options = options;
@@ -62,6 +64,8 @@ public class DuckSonTranslator {
 
         createChsGegPicker();
         createGegChsPicker();
+
+        createChsGegCaseAnalyzer();
     }
 
     public DuckSonTranslator() throws IOException {
@@ -132,6 +136,10 @@ public class DuckSonTranslator {
 
     private void createGegChsPicker() {
         this.gegToChsPicker = options.getGegChsPicker().create(bigDict);
+    }
+
+    private void createChsGegCaseAnalyzer() throws IOException {
+        this.chsToGegCaseAnalyzer = ChsToGegCase.getInstance();
     }
 
     @SuppressWarnings("unused")
@@ -321,8 +329,8 @@ public class DuckSonTranslator {
                 if (numBuilder.length() > 0) {
                     String numStr = numBuilder.toString();
                     int index2 = index - numStr.length();
-                    origIndexTokens.put(index2, new Token(numStr, numStr, "num", 
-                                    index2, numStr.length()));
+                    origIndexTokens.put(index2, new Token(numStr, numStr, "num",
+                            index2, numStr.length()));
                     numBuilder.setLength(0);
                 }
             }
@@ -334,7 +342,7 @@ public class DuckSonTranslator {
                 if (engBuilder.length() > 0) {
                     String engStr = engBuilder.toString();
                     int index2 = index - engStr.length();
-                    origIndexTokens.put(index2, new Token(engStr, engStr, "eng", 
+                    origIndexTokens.put(index2, new Token(engStr, engStr, "eng",
                             index2, engStr.length()));
                     engBuilder.setLength(0);
                 }
@@ -410,14 +418,14 @@ public class DuckSonTranslator {
         if (numBuilder.length() > 0) {
             String numStr = numBuilder.toString();
             int index2 = index - numStr.length();
-            origIndexTokens.put(index2, new Token(numStr, numStr, "num", 
+            origIndexTokens.put(index2, new Token(numStr, numStr, "num",
                     index2, numStr.length()));
             numBuilder.setLength(0);
         }
         if (engBuilder.length() > 0) {
             String engStr = engBuilder.toString();
             int index2 = index - engStr.length();
-            origIndexTokens.put(index2, new Token(engStr, engStr, "eng", 
+            origIndexTokens.put(index2, new Token(engStr, engStr, "eng",
                     index2, engStr.length()));
             engBuilder.setLength(0);
         }
@@ -446,8 +454,32 @@ public class DuckSonTranslator {
             }
         }
         applyGrammar(tokens);
+        applyPronForms(tokens);
 
         return integrateToGeglish(tokens, chs);
+    }
+    
+    private void applyPronForms(List<Token> tokens) {
+        if (tokens.size() == 1) {
+            // 也懒得检查是不是actual了
+            chsToGegCaseAnalyzer.applyToMiddleToken(null, tokens.get(0), null);
+            return;
+        }
+        Token last = null;
+        Token middle = null;
+        Token next = null;
+        for (Token cur : tokens) {
+            if (cur.isTreatedAsActual()) {
+                last = middle;
+                middle = next;
+                next = cur;
+            }
+            if (middle != null) {
+                chsToGegCaseAnalyzer.applyToMiddleToken(last, middle, next);
+            }
+        }
+        assert next != null;  // 逻辑上不存在这种情况
+        chsToGegCaseAnalyzer.applyToMiddleToken(middle, next, null);
     }
 
     public TranslationResult geglishToChs(String geglish) {
@@ -685,8 +717,8 @@ public class DuckSonTranslator {
                 notTransSeg = notTransSeg.substring(match.matchLength);
                 index += match.matchLength;
                 continue;
-            } 
-            
+            }
+
             Token trans;
             int pushLen;
             if (isUseSameSoundChar()) {
@@ -753,7 +785,7 @@ public class DuckSonTranslator {
         }
         return sameSoundWord;
     }
-    
+
     private List<Character> getSameSoundChsChars(char chs) {
         String[] pinyin = pinyinDict.getPinyinByChs(chs);
         if (pinyin == null) return null;
@@ -845,7 +877,7 @@ public class DuckSonTranslator {
         List<Token> grammarTokens = new ArrayList<>();
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
-            if (token.isActual() || !token.isGrammarApplied()) {
+            if (token.isTreatedAsActual()) {
                 if (lastActual != null &&
                         lastActual.getOrigEng().equals(token.getOrigEng()) &&
                         !lastActual.getChs().equals(token.getChs())) {

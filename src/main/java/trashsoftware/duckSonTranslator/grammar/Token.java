@@ -8,7 +8,7 @@ public class Token {
     private String eng;
     private String engAfterTense;
     private String partOfSpeech;
-    private final Set<String> appliedTenses = new HashSet<>();
+    final Set<String> appliedTenses = new HashSet<>();
     private GrammarEffect grammarEffect;
     private boolean applied = false;  // 语法token是否已被apply
     
@@ -292,6 +292,10 @@ public class Token {
 
     public boolean isActual() {
         return this.grammarEffect == null;
+    }
+    
+    public boolean isTreatedAsActual() {
+        return isActual() || !isGrammarApplied();
     }
 
     public boolean isEffect() {
