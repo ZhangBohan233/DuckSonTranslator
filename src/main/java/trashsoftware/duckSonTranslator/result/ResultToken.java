@@ -13,13 +13,16 @@ public class ResultToken implements Serializable {
     private final List<int[]> origRanges = new ArrayList<>();
     
     public ResultToken(String translated, int origIndex, int origLength) {
+        this(translated, List.of(new int[]{origIndex, origIndex + origLength}));
+    }
+    
+    public ResultToken(String translated, List<int[]> ranges) {
         this.translated = translated;
-        origRanges.add(new int[]{origIndex, origIndex + origLength});
+        this.origRanges.addAll(ranges);
     }
 
     public ResultToken(String translated, List<int[]> ranges, int origIndex, int origLength) {
-        this.translated = translated;
-        origRanges.addAll(ranges);
+        this(translated, ranges);
         origRanges.add(new int[]{origIndex, origIndex + origLength});
     }
     

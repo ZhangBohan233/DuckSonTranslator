@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PinyinDict {
+    
+    private static PinyinDict instance;
 
     protected int cqPinCount = 0;
     protected Map<Character, String[]> pinyin;  // 长度2, [拼音，重庆拼音]
@@ -14,7 +16,7 @@ public class PinyinDict {
     protected Map<String, List<Character>> pinyinToChs = new HashMap<>();
     protected Map<String, List<Character>> cqPinToChs = new HashMap<>();
 
-    public PinyinDict() throws IOException {
+    protected PinyinDict() throws IOException {
         pinyin = DictMaker.getChsPinyinDict();
         List<String[]> csv = DictMaker.readCsv(
                 DictMaker.class.getResourceAsStream("cq_pin.csv"));
@@ -27,6 +29,13 @@ public class PinyinDict {
         }
 
         makeRevPinyinDict();
+    }
+
+    public static PinyinDict getInstance() throws IOException {
+        if (instance == null) {
+            instance = new PinyinDict();
+        }
+        return instance;
     }
 
     public String getVersionStr() {

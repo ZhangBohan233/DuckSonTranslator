@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class BaseDict {
+    
+    private static BaseDict instance;
 
     protected final Map<String, BaseItem> chsMap = new HashMap<>();
     protected final Map<String, List<BaseItem>> cqMap = new HashMap<>();
@@ -12,7 +14,7 @@ public class BaseDict {
     protected final Map<String, List<BaseItem>> engMap = new HashMap<>();
     protected int maxChsWordLen = 0;
 
-    public BaseDict() throws IOException {
+    private BaseDict() throws IOException {
         List<String[]> csvContent = DictMaker.readCsv(
                 DictMaker.class.getResourceAsStream("base.csv"),
                 false,
@@ -104,6 +106,13 @@ public class BaseDict {
             engList.add(bi);
 //            if (!engMap.containsKey(line[3])) engMap.put(line[3], bi);
         }
+    }
+
+    public static BaseDict getInstance() throws IOException {
+        if (instance == null) {
+            instance = new BaseDict();
+        }
+        return instance;
     }
 
     public String getVersionStr() {

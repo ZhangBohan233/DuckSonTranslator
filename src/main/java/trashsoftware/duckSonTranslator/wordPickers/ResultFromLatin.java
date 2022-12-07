@@ -1,12 +1,12 @@
-package trashsoftware.duckSonTranslator.wordPickerGegChs;
+package trashsoftware.duckSonTranslator.wordPickers;
 
-public class ChsResult {
-    public static final ChsResult NOT_FOUND = new ChsResult(null, null);
+public class ResultFromLatin extends Result {
+    public static final ResultFromLatin NOT_FOUND = new ResultFromLatin(null, null);
     
     public final String translated;
     public final String partOfSpeech;
 
-    public ChsResult(String translated, String partOfSpeech) {
+    public ResultFromLatin(String translated, String partOfSpeech) {
         this.translated = translated;
         this.partOfSpeech = partOfSpeech;
     }

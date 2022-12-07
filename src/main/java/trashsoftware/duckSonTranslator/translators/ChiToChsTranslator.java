@@ -4,9 +4,8 @@ import trashsoftware.duckSonTranslator.dict.BaseItem;
 import trashsoftware.duckSonTranslator.grammar.Token;
 import trashsoftware.duckSonTranslator.wordPickers.ResultFromLatin;
 
-public class GegToChsTranslator extends StdLatinToChs {
-
-    public GegToChsTranslator(DuckSonTranslator parent) {
+public class ChiToChsTranslator extends StdLatinToChs {
+    protected ChiToChsTranslator(DuckSonTranslator parent) {
         super(parent);
     }
 
@@ -35,7 +34,7 @@ public class GegToChsTranslator extends StdLatinToChs {
         }
 
         // 检查bigDict
-        ResultFromLatin chsDirect = parent.gegToChsPicker.translate(eng);
+        ResultFromLatin chsDirect = parent.chiToChsPicker.translate(eng);
         if (chsDirect != null) {
             token.setChs(chsDirect.translated);
             token.setPartOfSpeech(chsDirect.partOfSpeech);
@@ -43,7 +42,7 @@ public class GegToChsTranslator extends StdLatinToChs {
         }
         if (possibleForms != null) {
             for (String[] engTense : possibleForms) {
-                chsDirect = parent.gegToChsPicker.translate(engTense[0]);
+                chsDirect = parent.chiToChsPicker.translate(engTense[0]);
                 if (chsDirect != null) {
                     token.setOriginalEng(engTense[0]);
                     token.setChs(chsDirect.translated);

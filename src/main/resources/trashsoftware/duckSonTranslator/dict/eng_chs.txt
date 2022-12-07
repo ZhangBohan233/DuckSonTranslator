@@ -1156,7 +1156,7 @@ chimney   n.烟囱
 chin   n.下巴，下颊
 china   n.中国
 china   n.瓷器，陶瓷
-chinese   adj.,n.中国的
+chinese   adj.中国的 n.中国的，中文
 chip   n.片，屑，缺口
 chocolate   n.巧克力
 choice   n.选择，选中的人或物
@@ -2416,7 +2416,7 @@ engine   n.发动机，火车头
 engineer   n.工程师
 engineering   n.工程
 england   n.英格兰，英国
-english   n.,adj.英国的，英语
+english   n.,adj.英国的，英语，英文
 englishman   n.英国人
 engrave   v.刻上，牢记
 engraving   adj.雕刻
@@ -6013,7 +6013,7 @@ restraint   n.抑制，自制
 restrict   v.限制，约束
 restriction   n.限制，约束
 restrictive   n.限制的
-matchResult   n.结果，效果，后果
+resultFromChs   n.结果，效果，后果
 resultant   adj.结果的，合成的
 resume   v.继续，再度
 resume   n.个人简历，摘要

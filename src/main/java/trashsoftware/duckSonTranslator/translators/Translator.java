@@ -40,8 +40,8 @@ public abstract class Translator {
     protected Translator(DuckSonTranslator parent) {
         this.parent = parent;
     }
-
-    public abstract TranslationResult translate(String input);
+    
+    public abstract TranslationResult translate(String text);
     
     protected static String[] splitToN(String orig, int n) {
         if (orig.length() < n) throw new RuntimeException();

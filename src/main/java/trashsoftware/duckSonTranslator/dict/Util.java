@@ -39,6 +39,17 @@ public class Util {
         }
         return res;
     }
+
+    public static <K, V> Map<K, V> intersection(Map<K, V> m1,
+                                                Map<K, V> m2) {
+        Map<K, V> result = new HashMap<>();
+        for (var entry1 : m1.entrySet()) {
+            if (m2.containsKey(entry1.getKey())) {
+                result.put(entry1.getKey(), entry1.getValue());
+            }
+        }
+        return result;
+    }
     
     public static String listOfDeepArrayToString(List<Object[]> list) {
         return '[' + list.stream().map(Arrays::deepToString).collect(Collectors.joining(", ")) + ']';

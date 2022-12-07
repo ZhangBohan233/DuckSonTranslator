@@ -1,8 +1,10 @@
-package trashsoftware.duckSonTranslator.wordPickerChsGeg;
+package trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg;
 
-public class MatchResult {
-    public static final MatchResult NOT_FOUND = 
-            new MatchResult(null, null, 0, 0.0, true);
+import trashsoftware.duckSonTranslator.wordPickers.Result;
+
+public class ResultFromChs extends Result {
+    public static final ResultFromChs NOT_FOUND = 
+            new ResultFromChs(null, null, 0, 0.0, true);
     
     public final String translated;
     public final String partOfSpeech;
@@ -10,18 +12,18 @@ public class MatchResult {
     public final double precedence;
     public final boolean strong;  // 是不是好的匹配
 
-    MatchResult(String translated, String partOfSpeech, int matchLength) {
+    public ResultFromChs(String translated, String partOfSpeech, int matchLength) {
         this(translated,
                 partOfSpeech,
                 matchLength,
                 1.0 / translated.length());  // 默认的优先级是越短越好
     }
 
-    MatchResult(String translated, String partOfSpeech, int matchLength, double precedence) {
+    ResultFromChs(String translated, String partOfSpeech, int matchLength, double precedence) {
         this(translated, partOfSpeech, matchLength, precedence, true);
     }
 
-    MatchResult(String translated, String partOfSpeech, int matchLength, double precedence, boolean strong) {
+    ResultFromChs(String translated, String partOfSpeech, int matchLength, double precedence, boolean strong) {
         this.translated = translated;
         this.partOfSpeech = partOfSpeech;
         this.matchLength = matchLength;

@@ -1,27 +1,29 @@
-package trashsoftware.duckSonTranslator.wordPickerGegChs;
+package trashsoftware.duckSonTranslator.wordPickers.wordPickerGegChs;
 
 import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.BigDictValue;
+import trashsoftware.duckSonTranslator.wordPickers.ResultFromLatin;
+import trashsoftware.duckSonTranslator.wordPickers.PickerFactory;
 
 import java.util.*;
 
 public class NaiveChsPicker extends ChsCharPicker {
-    public NaiveChsPicker(BigDict bigDict, ChsPickerFactory factory) {
+    public NaiveChsPicker(BigDict bigDict, PickerFactory factory) {
         super(bigDict, factory);
     }
 
     @Override
-    protected ChsResult translateOneWordInner(String engWord) {
-        BigDictValue chs = bigDict.getEngChsMap().get(engWord);
-        if (chs == null) return ChsResult.NOT_FOUND;
+    protected ResultFromLatin translateOneWordInner(String engWord) {
+        BigDictValue chs = bigDict.getByEng(engWord, false);
+        if (chs == null) return ResultFromLatin.NOT_FOUND;
         String[] chsPos = pickBestChs(engWord, chs);
 //        if (chsPos == null) return null;
-        return new ChsResult(chsPos[0], chsPos[1]);
+        return new ResultFromLatin(chsPos[0], chsPos[1]);
     }
 
     private String[] pickBestChs(String engWord, BigDictValue dictValue) {
         Map<Character, ChsCharFreq> charFreq = new HashMap<>();  // 要保持顺序
-        for (Map.Entry<String, List<String>> posChs : dictValue.value.entrySet()) {
+        for (Map.Entry<String, Set<String>> posChs : dictValue.value.entrySet()) {
             for (String chs : posChs.getValue()) {
                 int index = 0;
                 for (char c : chs.toCharArray()) {

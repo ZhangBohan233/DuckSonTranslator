@@ -1,28 +1,29 @@
-package trashsoftware.duckSonTranslator.wordPickerChsGeg;
+package trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg;
 
 import trashsoftware.duckSonTranslator.dict.BigDict;
+import trashsoftware.duckSonTranslator.wordPickers.PickerFactory;
 
 import java.util.*;
 
-import static trashsoftware.duckSonTranslator.wordPickerChsGeg.CommonPrefixCharPicker.MIN_SUBSTRING_LENGTH;
-import static trashsoftware.duckSonTranslator.wordPickerChsGeg.CommonPrefixCharPicker.commonSubstringLength;
+import static trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.CommonPrefixCharPicker.MIN_SUBSTRING_LENGTH;
+import static trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.CommonPrefixCharPicker.commonSubstringLength;
 
 public class CombinedCharPicker extends SingleCharPicker {
     
     public final static double STRONG_MATCH_THRESHOLD = 0.05;
     
-    private static final List<String> POS_PRECEDENCE = List.of(
+    public static final List<String> POS_PRECEDENCE = List.of(
             "v", "pron", "n", "adj", "adv"
     );
     
-    protected CombinedCharPicker(BigDict bigDict, PickerFactory factory) {
+    public CombinedCharPicker(BigDict bigDict, PickerFactory factory) {
         super(bigDict, factory);
     }
 
     @Override
-    protected MatchResult translateChar(char chs) {
+    protected ResultFromChs translateChar(char chs) {
         var allMatches = bigDict.getAllMatches(chs);
-        if (allMatches.isEmpty()) return MatchResult.NOT_FOUND;
+        if (allMatches.isEmpty()) return ResultFromChs.NOT_FOUND;
         Map<String, Candidate> candidateMap = new HashMap<>();  // eng: {pos: [含chs的词数, 不含的词数]}
         for (var chsWordDes : allMatches.entrySet()) {
 //            var chsWord = chsWordDes.getKey();
@@ -61,7 +62,7 @@ public class CombinedCharPicker extends SingleCharPicker {
                 }
             }
         }
-        if (candidateMap.isEmpty()) return MatchResult.NOT_FOUND;
+        if (candidateMap.isEmpty()) return ResultFromChs.NOT_FOUND;
         List<Candidate> candidateList = new ArrayList<>(candidateMap.values());
         for (Candidate candidate : candidateList) {
             candidate.findAllSuperStrings(candidateList);
@@ -75,7 +76,7 @@ public class CombinedCharPicker extends SingleCharPicker {
         double precedence = best.resultPrecedence();
 //        System.out.println(best + " " + precedence);
 
-        return new MatchResult(best.eng, best.bestPos, 1, 
+        return new ResultFromChs(best.eng, best.bestPos, 1, 
                 precedence, precedence >= STRONG_MATCH_THRESHOLD);
     }
 

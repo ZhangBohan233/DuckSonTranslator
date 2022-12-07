@@ -1,12 +1,13 @@
-package trashsoftware.duckSonTranslator.wordPickerChsGeg;
+package trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg;
 
 import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.BigDictValue;
+import trashsoftware.duckSonTranslator.wordPickers.PickerFactory;
 
 import java.util.*;
 
 public class InverseFreqCharPicker extends SingleCharPicker {
-    protected InverseFreqCharPicker(BigDict bigDict, PickerFactory factory) {
+    public InverseFreqCharPicker(BigDict bigDict, PickerFactory factory) {
         super(bigDict, factory);
     }
 
@@ -31,18 +32,18 @@ public class InverseFreqCharPicker extends SingleCharPicker {
     }
 
     @Override
-    protected MatchResult translateChar(char chs) {
+    protected ResultFromChs translateChar(char chs) {
         Map<String, BigDictValue> allMatches = bigDict.getAllMatches(chs);
-        if (allMatches.isEmpty()) return MatchResult.NOT_FOUND;
+        if (allMatches.isEmpty()) return ResultFromChs.NOT_FOUND;
 //        SortedMap<Double, List<Purity2>> purityMap = new TreeMap<>();
         Map<String, Candidate> candidates = new HashMap<>();
         for (Map.Entry<String, BigDictValue> entry : allMatches.entrySet()) {
-            Map<String, List<String>> engPosDes = entry.getValue().value;
+            Map<String, Set<String>> engPosDes = entry.getValue().value;
 
             Map<String, Candidate> thisCandidate = createCandidate(chs, engPosDes);
             updateCandidatesMap(thisCandidate, candidates);
         }
-        if (candidates.isEmpty()) return MatchResult.NOT_FOUND;
+        if (candidates.isEmpty()) return ResultFromChs.NOT_FOUND;
 //        System.out.println(candidates);
         List<Candidate> candidateList = new ArrayList<>(candidates.values());
 
@@ -54,25 +55,25 @@ public class InverseFreqCharPicker extends SingleCharPicker {
         Collections.reverse(candidateList);
 //        System.out.println(candidateList);
         Candidate candidate = candidateList.get(0);
-        return new MatchResult(candidate.engWord, candidate.bestPartOfSpeech(), 1);
+        return new ResultFromChs(candidate.engWord, candidate.bestPartOfSpeech(), 1);
     }
 
     private Map<String, Candidate> createCandidate(char chsChar,
-                                                   Map<String, List<String>> engPosDes) {
+                                                   Map<String, Set<String>> engPosDes) {
         Map<String, Candidate> engAndCandidates = new HashMap<>();
-        for (Map.Entry<String, List<String>> posDes : engPosDes.entrySet()) {
+        for (Map.Entry<String, Set<String>> posDes : engPosDes.entrySet()) {
             String pos = posDes.getKey();
 
             for (String eng : posDes.getValue()) {
                 BigDictValue reverse = bigDict.getEngChsMap().get(eng);
                 Candidate can = engAndCandidates.computeIfAbsent(eng, Candidate::new);
 
-                for (Map.Entry<String, List<String>> chsPosDes : reverse.value.entrySet()) {
+                for (Map.Entry<String, Set<String>> chsPosDes : reverse.value.entrySet()) {
 //                    System.out.println(chsPosDes);
                     String engPos = chsPosDes.getKey();
                     if (!pos.equals(engPos)) continue;
 
-                    List<String> chsDes = chsPosDes.getValue();
+                    Set<String> chsDes = chsPosDes.getValue();
 
                     int posMatch = 0;
                     int totalMatch = 0;

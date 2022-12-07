@@ -32,11 +32,13 @@ chs, cq, pinyin, eng, pos
 变, bian4, bian4, change, v
 表, biao3, biao3, watch, n
 别, bie2, bie2, other, n
+兵, bin1, bing1, soldier, n
 丙, bin3, bing3, C, n
 病, bin4, bing4, illness, n
 薄, bo2, bao2, thin, adj
 博, bo2, bo2, phd, n
 不, bu2, bu4, not, adv
+版本, ban3 ben3, ban3 ben3, version, n
 百万, be2 wan4, bai3 wan4, million, n
 
 # C
@@ -89,7 +91,10 @@ chs, cq, pinyin, eng, pos
 都, dou1, dou1, both, adv
 度, du4, du4, degree, n
 肚, du4, du4, belly, n
+# 打的, da3 di1, da3 di1, take taxi, n
 达死, da2 si3, da2 di3, fall die, v
+的确, di2 qio2, di2 que4, is confirm, v
+# 的士, di1 si4, di1 shi4, taxi, n
 电视, dian4 si4, dian4 shi4, tv, n
 
 # E
@@ -125,6 +130,7 @@ chs, cq, pinyin, eng, pos
 # G
 街, gai1, jie1, street, n
 该, gai1, gai1, should, aux
+改, gai3, gai3, change, v
 解, gai3, jie3, solve, v
 告, gao4, gao4, try, v
 干, gan1, gan1, dry, adj
@@ -144,7 +150,7 @@ chs, cq, pinyin, eng, pos
 公, gong1, gong1, public, n
 谷, gu2, gu3, valley, n
 骨, gu2, gu3, bone, n
-关, guan1, guan1, close, v
+关, guan1, guan1, close, v, eng_default=true
 观, guan1, guan1, see, v
 光, guang1, guang1, light, n
 国, gue2, guo2, country, n
@@ -157,6 +163,7 @@ chs, cq, pinyin, eng, pos
 棍, gun4, gun4, stick, n
 各人, go2 ren2, ge4 ren2, self, n
 工作, gong1 zuo2, gong1 zuo4, work, n
+给力语, ge1 li2 yu3, gei3 li4 yu3, geglish, n
 
 # H
 哈, ha1, ha1, ha, int, cover=false
@@ -185,6 +192,7 @@ chs, cq, pinyin, eng, pos
 黄, huang2, huang2, yellow, n
 会, hui4, hui4, meeting, n
 横, hun2, heng2, across, v
+后天, hou4 tian1, hou4 tian1, back day, n
 
 # J
 鸡, ji1, ji1, chicken, n
@@ -206,6 +214,7 @@ chs, cq, pinyin, eng, pos
 嫁, jia4, jia4, marry, v
 尖, jian1, jian1, sharp, adj
 减, jian3, jian3, subtract, v
+件, jian4, jian4, ware, n
 接, jie2, jie1, receive, v
 洁, jie2, jie2, clean, adj
 姐, jie3, jie3, sister, n
@@ -224,8 +233,9 @@ chs, cq, pinyin, eng, pos
 决, jue2, jue2, curse, v
 绝, jue2, jue2, absolute, adj
 间谍, jian4 die2, jian4 die2, spy cat, n
-结果, jie2 guo3, jie2 guo3, matchResult, n
+结果, jie2 guo3, jie2 guo3, resultFromChs, n
 经常, jin1 sang2, jing1 chang2, usually, adj
+今天, jin1 tian1, jin1 tian1, today, n
 
 # K
 咔, ka1, ka1, card, v
@@ -244,7 +254,8 @@ chs, cq, pinyin, eng, pos
 # L
 拉, la1, la1, pull, v
 垃, la1, la1, garbage, n
-拿, la2, na2, use, v
+辣, la2, la4, spicy, adj
+拿, la2, na2, take, v
 那, la4, na4, that, pron
 来, lai2, lai2, come, v
 奶, lai3, nai3, milk, n
@@ -274,6 +285,7 @@ chs, cq, pinyin, eng, pos
 录, lu2, lu4, record, n
 路, lu4, lu4, road, n
 乱, luan4, luan4, mess, adj
+类, lui4, lei4, kind, n
 铝, lv3, lv3, aluminum, n
 女, lv3, nv3, woman, n
 啷个, lang3 go4, lang3 ge4, how to, adv
@@ -299,6 +311,7 @@ chs, cq, pinyin, eng, pos
 目, mu2, mu4, eye, n
 母, mu3, mu3, female, n
 没得, mei1 de2, mei2 de2, no have, adv
+明天, min2 tian1, ming2 tian1, bright day, n
 母亲, mu3 qin1, mu3 qin1, mother, n
 
 # O
@@ -327,6 +340,7 @@ chs, cq, pinyin, eng, pos
 溪, qi1, xi1, stream, n
 旗, qi2, qi2, flag, n, cover=false
 起, qi3, qi3, raise, v
+启, qi3, qi3, launch, v
 气, qi4, qi4, gas, n
 器, qi4, qi4, instrument, n
 去, qi4, qu4, go, v
@@ -343,12 +357,14 @@ chs, cq, pinyin, eng, pos
 请, qin3, qing3, please, v
 庆, qin4, qing4, celebrate, v
 球, qiu2, qiu2, ball, n
+取, qu3, qu3, take, v
 全, quan2, quan2, all, adj
 拳, quan2, quan2, fist, n
 群, qun2, qun2, group, n
 裙, qun2, qun2, dress, n
 起来, qi3 lai2, qi3 lai2, up, v
 千万, qian1 wan4, qian1 wan4, ten million, n
+前天, qian2 tian1, qian2 tian1, front day, n
 
 # R
 燃, ran2, ran2, burn, v
@@ -386,6 +402,7 @@ chs, cq, pinyin, eng, pos
 十, si2, shi2, ten, n
 识, si2, shi2, recognize, v
 室, si2, shi4, room, n
+失, si2, shi1, lose, v
 屎, si3, shi3, shit, n
 死, si3, si3, die, v
 事, si4, si4, thing, n
@@ -394,6 +411,7 @@ chs, cq, pinyin, eng, pos
 是, si4, shi4, is, v
 四, si4, si4, four, n
 视, si4, shi4, vision, n
+式, si4, shi4, type, n
 说, so2, shuo1, speak, v
 锁, so3, suo3, lock, n
 所, so3, suo3, all, n
@@ -407,6 +425,7 @@ chs, cq, pinyin, eng, pos
 删, suan1, shan1, delete, v
 算, suan4, suan4, calculate, v
 双, suang1, shuang1, double, n
+随, sui2, sui2, follow, v
 水, sui3, shui3, water, n
 纯, sun2, chun2, pure, adj
 撒子, sa4 zi2, sa4 zi2, what, pron
@@ -427,6 +446,7 @@ chs, cq, pinyin, eng, pos
 弹, tan2, tan2, bounce, v
 涛, tao1, tao1, wave, n
 天, tian1, tian1, sky, n
+统, tong3, tong3, unify, v
 头, tou2, tou2, head, n
 图, tu2, tu2, graph, n
 突, tu2, tu1, sudden, adj
@@ -451,6 +471,8 @@ chs, cq, pinyin, eng, pos
 伪, wei3, wei3, fake, adj
 萎, wei3, wei3, weak, adj
 纬, wei3, wei3, latitude, n
+卫, wei4, wei4, guard, n
+文, wen2, wen2, literature, n
 我, wo3, wo3, me, pron
 污, wu1, wu1, pollute, v
 无, wu2, wu2, no, adv
@@ -510,7 +532,7 @@ chs, cq, pinyin, eng, pos
 亿, yi4, yi4, hundred million, n
 音, yin1, yin1, music, n, cover=false
 药, yo2, yao4, medicine, n
-用, yong4, yong4, use, v
+用, yong4, yong4, use, v, eng_default=true
 油, you2, you2, oil, n
 游, you2, you2, swim, v
 有, you3, you3, have, v
@@ -520,6 +542,7 @@ chs, cq, pinyin, eng, pos
 鱼, yu2, yu2, fish, n
 渝, yu2, yu2, double celebrity, n
 余, yu2, yu2, remainder, n
+于, yu2, yu2, at, prep
 雨, yu3, yu3, rain, n
 语, yu3, yu3, language, n
 与, yu3, yu3, and, conj
@@ -553,6 +576,7 @@ chs, cq, pinyin, eng, pos
 只, zi3, zhi3, only, adv
 字, zi4, zi4, character, n
 自, zi4, zi4, self, n
+制, zi4, zhi4, manufacture, v
 脏, zang1, zang1, dirty, adj
 张, zang1, zhang1, open, v
 正, zen4, zheng4, positive, adj
@@ -571,3 +595,4 @@ chs, cq, pinyin, eng, pos
 罪, zui4, zui4, crime, n
 装, zuang1, zhuang1, pretend, v
 怎么, zen3 mo1, zen3 me, how, conj
+昨天, zo2 tian1, zuo2 tian1, yesterday, n

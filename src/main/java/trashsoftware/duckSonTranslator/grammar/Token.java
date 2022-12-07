@@ -119,50 +119,28 @@ public class Token {
 
     private void applyPast() {
         String eng = getEng();
-        if (eng.endsWith("e")) {
-            setEngAfterTense(eng + "d");
-        } else {
-            setEngAfterTense(eng + "ed");
-        }
+        setEngAfterTense(eng + "ed");
     }
 
     private void applyBelong(boolean checkVerb) {
         String eng = getEng();
         if (partOfSpeech.equals("v")) {
             if (checkVerb) {
-                if (eng.endsWith("e")) {
-                    setEngAfterTense(eng + "n");
-                } else {
-                    setEngAfterTense(eng + "en");
-                }
+                setEngAfterTense(eng + "en");
             }
         } else {
-            if (eng.endsWith("s")) {
-                setEngAfterTense(eng + "'");
-            } else {
-                setEngAfterTense(eng + "'s");
-            }
+            setEngAfterTense(eng + "'s");
         }
     }
 
     private void applyIng() {
         String eng = getEng();
-        if (eng.endsWith("e")) {
-            setEngAfterTense(eng.substring(0, eng.length() - 1) + "ing");
-        } else {
-            setEngAfterTense(eng + "ing");
-        }
+        setEngAfterTense(eng + "ing");
     }
     
     private void applyBetter() {
         String eng = getEng();
-        if (eng.endsWith("e")) {
-            setEngAfterTense(eng + "r");
-        } else if (eng.endsWith("y")) {
-            setEngAfterTense(eng.substring(0, eng.length() - 1) + "ier");
-        }else {
-            setEngAfterTense(eng + "er");
-        }
+        setEngAfterTense(eng + "er");
     }
     
     private void applyPlural() {
@@ -174,15 +152,7 @@ public class Token {
     
     private void applyBest() {
         String eng = getEng();
-        if (eng.endsWith("es")) {
-            setEngAfterTense(eng + "t");
-        } else if (eng.endsWith("e")) {
-            setEngAfterTense(eng + "st");
-        } else if (eng.endsWith("y")) {
-            setEngAfterTense(eng.substring(0, eng.length() - 1) + "iest");
-        } else {
-            setEngAfterTense(eng + "est");
-        }
+        setEngAfterTense(eng + "est");
     }
     
     public List<Token> applyTenseToChs(GrammarDict grammarDict) {
@@ -217,67 +187,30 @@ public class Token {
     public String[][] getPossibleBaseEngForm() {
         int len = eng.length();
         if (eng.endsWith("ed")) {
-            if (len > 2) return new String[][]{
-                    {eng.substring(0, len - 2), "past"},
-                    {eng.substring(0, len - 1), "past"}
-            };
-            else return new String[][]{
-                    {eng.substring(0, len - 1), "past"}
-            };
+            return new String[][]{{eng.substring(0, len - 2), "past"}};
         }
         if (eng.endsWith("en")) {
-            if (len > 2) return new String[][]{
-                    {eng.substring(0, len - 2), "belong"},
-                    {eng.substring(0, len - 1), "belong"}
-            };
-            else return new String[][]{
-                    {eng.substring(0, len - 1), "belong"}
-            };
+            if (len > 2) return new String[][]{{eng.substring(0, len - 2), "belong"}};
         }
         if (eng.endsWith("ing")) {
             if (len > 3) return new String[][]{
                     {eng.substring(0, len - 3), "ing"},
-                    {eng.substring(0, len - 3) + "e", "ing"}
             };
-//            else return new String[][]{
-//                    {eng.substring(0, len - 2) + "e", "ing"}
-//            };
         }
         if (eng.endsWith("'s")) {
             if (len > 2) return new String[][]{{eng.substring(0, len - 2), "belong"}};
         }
-        if (eng.endsWith("'")) {
-            if (len > 1) return new String[][]{{eng.substring(0, len - 1), "belong"}};
-        }
         if (eng.endsWith("s")) {
             if (len > 1) return new String[][]{{eng.substring(0, len - 1), "plural"}};
         }
-        if (eng.endsWith("ier")) {
-            if (len > 3) return new String[][]{
-                    {eng.substring(0, len - 3) + "y", "better"},
-                    {eng.substring(0, len - 2), "better"},
-                    {eng.substring(0, len - 1), "better"}
-            };
-        }
         if (eng.endsWith("er")) {
             if (len > 2) return new String[][]{
-                    {eng.substring(0, len - 2), "better"},
-                    {eng.substring(0, len - 1), "better"}
-            };
-        }
-        if (eng.endsWith("iest")) {
-            if (len > 4) return new String[][]{
-                    {eng.substring(0, len - 4) + "y", "best"},
-                    {eng.substring(0, len - 3), "best"},
-                    {eng.substring(0, len - 2), "best"},
-                    {eng.substring(0, len - 1), "best"},
+                    {eng.substring(0, len - 2), "better"}
             };
         }
         if (eng.endsWith("est")) {
             if (len > 3) return new String[][]{
                     {eng.substring(0, len - 3), "best"},
-                    {eng.substring(0, len - 2), "best"},
-                    {eng.substring(0, len - 1), "best"}
             };
         }
         return null;

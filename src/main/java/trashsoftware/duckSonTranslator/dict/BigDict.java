@@ -5,18 +5,34 @@ import trashsoftware.duckSonTranslator.trees.Trie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BigDict {
-    
-//    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
+public class BigDict implements Serializable {
+
+    private transient static BigDict instance;
+
+    //    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
     protected final Map<String, BigDictValue> engChsMap = new HashMap<>();
     protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
     protected final Map<Character, Map<String, BigDictValue>> chsCharEngMap = new HashMap<>();
 
-    public BigDict() throws IOException {
+    protected final Map<String, BigDictValue> engChsHugeMap = new HashMap<>();
+    protected final Map<String, BigDictValue> chsEngHugeMap = new HashMap<>();
+    protected final Map<Character, Map<String, BigDictValue>> chsCharEngHugeMap = new HashMap<>();
+
+    private BigDict() throws IOException {
         readHighSchoolDict();
+
+        readHugeDict();
+    }
+
+    public static BigDict getInstance() throws IOException {
+        if (instance == null) {
+            instance = new BigDict();
+        }
+        return instance;
     }
 
     private static String standardizeChs(String chsWord) {
@@ -27,6 +43,8 @@ public class BigDict {
         if (chsWord.length() > 1 && chsWord.startsWith("使")) {
             chsWord = chsWord.substring(1);
         }
+        
+        chsWord = chsWord.replaceAll("…", "");
 
         return chsWord;
     }
@@ -87,6 +105,25 @@ public class BigDict {
             }
         }
         return builder.toString();
+    }
+
+    private static void createChsCharMap(Map<String, BigDictValue> srcMap,
+                                         Map<Character, Map<String, BigDictValue>> dstMap) {
+        for (var wordValue : srcMap.entrySet()) {
+            String word = wordValue.getKey();
+            BigDictValue value = wordValue.getValue();
+            for (char c : word.toCharArray()) {
+                Map<String, BigDictValue> wordsContainThis =
+                        dstMap.computeIfAbsent(c, k -> new HashMap<>());
+                wordsContainThis.putIfAbsent(word, value);
+            }
+        }
+    }
+
+    private static void copyTo(Map<String, BigDictValue> src, Map<String, BigDictValue> dst) {
+        for (var entry : src.entrySet()) {
+            dst.put(entry.getKey(), entry.getValue().copy());
+        }
     }
 
     private void readHighSchoolDict() throws IOException {
@@ -157,13 +194,13 @@ public class BigDict {
                     BigDictValue engAsKey = engChsMap.computeIfAbsent(eng,
                             k -> new BigDictValue(new HashMap<>()));  // 因为eng可能被之前的列加了
 //                    engAsKey.sameMeaningDivision.addAll(sameMeaningDivision);
-                    Map<String, List<String>> posMapChsValue = engAsKey.value;  // pos: 中文释义
+                    Map<String, Set<String>> posMapChsValue = engAsKey.value;  // pos: 中文释义
                     for (int cc = 0; cc < posMeans.length; cc += 2) {
                         // 长度已经确定偶数了
                         String pos = replaceWeirdPos(posMeans[cc]);
 
                         String[] chsDes = posMeans[cc + 1].split(";");
-                        List<String> chsDesList = new ArrayList<>();
+                        Set<String> chsDesList = new HashSet<>();
                         if (posMapChsValue.containsKey(pos)) {
                             chsDesList.addAll(posMapChsValue.get(pos));
                         }
@@ -187,8 +224,8 @@ public class BigDict {
                                 chsKey = new BigDictValue(new HashMap<>());
                                 chsEngMap.put(chs, chsKey);
                             }
-                            List<String> posEngMap =
-                                    chsKey.value.computeIfAbsent(pos, k -> new ArrayList<>());
+                            Set<String> posEngMap =
+                                    chsKey.value.computeIfAbsent(pos, k -> new HashSet<>());
                             if (!posEngMap.contains(eng)) {
                                 posEngMap.add(eng);
                             }
@@ -198,7 +235,7 @@ public class BigDict {
                 }
             }
         }
-        createChsCharMap();
+        createChsCharMap(chsEngMap, chsCharEngMap);
 //        for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
 //            chsEngTrie.insert(entry.getKey(), entry.getValue());
 //        }
@@ -209,7 +246,10 @@ public class BigDict {
 //        System.out.println(chsEngMap);
     }
 
-    private void readFullDict() throws IOException {
+    private void readHugeDict() throws IOException {
+        copyTo(engChsMap, engChsHugeMap);
+        copyTo(chsEngMap, chsEngHugeMap);
+
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 Objects.requireNonNull(
                         DictMaker.class.getResourceAsStream("eng_chs.txt"))))) {
@@ -234,7 +274,7 @@ public class BigDict {
                     }
 
                     for (String posDesPart : desPart) {
-                        Map<String, List<String>> posDes = new TreeMap<>();
+                        Map<String, Set<String>> posDes = new TreeMap<>();
                         String[] poses = posDesPart.split("\\.,");
                         if (poses.length == 1) {
                             poses = poses[0].split("\\.");
@@ -242,8 +282,8 @@ public class BigDict {
                                 posDes.put(
                                         poses[i],
                                         Arrays.stream(poses[i + 1].split("，"))
-                                                .map(String::strip)
-                                                .collect(Collectors.toList())
+                                                .map(s -> standardizeChs(s.strip()))
+                                                .collect(Collectors.toSet())
                                 );
                             }
                         } else {
@@ -252,37 +292,49 @@ public class BigDict {
                             posesList.addAll(Arrays.asList(last).subList(0, last.length - 1));
 
 //                            posesList.addAll(Arrays.stream(last).toList().subList(0, last.length - 1));
-                            List<String> des = Arrays.stream(last[last.length - 1]
+                            Set<String> des = Arrays.stream(last[last.length - 1]
                                             .split("，"))
-                                    .map(String::strip)
-                                    .collect(Collectors.toList());
+                                    .map(s -> standardizeChs(s.strip()))
+                                    .collect(Collectors.toSet());
                             for (String pos : posesList) {
                                 posDes.put(pos, des);
                             }
                         }
 
-                        BigDictValue sameWordDiffPos = engChsMap.get(eng);
+                        // 融合
+                        BigDictValue sameWordDiffPos = engChsHugeMap.get(eng);
                         if (sameWordDiffPos == null) {
-                            engChsMap.put(eng, new BigDictValue(posDes));
+                            engChsHugeMap.put(eng, new BigDictValue(posDes));
                         } else {
-                            sameWordDiffPos.value.putAll(posDes);
+//                            sameWordDiffPos.value.putAll(posDes);
+                            for (var posDesEntry : posDes.entrySet()) {
+                                String pos = posDesEntry.getKey();
+                                Set<String> newDes = posDesEntry.getValue();
+                                Set<String> oldDes = sameWordDiffPos.value.computeIfAbsent(pos,
+                                        k -> new HashSet<>());
+                                for (String s : newDes) {
+                                    if (!oldDes.contains(s)) {
+                                        oldDes.add(s);
+                                    }
+                                }
+                            }
                         }
 //                        System.out.println(eng + " " + engChsMap.get(eng));
 
-                        for (Map.Entry<String, List<String>> pd : posDes.entrySet()) {
+                        for (Map.Entry<String, Set<String>> pd : posDes.entrySet()) {
                             for (String des : pd.getValue()) {
-                                BigDictValue val = chsEngMap.get(des);
+                                BigDictValue val = chsEngHugeMap.get(des);
                                 if (val == null) {
-                                    Map<String, List<String>> engPosDes = new TreeMap<>();
-                                    List<String> engDes = new ArrayList<>();
+                                    Map<String, Set<String>> engPosDes = new TreeMap<>();
+                                    Set<String> engDes = new HashSet<>();
                                     engDes.add(eng);
                                     engPosDes.put(pd.getKey(), engDes);
                                     val = new BigDictValue(engPosDes);
-                                    chsEngMap.put(des, val);
+                                    chsEngHugeMap.put(des, val);
                                 } else {
-                                    List<String> engDes = val.value.get(pd.getKey());
+                                    Set<String> engDes = val.value.get(pd.getKey());
                                     if (engDes == null) {
-                                        engDes = new ArrayList<>();
+                                        engDes = new HashSet<>();
                                         engDes.add(eng);
                                         val.value.put(pd.getKey(), engDes);
                                     } else {
@@ -294,23 +346,12 @@ public class BigDict {
                     }
                 }
             }
+            createChsCharMap(chsEngHugeMap, chsCharEngHugeMap);
 //            for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
 //                chsEngTrie.insert(entry.getKey(), entry.getValue());
 //            }
-//            System.out.println(engChsMap);
+//            System.out.println(engChsHugeMap);
 //            System.out.println(chsEngTrie.get("经济学人"));
-        }
-    }
-    
-    private void createChsCharMap() {
-        for (var wordValue : chsEngMap.entrySet()) {
-            String word = wordValue.getKey();
-            BigDictValue value = wordValue.getValue();
-            for (char c : word.toCharArray()) {
-                Map<String, BigDictValue> wordsContainThis = 
-                        chsCharEngMap.computeIfAbsent(c, k -> new HashMap<>());
-                wordsContainThis.putIfAbsent(word, value);
-            }
         }
     }
 
@@ -330,114 +371,86 @@ public class BigDict {
         return chsEngMap;
     }
 
-    /**
-     * 返回每个词性的吻合度
-     */
-    private Purity posDesOfMaxPurity(String chs, Trie.Match<BigDictValue> match) {
-        String purestPos = null;  // 最好的词性
-        String purestDes = null;  // 最好的英文
-        double purest = 0.0;
-        for (Map.Entry<String, List<String>> posDes : match.value.value.entrySet()) {
-            String pos = posDes.getKey();
-            int posTotal = 0;
-            int posMatchLen = 0;
-            double wordPurest = 0.0;
-            String posPurestDes = null;  // 这个词性最好的英文
-            for (String des : posDes.getValue()) {
-                BigDictValue reverseTrans = engChsMap.get(des);
+    public Map<String, BigDictValue> getChsEngHugeMap() {
+        return chsEngHugeMap;
+    }
+    
+    public BigDictValue getByChs(String chs, boolean hugeDict) {
+        Map<String, BigDictValue> dict = hugeDict ? chsEngHugeMap : chsEngMap;
+        return dict.get(chs);
+    }
 
-                int wordTotal = 0;
-                int wordMatchLen = 0;
-                List<String> engChsSamePos = reverseTrans.value.get(pos);
-                if (engChsSamePos != null) {
-                    for (String chsDes : engChsSamePos) {
-                        wordTotal += chsDes.length();
-                        if (chsDes.contains(chs)) {
-                            wordMatchLen += chs.length();
-                        }
-                    }
-                }
-                double wordPurity = (double) wordMatchLen / wordTotal;
-                if (wordPurity > wordPurest) {
-                    wordPurest = wordPurity;
-                    posPurestDes = des;
-                }
+    public BigDictValue getByEng(String eng, boolean hugeDict) {
+        Map<String, BigDictValue> dict = hugeDict ? engChsHugeMap : engChsMap;
+        return dict.get(eng);
+    }
 
-                posTotal += wordTotal;
-                posMatchLen += wordMatchLen;
-            }
-            double posPurity = (double) posMatchLen / posTotal;
-            if (posPurity > purest) {
-                purest = posPurity;
-                purestPos = pos;
-                purestDes = posPurestDes;
-            }
-
-//            System.out.println(pos + " " + posPurity);
-        }
-//        System.out.println(purest + " " + purestPos + " " + purestDes);
-        return new Purity(purestPos, purestDes, purest);
+    public Map<String, BigDictValue> getEngChsHugeMap() {
+        return engChsHugeMap;
     }
 
     public Map<String, BigDictValue> getAllMatches(char chs) {
-        Map<String, BigDictValue> allMatches = chsCharEngMap.get(chs);
+        return getAllMatches(chs, false);
+    }
+
+    public Map<String, BigDictValue> getAllMatches(char chs, boolean hugeDict) {
+        Map<Character, Map<String, BigDictValue>> dict = hugeDict ? chsCharEngHugeMap : chsCharEngMap;
+        Map<String, BigDictValue> allMatches = dict.get(chs);
         return allMatches == null ? new HashMap<>() : allMatches;
     }
 
-    private Purity2 purityOfWord(char chsChar, String pos, String eng, List<String> chsDesOfPos) {
-//        System.out.println(chsChar + " " + eng + chsDesOfPos);
-        int matched = 0;
-        for (String cheDes : chsDesOfPos) {
-            if (cheDes.indexOf(chsChar) != -1) {
-                matched++;
+    /**
+     * 返回所有在index位是chs的词条
+     */
+    public Map<String, BigDictValue> matchAtIndex(char chs, int index, boolean hugeDict) {
+        Map<String, BigDictValue> result = new HashMap<>();
+        Map<String, BigDictValue> matches = getAllMatches(chs, hugeDict);
+        for (var entry : matches.entrySet()) {
+            if (entry.getKey().indexOf(chs) == index) {
+                result.put(entry.getKey(), entry.getValue());
             }
         }
-        double purity = (double) matched / chsDesOfPos.size();
-        return new Purity2(pos, eng, chsDesOfPos, purity);
+        return result;
     }
 
-    private static class Purity implements Comparable<Purity> {
-        final String pos;
-        final String des;
-        final double purity;
-
-        Purity(String pos, String des, double purity) {
-            this.pos = pos;
-            this.des = des;
-            this.purity = purity;
+    public WordMatch findWordMatches2(String sentence, boolean hugeDict) {
+        Map<String, BigDictValue> dict = hugeDict ? chsEngHugeMap : chsEngMap;
+        int len = 1;
+        
+        for (int i = 1; i < sentence.length(); i++) {
+            String sub = sentence.substring(0, i);
+            
         }
+        return null;
+    }
 
-        @Override
-        public String toString() {
-            return String.format("%s, %s, %f", pos, des, purity);
-        }
+    public WordMatch findWordMatches(String sentence, boolean hugeDict) {
+        Map<String, BigDictValue> matches = new HashMap<>();
+        for (int i = 0; i < sentence.length(); i++) {
 
-        boolean betterThan(Purity o) {
-            return compareTo(o) > 0;
-        }
+            char c = sentence.charAt(i);
+            Map<String, BigDictValue> charMatchAtI = matchAtIndex(c, i, hugeDict);
 
-        @Override
-        public int compareTo(Purity o) {
-            if (this.purity == o.purity) {
-                return -Integer.compare(this.des.length(), o.des.length());
+            Map<String, BigDictValue> intersection = Util.intersection(matches, charMatchAtI);
+            if (i == 0) {
+                if (charMatchAtI.isEmpty()) return null;
+                else matches = charMatchAtI;
+            } else if (intersection.isEmpty()) {
+                return new WordMatch(i, matches);
             } else {
-                return Double.compare(this.purity, o.purity);
+                matches = intersection;
             }
         }
+        return new WordMatch(sentence.length(), matches);
     }
 
-    private static class Purity2 extends Purity {
-        final List<String> chsWords;
+    public static class WordMatch {
+        public final int length;
+        public final Map<String, BigDictValue> matches;
 
-        Purity2(String pos, String des, List<String> chsWords, double purity) {
-            super(pos, des, purity);
-
-            this.chsWords = chsWords;
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + ", " + chsWords;
+        WordMatch(int length, Map<String, BigDictValue> matches) {
+            this.length = length;
+            this.matches = matches;
         }
     }
 }

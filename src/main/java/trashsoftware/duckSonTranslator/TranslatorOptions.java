@@ -1,15 +1,13 @@
 package trashsoftware.duckSonTranslator;
 
-import trashsoftware.duckSonTranslator.wordPickerChsGeg.PickerFactory;
-import trashsoftware.duckSonTranslator.wordPickerGegChs.ChsPickerFactory;
+import trashsoftware.duckSonTranslator.wordPickers.PickerFactory;
 
 public class TranslatorOptions {
     
     private boolean chongqingMode = true;
     private boolean useBaseDict = true;
     private boolean useSameSoundChar = true;
-    private PickerFactory chsGegPicker = PickerFactory.COMBINED_CHAR;
-    private ChsPickerFactory gegChsPicker = ChsPickerFactory.NAIVE_PICKER;
+    private PickerFactory pickerFactory = PickerFactory.COMBINED_CHAR;
     
     public TranslatorOptions() {
     }
@@ -38,19 +36,11 @@ public class TranslatorOptions {
         this.useSameSoundChar = useSameSoundChar;
     }
 
-    public PickerFactory getChsGegPicker() {
-        return chsGegPicker;
+    public PickerFactory getPicker() {
+        return pickerFactory;
     }
 
-    public void setChsGegPicker(PickerFactory chsGegPicker) {
-        this.chsGegPicker = chsGegPicker;
-    }
-
-    public ChsPickerFactory getGegChsPicker() {
-        return gegChsPicker;
-    }
-
-    public void setGegChsPicker(ChsPickerFactory gegChsPicker) {
-        this.gegChsPicker = gegChsPicker;
+    public void setPickerFactory(PickerFactory pickerFactory) {
+        this.pickerFactory = pickerFactory;
     }
 }

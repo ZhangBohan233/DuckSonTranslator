@@ -6,12 +6,25 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TranslationResult implements Serializable {
-
+    
     public final String originalText;
     private final List<ResultToken> resultTokens = new ArrayList<>();
+    private boolean clickable = true;
 
     public TranslationResult(String originalText) {
         this.originalText = originalText;
+    }
+
+    public List<ResultToken> getResultTokens() {
+        return resultTokens;
+    }
+
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
+    }
+
+    public boolean isClickable() {
+        return clickable;
     }
 
     public static List<int[]> rangeOf(List<ResultToken> tokens) {
@@ -69,6 +82,8 @@ public class TranslationResult implements Serializable {
 
     /**
      * 从翻译结果中找到位置within范围的tokens，只要沾到了就返回。
+     * 
+     * 这里的pos都是指在结果里的
      */
     public List<ResultToken> findTokensInRange(int beginCharPos, int endCharPos) {
         List<ResultToken> res = new ArrayList<>();

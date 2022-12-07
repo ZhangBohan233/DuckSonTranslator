@@ -1,4 +1,4 @@
-package trashsoftware.duckSonTranslator.wordPickerChsGeg;
+package trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg;
 
 public class UtilTest {
 
