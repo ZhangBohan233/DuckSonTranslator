@@ -50,6 +50,7 @@ public class TranslatorTest {
         
         TranslationResult result = translator.chsToChinglish(s);
         System.out.println(result);
+        System.out.println(translator.chsToChinglish("哥斯达黎加"));
     }
     
     @Test

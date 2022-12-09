@@ -6,7 +6,6 @@ import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.PinyinDict;
 import trashsoftware.duckSonTranslator.grammar.GrammarDict;
 import trashsoftware.duckSonTranslator.result.TranslationResult;
-import trashsoftware.duckSonTranslator.wordPickers.PickerFactory;
 import trashsoftware.duckSonTranslator.wordPickers.chitochs.ChiChsWordPicker;
 import trashsoftware.duckSonTranslator.wordPickers.wordPickerChsChi.ChsChiWordPicker;
 import trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.GegWordPicker;
@@ -17,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.7.6";
+    public static final String CORE_VERSION = "0.7.7";
 
     final BaseDict baseDict;
     final PinyinDict pinyinDict;

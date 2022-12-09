@@ -381,6 +381,7 @@ april   n.四月
 apt   adj.恰当的，易于--的
 aptitude   n.才智，天资
 arab   n.阿拉伯
+arabia   country.阿拉伯
 arabian   n.阿拉伯人，阿拉伯语
 arabic   adj.阿拉伯的
 arbitrary   adj.专横的，任意的
@@ -398,6 +399,7 @@ ardent   adj.热心的，强烈的
 arduous   adj.艰巨的，努力的
 area   n.地区，面积，领域
 arena   n.竞技场
+argentina   country.阿根廷
 argue   v.争论，辩论
 argument   n.争论，论点
 arise   v.起来，出现
@@ -672,6 +674,7 @@ behavior   n.行为，举止
 behind   prep.在---后面
 behindhand   adj.落后，事后
 being   n.生物，存在
+belgium   country.比利时
 belief   n.信仰，信心
 believe   v.相信，认为
 bell   n.钟，铃
@@ -835,8 +838,8 @@ brass   n.黄铜
 brave   adj.勇敢的 v.冒着
 bravely   adv.勇敢地
 bravery   n.勇敢
-brazil   n.巴西
-brazilian   adj.,n.巴西的(人)
+brazil   country.巴西
+brazilian   adj.,n.巴西的
 breach   n.违反(契约)
 bread   n.面包，生计
 bread-earner   n.挣钱养家的人
@@ -973,6 +976,7 @@ calmly   adv.平静地，沉着地
 calorie   n.热卡，卡路里
 camel   n.骆驼
 camera   n.照相机
+cameroon   country.喀麦隆
 camp   n.帐篷，野营 n.宿营
 campaign   n.战役，运动
 camping   n.野营
@@ -1150,6 +1154,7 @@ child   n.孩子，儿童
 childhood   n.童年
 childish   adj.孩子气的
 childlike   adj.孩子似的，天真的
+chile   country.智利
 chill   n.寒意 v.冷却
 chilly   adj.凉的，冷淡的
 chimney   n.烟囱
@@ -1590,6 +1595,7 @@ cosmic   adj.宇宙的
 cosmos   n.宇宙
 cosmopolitan   n.大都市
 cost   n.成本，费用 v.花费
+costa rica   country.哥斯达黎加
 costly   adj.昂贵的
 cottage   n.村舍
 cotton   n.棉花，棉布，棉纱
@@ -1664,6 +1670,7 @@ critic   n.评论家，爱挑剔的人
 critical   adj.批评的，危急的
 criticism   n.批评
 criticize   v.批评，评论
+croatia   country.克罗地亚
 crook   n.钩子
 crooked   adj.弯曲的，歪的
 crop   n.作物，庄稼
@@ -2241,6 +2248,7 @@ dusk   n.黄昏
 dust   n.尘土，粉末 v.掸土
 dustbin   n.簸箕
 dusty   adj.沾满灰尘的
+dutch   n.荷兰人
 duty   n.责任，义务，关税
 duty-free   adj.免税的
 dwarf   n.矮子，侏儒
@@ -2285,6 +2293,7 @@ economics   n.经济学
 economize   v.节省
 economy   n.经济，节约
 ecstasy   n.狂喜
+ecuador   country.厄瓜多尔
 edge   n.边，边缘，刀刃
 edit   v.校订，编辑
 edition   n.片(本)
@@ -3092,10 +3101,11 @@ geology   n.地质学
 geometry   n.几何学
 germ   n.萌芽，起源，细菌
 german   adj.德国的 n.德语
-germany   n.德国
+germany   country.德国
 gesture   n.姿势，手势，姿态
 get   v.获得，记住，到达
 get-together   n.集会，聚会
+ghana   country.加纳
 ghost   n.鬼魂，幽灵
 giant   n.巨人 adj.巨大的
 gift   n.礼品，天赋
@@ -3870,6 +3880,8 @@ involved   adj.涉及的，复杂的
 involvement   n.卷入，涉足
 inward   adj.里面的，内心的
 inwards   adv.向内的
+iran   country.伊朗
+iraq   country.伊拉克
 ireland   n.爱尔兰
 iIrish   n.,adj.爱尔兰人(的)
 iron   n.铁，熨斗 v.熨平
@@ -3891,7 +3903,7 @@ isolation   n.隔离，孤立状态
 issue   v.发行,发布 n.发行物
 it   pron.它
 italian   n.,adj.意大利人(的)
-italy   n.意大利
+italy   country.意大利
 itch   v.,n.痒，热望
 item   n.条款，项目
 itemize   v.分列
@@ -3903,7 +3915,7 @@ jacket   n.短外套，茄克衫
 jail   n.监狱 v.监禁
 jam   n.果酱，阻塞
 january   n.一月
-japan   n.日本
+japan   country.日本
 japanese   n.,adj.日本人(的)
 jar   n.罐子，坛子，刺耳声
 jaw   n.下颚，下巴
@@ -3996,11 +4008,12 @@ knight   n.骑士，爵士
 knit   v.编织，皱(眉)
 knob   n.球形把手
 knock   v.敲，击倒 n.敲门声
-knot   n.结，树节 v.打结
+knot   n.结，树节，节 v.打结
 know   n.知道，认识，懂
-know-how   n.专项技术，诀窍
 knowledge   n.知识，学识
 knowledgeable   adj.博学的
+korea   country.韩国
+korean   n.韩国人 adj.韩国的
 lab   n.实验室
 label   n.标签 v.标明
 laboratory   n.实验室
@@ -4582,6 +4595,7 @@ morality   n.道德品质
 more   adj.更多的,更 adv.更
 moreover   adv.此外，而且
 morning   n.早晨，上午
+morocco   country.摩洛哥
 mortal   adj.致命的
 moslem   n.,adj.穆斯林
 mosque   n.清真寺
@@ -4725,6 +4739,7 @@ nervous   adj.神经(质)的，
 nest   n.巢，窝
 nestle   v.安顿，建巢
 net   n.网 adj.净的，纯的
+netherlands   country.荷兰
 network   n.网络，网状组织
 neutral   adj.中立的，中和的
 neutrality   n.中立
@@ -5055,9 +5070,11 @@ parachute   n.降落伞
 parade   n.,v.游行
 paradise   n.天堂，天国
 paragraph   n.段落，节
+paraguay   country.巴拉圭
 parallel   adj.平行的，类似的
 paralyse   v.使麻痹，惊呆
 parameter   n.参数，参量
+paraphrase   v.改述
 parasite   n.寄生虫，寄生物
 parcel   n.包裹，邮包
 pardon   n.,v.原谅，赦免
@@ -5201,6 +5218,7 @@ pertinence   n.中肯
 pertinent   adj.中肯的，恰当的
 perturb   v.扰乱
 perturbed   adj.烦燥不安的
+peru   country.秘鲁
 perusal   n.细读
 peruse   v.仔细阅读，审查
 pessimist   n.悲观(主义)
@@ -5327,6 +5345,7 @@ poison   n.毒，毒药 v.放毒
 poisonous   adj.有毒的
 poke   v.戳，刺
 poker   n.扑克
+poland   country.波兰
 polar   adj.极的
 polarity   n.极性，极端
 pole   n.柱，杆，极
@@ -5366,7 +5385,7 @@ porter   n.搬运工
 portion   n.一份，部分
 portrait   n.肖像，画像，描写
 portray   v.描写，给---画像
-portugal   n.葡萄牙
+portugal   country.葡萄牙
 portuguese   n.,adj.葡萄牙人(的)
 pose   v.作姿态，提供考虑
 position   n.位置，地位，处境
@@ -5657,6 +5676,7 @@ put   v.放置，估价，表达
 puzzle   v.使困惑 n.难题,谜语
 pyjamas   n.睡衣
 pyramid   n.金字塔
+qatar   country.卡塔尔
 qualification   n.资格，条件
 qualified   adj.有资格的
 qualify   v.使合格，使胜任
@@ -6195,6 +6215,7 @@ satisfy   v.满足，使满意，偿还
 saturation   n.浸透，饱和
 saturday   n.星期六
 saturn   n.土星
+saudi arabia   country.沙特阿拉伯
 sauce   n.调味汁，酱油
 saucer   n.茶碟
 sausage   n.香肠，腊肠
@@ -6301,6 +6322,7 @@ senator   n.参议员
 send   v.派遣，送，寄出，请
 sender   n.寄信人
 senior   adj.年长的，老资格的
+senegal   country.塞内加尔
 sensation   n.感觉，感动
 sensational   adj.轰动的
 sense   n.感官，感觉，见识
@@ -6316,6 +6338,7 @@ separately   adv.分别地
 separation   n.分离，分开
 september   n.九月
 sequence   n.一连串，顺序
+serbia   country.塞尔维亚
 serene   adj.清澈的，晴朗的
 serenity   n.晴朗
 series   n.系列，从书
@@ -6662,7 +6685,7 @@ spaceship   n.太空船，宇宙飞船
 spaceshuttle   n.航天飞机
 spacious   adj.广阔的，宽敞的
 spade   n.铲子，铁锹，黑桃
-spain   n.西班牙
+spain   country.西班牙
 span   n.跨度；指距 v.跨越
 spanish   adj.,n.西班牙人(的)
 spare   v.腾出时间 adj.备用的
@@ -7427,6 +7450,7 @@ tumble   v.跌倒，摔跤，打滚
 tumult   n.骚动，暴动，吵闹
 tuna   n.金枪鱼
 tune   n.调子 v.调谐
+tunisia   country.突尼斯
 tunnel   n.隧道，地道，坑道
 turbine   n.汽轮机，涡轮机
 turbulent   adj.骚动的
@@ -7575,6 +7599,7 @@ urban   adj.都市的，城市的
 urge   v.敦促，推动 n.冲动
 urgent   adj.紧迫的，紧急的
 urgently   adv.紧急地
+uruguay   country.乌拉圭
 us   pron.我们(宾格)
 usage   n.使用，惯用法
 use   v.使用 n.用途，利用
@@ -7803,6 +7828,7 @@ weld   v.焊接
 welfare   n.福利
 well   n.井 adv.好，充分
 well-known   adj.有名的，著名的
+welsh   country.威尔士
 west   n.西方 adj.向西的
 western   adj.西的，西方的
 westerner   n.西方人，欧美人
