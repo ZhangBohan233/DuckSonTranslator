@@ -1,5 +1,6 @@
 package trashsoftware.duckSonTranslator.words;
 
+import trashsoftware.duckSonTranslator.TranslatorOptions;
 import trashsoftware.duckSonTranslator.dict.BaseDict;
 import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.PinyinDict;
@@ -12,13 +13,19 @@ public class DuckSonDictionary {
     final BaseDict baseDict;
     final BigDict bigDict;
     final PinyinDict pinyinDict;
+    transient final TranslatorOptions options;
 
-    public DuckSonDictionary() throws IOException {
+    public DuckSonDictionary(TranslatorOptions options) throws IOException {
+        this.options = options;
         this.baseDict = BaseDict.getInstance();
         this.bigDict = BigDict.getInstance();
         this.pinyinDict = PinyinDict.getInstance();
     }
-    
+
+    public TranslatorOptions getOptions() {
+        return options;
+    }
+
     public String inferSrcLang(String text) {
         int chsCount = 0;
         int engCount = 0;

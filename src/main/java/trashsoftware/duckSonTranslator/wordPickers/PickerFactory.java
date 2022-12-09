@@ -31,10 +31,10 @@ public enum PickerFactory {
             CombinedChsChiPicker.class,
             NaiveChiChsWordPicker.class);
 
-    private final Class<? extends GegWordPicker> chsGegPickerClass;
-    private final Class<? extends ChsCharPicker> gegChsPickerClass;
-    private final Class<? extends ChsChiWordPicker> chsChiPickerClass;
-    private final Class<? extends ChiChsWordPicker> chiChsPickerClass;
+    public final Class<? extends GegWordPicker> chsGegPickerClass;
+    public final Class<? extends ChsCharPicker> gegChsPickerClass;
+    public final Class<? extends ChsChiWordPicker> chsChiPickerClass;
+    public final Class<? extends ChiChsWordPicker> chiChsPickerClass;
 
     PickerFactory(Class<? extends GegWordPicker> chsGegPickerClass,
                   Class<? extends ChsCharPicker> gegChsPickerClass,

@@ -31,7 +31,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         worldCupCountries();
-        TranslatorOptions options = new TranslatorOptions();
+        TranslatorOptions options = TranslatorOptions.getInstance();
 //        options.setUseBaseDict(false);
 //        options.setUseSameSoundChar(false);
 //        options.setChsGegPicker(PickerFactory.COMBINED_CHAR);

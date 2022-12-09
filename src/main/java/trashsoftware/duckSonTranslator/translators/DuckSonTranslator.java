@@ -17,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.7.4";
+    public static final String CORE_VERSION = "0.7.6";
 
     final BaseDict baseDict;
     final PinyinDict pinyinDict;
@@ -41,10 +41,10 @@ public class DuckSonTranslator {
                     "chi", IdentityTranslator.class
             )
     );
-    transient GegWordPicker chsToGegPicker;
-    transient ChsCharPicker gegToChsPicker;
-    transient ChsChiWordPicker chsToChiPicker;
-    transient ChiChsWordPicker chiToChsPicker;
+    private transient GegWordPicker chsToGegPicker;
+    private transient ChsCharPicker gegToChsPicker;
+    private transient ChsChiWordPicker chsToChiPicker;
+    private transient ChiChsWordPicker chiToChsPicker;
 
     public DuckSonTranslator(TranslatorOptions options) throws IOException {
         this.options = options;
@@ -53,11 +53,11 @@ public class DuckSonTranslator {
         this.bigDict = BigDict.getInstance();
         this.grammarDict = new GrammarDict();
 
-        createPickerInstances();
+//        createPickerInstances();
     }
 
     public DuckSonTranslator() throws IOException {
-        this(new TranslatorOptions());
+        this(TranslatorOptions.getInstance());
     }
 
     public String getCoreVersion() {
@@ -68,12 +68,12 @@ public class DuckSonTranslator {
         return baseDict.getVersionStr() + "." + pinyinDict.getVersionStr() + "." + bigDict.getVersionStr();
     }
 
-    private void createPickerInstances() {
-        this.chsToGegPicker = options.getPicker().createChsToGeg(bigDict);
-        this.gegToChsPicker = options.getPicker().createGegToChs(bigDict);
-        this.chsToChiPicker = options.getPicker().createChsToChi(bigDict);
-        this.chiToChsPicker = options.getPicker().createChiToChs(bigDict);
-    }
+//    private void createPickerInstances() {
+//        this.chsToGegPicker = options.getPicker().createChsToGeg(bigDict);
+//        this.gegToChsPicker = options.getPicker().createGegToChs(bigDict);
+//        this.chsToChiPicker = options.getPicker().createChsToChi(bigDict);
+//        this.chiToChsPicker = options.getPicker().createChiToChs(bigDict);
+//    }
 
     @SuppressWarnings("unused")
     public String autoDetectLanguage(String input) {
@@ -101,49 +101,36 @@ public class DuckSonTranslator {
     }
 
     @SuppressWarnings("unused")
-    public boolean isUseBaseDict() {
-        return options.isUseBaseDict();
+    public TranslatorOptions getOptions() {
+        return options;
     }
 
-    @SuppressWarnings("unused")
-    public void setUseBaseDict(boolean useSameSoundChar) {
-        options.setUseBaseDict(useSameSoundChar);
+    public ChsChiWordPicker getChsToChiPicker() {
+        if (chsToChiPicker == null || chsToChiPicker.getClass() != options.getPicker().chsChiPickerClass) {
+            chsToChiPicker = options.getPicker().createChsToChi(bigDict);
+        }
+        return chsToChiPicker;
     }
 
-    @SuppressWarnings("unused")
-    public boolean isChongqingMode() {
-        return options.isChongqingMode();
-    }
-
-    @SuppressWarnings("unused")
-    public void setChongqingMode(boolean chongqingMode) {
-        options.setChongqingMode(chongqingMode);
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isUseSameSoundChar() {
-        return options.isUseSameSoundChar();
-    }
-
-    @SuppressWarnings("unused")
-    public void setUseSameSoundChar(boolean useSameSoundChar) {
-        options.setUseSameSoundChar(useSameSoundChar);
-    }
-
-    @SuppressWarnings("unused")
-    public GegWordPicker getChsGegPicker() {
-        return this.chsToGegPicker;
-    }
-
-    @SuppressWarnings("unused")
-    public void setPickers(PickerFactory pickerFactory) {
-        options.setPickerFactory(pickerFactory);
-        createPickerInstances();
-    }
-
-    @SuppressWarnings("unused")
     public ChsCharPicker getGegToChsPicker() {
+        if (gegToChsPicker == null || gegToChsPicker.getClass() != options.getPicker().gegChsPickerClass) {
+            gegToChsPicker = options.getPicker().createGegToChs(bigDict);
+        }
         return gegToChsPicker;
+    }
+
+    public ChiChsWordPicker getChiToChsPicker() {
+        if (chiToChsPicker == null || chiToChsPicker.getClass() != options.getPicker().chiChsPickerClass) {
+            chiToChsPicker = options.getPicker().createChiToChs(bigDict);
+        }
+        return chiToChsPicker;
+    }
+
+    public GegWordPicker getChsToGegPicker() {
+        if (chsToGegPicker == null || chsToGegPicker.getClass() != options.getPicker().chsGegPickerClass) {
+            chsToGegPicker = options.getPicker().createChsToGeg(bigDict);
+        }
+        return chsToGegPicker;
     }
 
     public TranslationResult chsToGeglish(String chs) {

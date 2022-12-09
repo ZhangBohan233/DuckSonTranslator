@@ -11,8 +11,8 @@ public class TranslatorTest {
     public static void main(String[] args) throws Exception {
         TranslatorTest translatorTest = new TranslatorTest();
 //        translatorTest.testIntro();
-        translatorTest.testChiChs();
-//        translatorTest.testChsChi();
+//        translatorTest.testChiChs();
+        translatorTest.testChsChi();
 //        translatorTest.serializeTest();
     }
     

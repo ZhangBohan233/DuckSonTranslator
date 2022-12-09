@@ -1,7 +1,5 @@
 package trashsoftware.duckSonTranslator.dict;
 
-import trashsoftware.duckSonTranslator.trees.Trie;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,11 +14,24 @@ public class BigDict implements Serializable {
     //    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
     protected final Map<String, BigDictValue> engChsMap = new HashMap<>();
     protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
+
+    /**
+     * 中文字符与词条的表，用于加速搜索
+     */
     protected final Map<Character, Map<String, BigDictValue>> chsCharEngMap = new HashMap<>();
+
+    /**
+     * 英文字母与词条的表，用于加速搜索
+     */
+    protected final Map<Character, Map<String, BigDictValue>> engCharChsMap = new HashMap<>();
 
     protected final Map<String, BigDictValue> engChsHugeMap = new HashMap<>();
     protected final Map<String, BigDictValue> chsEngHugeMap = new HashMap<>();
     protected final Map<Character, Map<String, BigDictValue>> chsCharEngHugeMap = new HashMap<>();
+    protected final Map<Character, Map<String, BigDictValue>> engCharChsHugeMap = new HashMap<>();
+
+//    protected Trie<BigDictValue> chsKeyTrie;
+//    protected Trie<BigDictValue> chsKeyHugeTrie;
 
     private BigDict() throws IOException {
         readHighSchoolDict();
@@ -43,7 +54,7 @@ public class BigDict implements Serializable {
         if (chsWord.length() > 1 && chsWord.startsWith("使")) {
             chsWord = chsWord.substring(1);
         }
-        
+
         chsWord = chsWord.replaceAll("…", "");
 
         return chsWord;
@@ -107,8 +118,8 @@ public class BigDict implements Serializable {
         return builder.toString();
     }
 
-    private static void createChsCharMap(Map<String, BigDictValue> srcMap,
-                                         Map<Character, Map<String, BigDictValue>> dstMap) {
+    private static void createCharMap(Map<String, BigDictValue> srcMap,
+                                      Map<Character, Map<String, BigDictValue>> dstMap) {
         for (var wordValue : srcMap.entrySet()) {
             String word = wordValue.getKey();
             BigDictValue value = wordValue.getValue();
@@ -235,7 +246,12 @@ public class BigDict implements Serializable {
                 }
             }
         }
-        createChsCharMap(chsEngMap, chsCharEngMap);
+        createCharMap(chsEngMap, chsCharEngMap);
+        createCharMap(engChsMap, engCharChsMap);
+//        chsKeyTrie = new Trie<>();
+//        for (var entry : chsEngMap.entrySet()) {
+//            chsKeyTrie.insert(entry.getKey(), entry.getValue());
+//        }
 //        for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
 //            chsEngTrie.insert(entry.getKey(), entry.getValue());
 //        }
@@ -346,7 +362,12 @@ public class BigDict implements Serializable {
                     }
                 }
             }
-            createChsCharMap(chsEngHugeMap, chsCharEngHugeMap);
+            createCharMap(chsEngHugeMap, chsCharEngHugeMap);
+            createCharMap(engChsHugeMap, engCharChsHugeMap);
+//            chsKeyHugeTrie = new Trie<>();
+//            for (var entry : chsEngHugeMap.entrySet()) {
+//                chsKeyHugeTrie.insert(entry.getKey(), entry.getValue());
+//            }
 //            for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
 //                chsEngTrie.insert(entry.getKey(), entry.getValue());
 //            }
@@ -374,7 +395,7 @@ public class BigDict implements Serializable {
     public Map<String, BigDictValue> getChsEngHugeMap() {
         return chsEngHugeMap;
     }
-    
+
     public BigDictValue getByChs(String chs, boolean hugeDict) {
         Map<String, BigDictValue> dict = hugeDict ? chsEngHugeMap : chsEngMap;
         return dict.get(chs);
@@ -399,49 +420,74 @@ public class BigDict implements Serializable {
         return allMatches == null ? new HashMap<>() : allMatches;
     }
 
+    public Map<String, BigDictValue> getAllEngMatches(char c, boolean hugeDict) {
+        Map<Character, Map<String, BigDictValue>> dict = hugeDict ? engCharChsHugeMap : engCharChsMap;
+        Map<String, BigDictValue> allMatches = dict.get(c);
+        return allMatches == null ? new HashMap<>() : allMatches;
+    }
+
     /**
-     * 返回所有在index位是chs的词条
+     * 返回所有在index位是c的词条
      */
-    public Map<String, BigDictValue> matchAtIndex(char chs, int index, boolean hugeDict) {
+    private Map<String, BigDictValue> matchAtIndex(CharMatchFinder finder, char c, int index, boolean hugeDict) {
         Map<String, BigDictValue> result = new HashMap<>();
-        Map<String, BigDictValue> matches = getAllMatches(chs, hugeDict);
+        Map<String, BigDictValue> matches = finder.find(c, hugeDict);
         for (var entry : matches.entrySet()) {
-            if (entry.getKey().indexOf(chs) == index) {
+            if (entry.getKey().indexOf(c) == index) {
                 result.put(entry.getKey(), entry.getValue());
             }
         }
         return result;
     }
 
+//    public Map<String, BigDictValue> getAllChsPrefixedBy(String prefix, boolean hugeDict) {
+//        Trie<BigDictValue> trie = hugeDict ? chsKeyHugeTrie : chsKeyTrie;
+//        return trie.getByPrefix(prefix);
+//    }
+
     public WordMatch findWordMatches2(String sentence, boolean hugeDict) {
         Map<String, BigDictValue> dict = hugeDict ? chsEngHugeMap : chsEngMap;
         int len = 1;
-        
+
         for (int i = 1; i < sentence.length(); i++) {
             String sub = sentence.substring(0, i);
-            
+
         }
         return null;
     }
-
-    public WordMatch findWordMatches(String sentence, boolean hugeDict) {
+    
+    private WordMatch findWordMatches(CharMatchFinder finder, String sentence, boolean hugeDict, boolean requireExact) {
         Map<String, BigDictValue> matches = new HashMap<>();
         for (int i = 0; i < sentence.length(); i++) {
 
             char c = sentence.charAt(i);
-            Map<String, BigDictValue> charMatchAtI = matchAtIndex(c, i, hugeDict);
+            Map<String, BigDictValue> charMatchAtI = matchAtIndex(finder, c, i, hugeDict);
 
             Map<String, BigDictValue> intersection = Util.intersection(matches, charMatchAtI);
             if (i == 0) {
                 if (charMatchAtI.isEmpty()) return null;
                 else matches = charMatchAtI;
             } else if (intersection.isEmpty()) {
-                return new WordMatch(i, matches);
+                if (requireExact) return null;
+                else return new WordMatch(i, matches);
             } else {
                 matches = intersection;
             }
         }
         return new WordMatch(sentence.length(), matches);
+    }
+
+    /**
+     * 返回所有与sentence有共同子串的match
+     *
+     * @param requireExact sentence是否必须为返回词的完全子串。例如“高速路”不是"高速公路"的完全子串
+     */
+    public WordMatch findWordMatchesByChs(String sentence, boolean hugeDict, boolean requireExact) {
+        return findWordMatches(this::getAllMatches, sentence, hugeDict, requireExact);
+    }
+    
+    public WordMatch findWordMatchesByEng(String sentence, boolean hugeDict, boolean requireExact) {
+        return findWordMatches(this::getAllEngMatches, sentence, hugeDict, requireExact);
     }
 
     public static class WordMatch {
@@ -452,5 +498,17 @@ public class BigDict implements Serializable {
             this.length = length;
             this.matches = matches;
         }
+
+        @Override
+        public String toString() {
+            return "WordMatch{" +
+                    "length=" + length +
+                    ", matches=" + matches +
+                    '}';
+        }
+    }
+
+    private interface CharMatchFinder {
+        Map<String, BigDictValue> find(char c, boolean hugeDict);
     }
 }

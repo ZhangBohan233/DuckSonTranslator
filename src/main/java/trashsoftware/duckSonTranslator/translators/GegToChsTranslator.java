@@ -35,7 +35,7 @@ public class GegToChsTranslator extends StdLatinToChs {
         }
 
         // 检查bigDict
-        ResultFromLatin chsDirect = parent.gegToChsPicker.translate(eng);
+        ResultFromLatin chsDirect = parent.getGegToChsPicker().translate(eng);
         if (chsDirect != null) {
             token.setChs(chsDirect.translated);
             token.setPartOfSpeech(chsDirect.partOfSpeech);
@@ -43,7 +43,7 @@ public class GegToChsTranslator extends StdLatinToChs {
         }
         if (possibleForms != null) {
             for (String[] engTense : possibleForms) {
-                chsDirect = parent.gegToChsPicker.translate(engTense[0]);
+                chsDirect = parent.getGegToChsPicker().translate(engTense[0]);
                 if (chsDirect != null) {
                     token.setOriginalEng(engTense[0]);
                     token.setChs(chsDirect.translated);

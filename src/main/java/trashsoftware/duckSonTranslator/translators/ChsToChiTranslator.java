@@ -63,7 +63,7 @@ public class ChsToChiTranslator extends StdChsToLatin {
             }
 
             // 查小字典
-            BaseItem direct = parent.isUseBaseDict()
+            BaseItem direct = parent.getOptions().isUseBaseDict()
                     ? parent.baseDict.getByChs(chs, index)
                     : null;
             if (direct != null) {
@@ -124,9 +124,9 @@ public class ChsToChiTranslator extends StdChsToLatin {
     private void hugeDictTrans(String notTransSeg, List<Token> tokens, int startIndex) {
         int index = startIndex;
         while (!notTransSeg.isEmpty()) {
-            ResultFromChs match = parent.chsToChiPicker.translate(notTransSeg);
+            ResultFromChs match = parent.getChsToChiPicker().translate(notTransSeg);
             if (match != null) {
-                if (match.matchLength == 1 && parent.isUseBaseDict()) {
+                if (match.matchLength == 1 && parent.getOptions().isUseBaseDict()) {
                     // 一个字的，去小字典看看
                     BaseItem direct = parent.baseDict.getByChs(notTransSeg, 0);
                     if (direct != null) {
@@ -152,7 +152,7 @@ public class ChsToChiTranslator extends StdChsToLatin {
                 continue;
             }
 
-            BaseItem direct = parent.isUseBaseDict()
+            BaseItem direct = parent.getOptions().isUseBaseDict()
                     ? parent.baseDict.getByChs(notTransSeg, 0)
                     : null;
             if (direct != null) {
@@ -164,8 +164,8 @@ public class ChsToChiTranslator extends StdChsToLatin {
                 continue;
             }
             
-            if (parent.isUseSameSoundChar()) {
-                if (parent.isUseBaseDict()) {
+            if (parent.getOptions().isUseSameSoundChar()) {
+                if (parent.getOptions().isUseBaseDict()) {
                     BaseItem baseSameSound = baseDictSameSound(notTransSeg.charAt(0), true);
                     if (baseSameSound != null) {
                         int len = baseSameSound.chs.length();

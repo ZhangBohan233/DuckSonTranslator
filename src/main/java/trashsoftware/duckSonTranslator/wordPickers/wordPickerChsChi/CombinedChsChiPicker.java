@@ -17,7 +17,7 @@ public class CombinedChsChiPicker extends ChsChiWordPicker {
     @Override
     public ResultFromChs translate(String sentence) {
 
-        BigDict.WordMatch wordMatch = bigDict.findWordMatches(sentence, true);
+        BigDict.WordMatch wordMatch = bigDict.findWordMatchesByChs(sentence, true, false);
         if (wordMatch == null || wordMatch.length == 0) return null;
 
         // 这个不是null就必定不是empty

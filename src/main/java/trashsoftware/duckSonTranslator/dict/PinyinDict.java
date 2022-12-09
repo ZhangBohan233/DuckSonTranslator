@@ -66,4 +66,20 @@ public class PinyinDict {
     public List<Character> getChsListByPinyin(String pinyin) {
         return pinyinToChs.get(pinyin);
     }
+
+    public static String getPin(String[] pinyin, boolean chongqingMode) {
+        return chongqingMode ? pinyin[1] : pinyin[0];
+    }
+
+    public List<Character> getSameSoundChsChars(char chs, boolean chongqingMode) {
+        String[] pinyin = getPinyinByChs(chs);
+        if (pinyin == null) return null;
+        List<Character> sameSound;
+        if (chongqingMode) {
+            sameSound = getChsListByCqPin(getPin(pinyin, true));
+        } else {
+            sameSound = getChsListByPinyin(getPin(pinyin, false));
+        }
+        return sameSound;
+    }
 }

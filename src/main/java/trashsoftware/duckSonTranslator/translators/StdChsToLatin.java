@@ -86,7 +86,7 @@ public abstract class StdChsToLatin extends Translator {
         int index = startIndex;
         while (!notTransSeg.isEmpty()) {
             ResultFromChs match = picker.translate(notTransSeg);
-            if (match != null && (match.strong || !parent.isUseSameSoundChar())) {
+            if (match != null && (match.strong || !parent.getOptions().isUseSameSoundChar())) {
                 // 不strong的时候就先放一放，去检查小字典同音字
                 String thisWord = notTransSeg.substring(0, match.matchLength);
 
@@ -101,7 +101,7 @@ public abstract class StdChsToLatin extends Translator {
 
             Token trans;
             int pushLen;
-            if (parent.isUseSameSoundChar()) {
+            if (parent.getOptions().isUseSameSoundChar()) {
                 char cur = notTransSeg.charAt(0);
                 BaseItem sameSoundBase = baseDictSameSound(cur, true);
                 if (sameSoundBase != null) {
@@ -170,7 +170,7 @@ public abstract class StdChsToLatin extends Translator {
         String[] pinyin = parent.pinyinDict.getPinyinByChs(chs);
         if (pinyin == null) return null;
         List<Character> sameSound;
-        if (parent.isChongqingMode()) {
+        if (parent.getOptions().isChongqingMode()) {
             sameSound = parent.pinyinDict.getChsListByCqPin(getPin(pinyin));
         } else {
             sameSound = parent.pinyinDict.getChsListByPinyin(getPin(pinyin));
@@ -200,7 +200,7 @@ public abstract class StdChsToLatin extends Translator {
         ResultFromChs minVal = null;
         for (Character c : chsChars) {
             String s = String.valueOf(c);
-            ResultFromChs resultFromChs = parent.chsToGegPicker.translate(s);
+            ResultFromChs resultFromChs = parent.getChsToGegPicker().translate(s);
             if (resultFromChs != null && resultFromChs.precedence > maxPre) {
                 maxPre = resultFromChs.precedence;
                 minChs = s;

@@ -1,7 +1,6 @@
 package trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg;
 
 import trashsoftware.duckSonTranslator.dict.BigDict;
-import trashsoftware.duckSonTranslator.wordPickers.Picker;
 import trashsoftware.duckSonTranslator.wordPickers.PickerFactory;
 import trashsoftware.duckSonTranslator.wordPickers.PickerFromChs;
 

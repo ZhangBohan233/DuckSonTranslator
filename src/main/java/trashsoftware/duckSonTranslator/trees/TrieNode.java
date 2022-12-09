@@ -42,6 +42,19 @@ public class TrieNode<V> extends TreeNode<TrieNode<V>, V> {
 //        char next = fullStr.charAt(depth);
 //        new TrieNode<>(next, tree, this, depth + 1, value);
 //    }
+    
+    protected Map<String, V> allChildren() {
+        Map<String, V> resultMap = new HashMap<>();
+        if (getValue() != null) {
+            resultMap.put(fullWord(), getValue());
+        }
+        if (children != null) {
+            for (TrieNode<V> sub : children.values()) {
+                resultMap.putAll(sub.allChildren());
+            }
+        }
+        return resultMap;
+    }
 
     protected void allChildrenWithValue(Map<String, Trie.Match<V>> map, int matchLength) {
         if (getValue() != null) {

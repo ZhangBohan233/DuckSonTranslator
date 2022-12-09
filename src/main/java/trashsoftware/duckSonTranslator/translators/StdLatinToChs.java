@@ -15,7 +15,7 @@ public abstract class StdLatinToChs extends Translator {
         super(parent);
     }
 
-    protected static void increase(int[] limits, int[] indices) {
+    private static void increase(int[] limits, int[] indices) {
         indices[indices.length - 1]++;
 
         for (int i = limits.length - 1; i >= 0; i--) {
@@ -26,7 +26,7 @@ public abstract class StdLatinToChs extends Translator {
         }
     }
 
-    protected static String[][][] makeCombinations(List<String[]>[] possibles) {
+    public static String[][][] makeCombinations(List<String[]>[] possibles) {
         int ways = 1;
         int[] limits = new int[possibles.length];
         int[] indices = new int[possibles.length];

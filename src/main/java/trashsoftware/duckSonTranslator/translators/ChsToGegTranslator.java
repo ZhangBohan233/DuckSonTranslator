@@ -3,8 +3,6 @@ package trashsoftware.duckSonTranslator.translators;
 import trashsoftware.duckSonTranslator.dict.BaseItem;
 import trashsoftware.duckSonTranslator.grammar.Token;
 import trashsoftware.duckSonTranslator.result.TranslationResult;
-import trashsoftware.duckSonTranslator.wordPickers.PickerFromChs;
-import trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.ResultFromChs;
 
 import java.util.*;
 
@@ -63,7 +61,7 @@ public class ChsToGegTranslator extends StdChsToLatin {
             }
 
             // 查小字典
-            BaseItem direct = parent.isUseBaseDict()
+            BaseItem direct = parent.getOptions().isUseBaseDict()
                     ? parent.baseDict.getByChs(chs, index)
                     : null;
             if (direct != null) {
@@ -113,7 +111,7 @@ public class ChsToGegTranslator extends StdChsToLatin {
             }
             String notTransSeg = notTranslated.get(i);
             if (notTransSeg != null) {
-                bigDictTrans(notTransSeg, tokens, i, parent.chsToGegPicker);
+                bigDictTrans(notTransSeg, tokens, i, parent.getChsToGegPicker());
             }
         }
         applyGrammar(tokens);

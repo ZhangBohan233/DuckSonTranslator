@@ -4,12 +4,20 @@ import trashsoftware.duckSonTranslator.wordPickers.PickerFactory;
 
 public class TranslatorOptions {
     
+    private static TranslatorOptions instance;
     private boolean chongqingMode = true;
     private boolean useBaseDict = true;
     private boolean useSameSoundChar = true;
     private PickerFactory pickerFactory = PickerFactory.COMBINED_CHAR;
     
-    public TranslatorOptions() {
+    private TranslatorOptions() {
+    }
+
+    public static TranslatorOptions getInstance() {
+        if (instance == null) {
+            instance = new TranslatorOptions();
+        }
+        return instance;
     }
 
     public boolean isChongqingMode() {
