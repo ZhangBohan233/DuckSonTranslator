@@ -14,9 +14,10 @@ public class GegChsSearcher extends Searcher {
 
     @Override
     protected List<WordResult> searchByText(String text) {
+        String lower = text.toLowerCase(Locale.ROOT);
         LinkedHashMap<String, WordResult> results = new LinkedHashMap<>();  // chs: results
 
-        searchBySubstring(results, text);
+        searchBySubstring(results, lower);
 
         return new ArrayList<>(results.values());
     }
@@ -29,7 +30,7 @@ public class GegChsSearcher extends Searcher {
                 reverseSearch(engWord, results, baseItem.eng, Map.of(baseItem.partOfSpeech, Set.of(baseItem.chs)));
             }
         }
-        BigDict.WordMatch wordMatches = parent.bigDict.findWordMatchesByEng(engWord, useHugeDict, true);
+        BigDict.WordMatch wordMatches = parent.bigDict.findPrefixMatchesByEng(engWord, useHugeDict, true);
         if (wordMatches != null) {
             for (var entry : wordMatches.matches.entrySet()) {
                 reverseSearch(engWord, results, entry.getKey(), entry.getValue().value);

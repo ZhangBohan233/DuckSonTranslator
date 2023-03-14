@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ResultToken implements Serializable {
     
-    public final String translated;
+    private String translated;
     private final List<int[]> origRanges = new ArrayList<>();
     
     public ResultToken(String translated, int origIndex, int origLength) {
@@ -25,7 +25,11 @@ public class ResultToken implements Serializable {
         this(translated, ranges);
         origRanges.add(new int[]{origIndex, origIndex + origLength});
     }
-    
+
+    public void setTranslated(String translated) {
+        this.translated = translated;
+    }
+
     public void addRange(int origIndex, int origLength) {
         origRanges.add(new int[]{origIndex, origIndex + origLength});
     }

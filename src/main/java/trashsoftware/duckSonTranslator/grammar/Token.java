@@ -4,17 +4,17 @@ import java.util.*;
 
 public class Token {
 
+    final Set<String> appliedTenses = new HashSet<>();
     private String chs;
     private String eng;
     private String engAfterTense;
     private String partOfSpeech;
-    final Set<String> appliedTenses = new HashSet<>();
     private GrammarEffect grammarEffect;
     private boolean applied = false;  // 语法token是否已被apply
-    
+
     // 只在grammar token里用, 记载哪个actual token被这个grammar token上了
     private Token tokenAppliedThisGrammar;
-    
+
     private int posInOrig;
     private int lengthInOrig;
 
@@ -76,7 +76,7 @@ public class Token {
     public boolean isGrammarApplied() {
         return applied;
     }
-    
+
     public void setGrammarApplied(Token tokenAppliedThisGrammar) {
         this.applied = true;
         this.tokenAppliedThisGrammar = tokenAppliedThisGrammar;
@@ -84,6 +84,17 @@ public class Token {
 
     public Token getTokenAppliedThisGrammar() {
         return tokenAppliedThisGrammar;
+    }
+
+    public void reapplyTenses() {
+        if (engAfterTense != null) {
+            engAfterTense = eng;
+        }
+        Set<String> copiedTenses = new HashSet<>(appliedTenses);
+        appliedTenses.clear();
+        for (String tense : copiedTenses) {
+            applyTense(tense);
+        }
     }
 
     public void applyTense(String tenseName) {
@@ -137,24 +148,24 @@ public class Token {
         String eng = getEng();
         setEngAfterTense(eng + "ing");
     }
-    
+
     private void applyBetter() {
         String eng = getEng();
         setEngAfterTense(eng + "er");
     }
-    
+
     private void applyPlural() {
         String eng = getEng();
         if (!eng.endsWith("s")) {
             setEngAfterTense(eng + "s");
         }
     }
-    
+
     private void applyBest() {
         String eng = getEng();
         setEngAfterTense(eng + "est");
     }
-    
+
     public List<Token> applyTenseToChs(GrammarDict grammarDict) {
         List<Token> result = new ArrayList<>();
         for (String tense : appliedTenses) {
@@ -226,7 +237,7 @@ public class Token {
     public boolean isActual() {
         return this.grammarEffect == null;
     }
-    
+
     public boolean isTreatedAsActual() {
         return isActual() || !isGrammarApplied();
     }
@@ -239,6 +250,10 @@ public class Token {
         return chs;
     }
 
+    public void setChs(String chs) {
+        this.chs = chs;
+    }
+
     public String getEng() {
         return engAfterTense == null ? eng : engAfterTense;
     }
@@ -247,16 +262,12 @@ public class Token {
         return engAfterTense;
     }
 
-    public String getOrigEng() {
-        return eng;
-    }
-
     public void setEngAfterTense(String eng) {
         this.engAfterTense = eng;
     }
 
-    public void setChs(String chs) {
-        this.chs = chs;
+    public String getOrigEng() {
+        return eng;
     }
 
     public String getPartOfSpeech() {

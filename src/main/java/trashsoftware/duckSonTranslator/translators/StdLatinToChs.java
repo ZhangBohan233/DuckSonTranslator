@@ -5,10 +5,7 @@ import trashsoftware.duckSonTranslator.grammar.Token;
 import trashsoftware.duckSonTranslator.result.ResultToken;
 import trashsoftware.duckSonTranslator.result.TranslationResult;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class StdLatinToChs extends Translator {
     protected StdLatinToChs(DuckSonTranslator parent) {
@@ -47,8 +44,9 @@ public abstract class StdLatinToChs extends Translator {
     }
 
     @Override
-    public TranslationResult translate(String geglish) {
-        List<Token> tokens = deriveGeglishTokens(geglish);
+    public TranslationResult translate(String latin) {
+        String lowerLatin = latin.toLowerCase(Locale.ROOT);
+        List<Token> tokens = deriveGeglishTokens(lowerLatin);
 
         // 把和语法有关的翻译了
         tokens = translateCombineTokensGegToChs(tokens);
@@ -62,7 +60,7 @@ public abstract class StdLatinToChs extends Translator {
 //        System.out.println(tokens);
         tokens = insertTokensByGrammar(tokens);
 //        System.out.println(tokens);
-        return integrateChsTokens(tokens, geglish);
+        return integrateChsTokens(tokens, lowerLatin);
     }
 
     protected List<Token> deriveGeglishTokens(String geglish) {

@@ -455,11 +455,10 @@ public class BigDict implements Serializable {
         }
         return null;
     }
-    
-    private WordMatch findWordMatches(CharMatchFinder finder, String sentence, boolean hugeDict, boolean requireExact) {
+
+    private WordMatch findPrefixMatches(CharMatchFinder finder, String sentence, boolean hugeDict, boolean requireExact) {
         Map<String, BigDictValue> matches = new HashMap<>();
         for (int i = 0; i < sentence.length(); i++) {
-
             char c = sentence.charAt(i);
             Map<String, BigDictValue> charMatchAtI = matchAtIndex(finder, c, i, hugeDict);
 
@@ -482,12 +481,16 @@ public class BigDict implements Serializable {
      *
      * @param requireExact sentence是否必须为返回词的完全子串。例如“高速路”不是"高速公路"的完全子串
      */
-    public WordMatch findWordMatchesByChs(String sentence, boolean hugeDict, boolean requireExact) {
-        return findWordMatches(this::getAllMatches, sentence, hugeDict, requireExact);
+    public WordMatch findPrefixMatchesByChs(String sentence, boolean hugeDict, boolean requireExact) {
+        return findPrefixMatches(this::getAllMatches, sentence, hugeDict, requireExact);
     }
-    
-    public WordMatch findWordMatchesByEng(String sentence, boolean hugeDict, boolean requireExact) {
-        return findWordMatches(this::getAllEngMatches, sentence, hugeDict, requireExact);
+
+    public WordMatch findPrefixMatchesByEng(String sentence, boolean hugeDict, boolean requireExact) {
+        return findPrefixMatches(this::getAllEngMatches, sentence, hugeDict, requireExact);
+    }
+
+    private interface CharMatchFinder {
+        Map<String, BigDictValue> find(char c, boolean hugeDict);
     }
 
     public static class WordMatch {
@@ -506,9 +509,5 @@ public class BigDict implements Serializable {
                     ", matches=" + matches +
                     '}';
         }
-    }
-
-    private interface CharMatchFinder {
-        Map<String, BigDictValue> find(char c, boolean hugeDict);
     }
 }

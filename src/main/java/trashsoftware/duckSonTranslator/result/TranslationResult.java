@@ -90,7 +90,7 @@ public class TranslationResult implements Serializable {
         int cumLen = 0;
         for (int i = 0; i < resultTokens.size(); i++) {
             ResultToken rt = resultTokens.get(i);
-            cumLen += rt.translated.length();
+            cumLen += rt.getTranslated().length();
             if (cumLen > beginCharPos) {
                 res.add(rt);
             }

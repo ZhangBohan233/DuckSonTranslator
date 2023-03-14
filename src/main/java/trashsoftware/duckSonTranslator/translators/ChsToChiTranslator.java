@@ -2,6 +2,7 @@ package trashsoftware.duckSonTranslator.translators;
 
 import trashsoftware.duckSonTranslator.dict.BaseItem;
 import trashsoftware.duckSonTranslator.grammar.Token;
+import trashsoftware.duckSonTranslator.result.ResultToken;
 import trashsoftware.duckSonTranslator.result.TranslationResult;
 import trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.ResultFromChs;
 
@@ -118,7 +119,75 @@ public class ChsToChiTranslator extends StdChsToLatin {
         applyGrammar(tokens);
         applyPronForms(tokens);
         
-        return integrateToGeglish(tokens, chs);
+        return integrateToChinglish(tokens, chs);
+    }
+
+
+    protected TranslationResult integrateToChinglish(List<Token> tokens, String original) {
+//        StringBuilder builder = new StringBuilder();
+        TranslationResult result = new TranslationResult(original);
+        Token lastActual = null;
+        List<Token> grammarTokens = new ArrayList<>();
+        for (int i = 0; i < tokens.size(); i++) {
+            Token token = tokens.get(i);
+            if (token.isTreatedAsActual()) {
+//                if (lastActual != null &&
+//                        lastActual.getOrigEng().equals(token.getOrigEng()) &&
+//                        !lastActual.getChs().equals(token.getChs())) {
+//                    // 连续两个的英文一样但中文不一样
+//                    if (lastActual.getEngAfterTense() == null) {
+//                        if (token.getEngAfterTense() == null) {
+//                            // 把这个token原文的range附加上去
+//                            ResultToken last = result.getLast();
+//                            last.addRange(token.getPosInOrig(), token.getLengthInOrig());
+//                            lastActual = token;
+//                        } else {
+//                            // 不要上一个了，替换为这一个
+////                            builder.setLength(builder.length() - lastActual.getEng().length());
+////                            builder.append(token.getEngAfterTense());
+//                            ResultToken last = result.removeLast();
+//                            ResultToken mergedToken = new ResultToken(
+//                                    token.getEngAfterTense(),
+//                                    last.getOrigRanges(),
+//                                    token.getPosInOrig(),
+//                                    token.getLengthInOrig());
+//                            result.add(mergedToken);
+//                        }
+//                    } else {
+//                        // 无事发生
+//                        lastActual = token;
+//                    }
+//
+//                    continue;
+//                }
+                String pre = "";
+                if (lastActual != null &&
+                        !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
+                        !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
+//                    builder.append(' ');
+                    pre = " ";
+                }
+//                System.out.println(token);
+//                builder.append(token.getEng());
+                result.add(new ResultToken(pre + token.getEng(), token.getPosInOrig(), token.getLengthInOrig()));
+                lastActual = token;
+            } else if (token.isEffect()) {
+                grammarTokens.add(token);
+            }
+        }
+        for (Token gt : grammarTokens) {
+//            System.out.println(gt.getPosInOrig() + " " + gt.getLengthInOrig());
+            Token applied = gt.getTokenAppliedThisGrammar();
+//            System.out.println(applied);
+            ResultToken rt = result.findTokenAt(applied.getPosInOrig(), applied.getLengthInOrig());
+            if (rt != null) {
+                rt.addRange(gt.getPosInOrig(), gt.getLengthInOrig());
+            } else {
+                System.err.println("Why im null");
+            }
+        }
+//        return builder.toString();
+        return result;
     }
     
     private void hugeDictTrans(String notTransSeg, List<Token> tokens, int startIndex) {

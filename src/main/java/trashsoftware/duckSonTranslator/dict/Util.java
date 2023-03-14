@@ -13,6 +13,10 @@ public class Util {
         return unique.size();
     }
 
+    public static boolean arrayContains(char[] array, char c) {
+        for (char a : array) if (a == c) return true;
+        return false;
+    }
 
     @SafeVarargs
     public static <K, V> Map<K, V> mergeMaps(Map<K, V>... maps) {

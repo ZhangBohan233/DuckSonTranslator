@@ -29,6 +29,14 @@ public class PinyinDict {
         }
 
         makeRevPinyinDict();
+
+        int min = 65536;
+        int max = 0;
+        for (char c : pinyin.keySet()) {
+            if (c < min) min = c;
+            if (c > max) max = c;
+        }
+        System.out.println(pinyin.size() + " " + min + " " + max);
     }
 
     public static PinyinDict getInstance() throws IOException {

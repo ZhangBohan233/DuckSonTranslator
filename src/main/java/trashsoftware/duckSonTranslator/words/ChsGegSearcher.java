@@ -40,7 +40,7 @@ public class ChsGegSearcher extends Searcher {
                 reverseSearch(word, results, baseItem.chs, Map.of(baseItem.partOfSpeech, Set.of(baseItem.eng)), isSameSound);
             }
         }
-        BigDict.WordMatch wordMatch = parent.bigDict.findWordMatchesByChs(word, useHugeDict, true);
+        BigDict.WordMatch wordMatch = parent.bigDict.findPrefixMatchesByChs(word, useHugeDict, true);
         if (wordMatch != null) {
             for (var entry : wordMatch.matches.entrySet()) {
                 reverseSearch(word, results, entry.getKey(), entry.getValue().value, isSameSound);

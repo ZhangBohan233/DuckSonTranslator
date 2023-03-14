@@ -10,10 +10,19 @@ public class TranslatorTest {
 
     public static void main(String[] args) throws Exception {
         TranslatorTest translatorTest = new TranslatorTest();
+        translatorTest.testChsGeg();
 //        translatorTest.testIntro();
 //        translatorTest.testChiChs();
         translatorTest.testChsChi();
 //        translatorTest.serializeTest();
+    }
+    
+    public void testChsGeg() throws IOException {
+        DuckSonTranslator translator = new DuckSonTranslator();
+
+        String positions = "宇宙的";
+        TranslationResult result = translator.chsToGeglish(positions);
+        System.out.println(result);
     }
     
     @Test
