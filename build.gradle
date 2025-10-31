@@ -14,9 +14,14 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
-jar {
-    archiveName("duck_son_core.jar")
+//jar {
+//    archiveName("duck_son_core.jar")
+//}
+tasks.named('jar', Jar) {
+    archiveFileName = 'duck_son_core.jar'
 }
+
+tasks.withType(JavaCompile){options.encoding="UTF-8"}
 
 test {
     useJUnitPlatform()

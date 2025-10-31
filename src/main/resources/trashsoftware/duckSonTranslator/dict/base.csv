@@ -39,6 +39,7 @@ chs, cq, pinyin, eng, pos
 博, bo2, bo2, phd, n
 不, bu2, bu4, not, adv
 版本, ban3 ben3, ban3 ben3, version, n
+包弟, bao1 di4, bao1 di4, baggage, n
 百万, be2 wan4, bai3 wan4, million, n
 
 # C
@@ -247,6 +248,7 @@ chs, cq, pinyin, eng, pos
 客, ke2, ke4, guest, n
 科, ko1, ke1, subject, n
 壳, ko2, ke2, shell, n
+可, ko3, ke3, can, v
 口, kou3, kou3, mouth, n
 快, kuai4, kuai4, fast, adv
 亏, kui1, kui1, loss, n
@@ -302,6 +304,7 @@ chs, cq, pinyin, eng, pos
 麦, me2, mai4, wheat, n
 没, mei1, mei2, no, adj
 妹, mei4, mei4, sister, n
+萌, meng2, mong2, cute, adj
 绵, mian2, mian2, cotton, n
 面, mian4, mian4, noodle, n
 明, min2, ming2, bright, adj
@@ -369,11 +372,13 @@ chs, cq, pinyin, eng, pos
 
 # R
 燃, ran2, ran2, burn, v
+冉, ran3, ran3, slow, adj
 让, rang4, rang4, let, v
 人, ren2, ren2, person, n
 日, ri2, ri4, sun, v
 如, ru2, ru2, like, prep
 润, run4, run4, run, v
+认领, ren4 lin3, ren4 ling3, claim, v
 如果, ru2 go3, ru2 guo3, if, prep
 
 # S

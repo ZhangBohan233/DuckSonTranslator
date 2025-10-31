@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class BigDict implements Serializable {
 
-    private transient static BigDict instance;
+    private static BigDict instance;
 
     //    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
     protected final Map<String, BigDictValue> engChsMap = new HashMap<>();

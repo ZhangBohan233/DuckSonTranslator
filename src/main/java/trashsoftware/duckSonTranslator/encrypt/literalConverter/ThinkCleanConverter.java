@@ -15,6 +15,7 @@ public class ThinkCleanConverter extends MappedLiteralConverter {
                         "猪妹", "婕拉", "触手妈", "剑圣",
                         "蓝buff", "小龙", "峡谷先锋", "开团",
                         "包弟",
+                        "剧本杀", "七百八",
                         "，", "、", "？", "！",
                         "..."
                 ));

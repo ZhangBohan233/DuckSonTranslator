@@ -155,7 +155,7 @@ public class DictMaker {
             }
         }
         
-        if (pure.endsWith("feng")) {  // feng -> fong
+        if (pure.endsWith("feng") || pure.endsWith("meng")) {  // feng -> fong, meng -> mong
             pure = pure.substring(0, pure.length() - 3) + "ong";
         }
         

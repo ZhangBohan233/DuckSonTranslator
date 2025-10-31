@@ -30,7 +30,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        worldCupCountries();
+//        worldCupCountries();
         TranslatorOptions options = TranslatorOptions.getInstance();
 //        options.setUseBaseDict(false);
 //        options.setUseSameSoundChar(false);
@@ -44,9 +44,12 @@ public class Main {
 //        System.out.println(geglish);
 //        geglish.printTokens();
 
-        System.out.println(translator.chsToGeglish("位置"));
+        System.out.println(translator.chsToGeglish("死了"));
+        System.out.println(translator.chsToGeglish("好了"));
+        System.out.println(translator.chsToGeglish("好了"));
+        System.out.println(translator.geglishToChs("baggage claim"));
 
-        TranslationResult geglish2 = translator.chsToGeglish("我们你们她们♣是啥，睡着了，日薪越亿");
+        TranslationResult geglish2 = translator.chsToGeglish("萌♣");
         System.out.println(geglish2);
         geglish2.printTokens();
 
