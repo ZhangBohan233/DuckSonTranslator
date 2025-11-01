@@ -8,10 +8,6 @@ public class BigDictValue implements Serializable {
     //    public final Set<String> sameMeaningDivision;  // 如那种 v./n.
     public final Map<String, Set<String>> value;  // 词性:[释义]
 
-//    BigDictValue(Map<String, List<String>> value) {
-//        this(value, new HashSet<>());
-//    }
-
     BigDictValue(Map<String, Set<String>> value) {
         this.value = value;
 //        this.sameMeaningDivision = sameMeaningDivision;

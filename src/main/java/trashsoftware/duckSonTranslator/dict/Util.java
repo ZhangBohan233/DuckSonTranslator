@@ -62,4 +62,33 @@ public class Util {
     public static String listOfArrayToString(List<int[]> list) {
         return '[' + list.stream().map(Arrays::toString).collect(Collectors.joining(", ")) + ']';
     }
+
+    /**
+     * isSubsequence("ABCD", "BC");  // true
+     * isSubsequence("ABCD", "AD");  // true
+     * isSubsequence("ABCD", "DC");  // false
+     * isSubsequence("HELLO", "HLO"); // true
+     * isSubsequence("HELLO", "OLH"); // false
+     * 
+     * @param text    the full text
+     * @param pattern the thing to be matched
+     * @return is subsequence or not
+     */
+    public static boolean isSubsequence(String text, String pattern) {
+        if (pattern == null || text == null) return false;
+        if (pattern.isEmpty()) return true;
+
+        int i = 0; // index for text
+        int j = 0; // index for pattern
+
+        while (i < text.length() && j < pattern.length()) {
+            if (text.charAt(i) == pattern.charAt(j)) {
+                j++; // move to next pattern character when matched
+            }
+            i++; // always move forward in text
+        }
+
+        // If we've matched all pattern characters, it's contained
+        return j == pattern.length();
+    }
 }

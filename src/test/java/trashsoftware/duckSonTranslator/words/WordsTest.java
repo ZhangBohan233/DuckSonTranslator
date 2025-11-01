@@ -1,10 +1,9 @@
 package trashsoftware.duckSonTranslator.words;
 
-import trashsoftware.duckSonTranslator.TranslatorOptions;
+import trashsoftware.duckSonTranslator.options.TranslatorOptions;
 import trashsoftware.duckSonTranslator.dict.PinyinDict;
 
 import java.io.IOException;
-import java.util.List;
 
 public class WordsTest {
 

@@ -120,7 +120,7 @@ public class ChsToGegTranslator extends StdChsToLatin {
         }
         applyGrammar(tokens);
         applyPronForms(tokens);
-
+        
         return integrateToGeglish(tokens, chs);
     }
 

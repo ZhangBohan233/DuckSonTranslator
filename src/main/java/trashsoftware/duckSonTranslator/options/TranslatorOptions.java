@@ -1,4 +1,4 @@
-package trashsoftware.duckSonTranslator;
+package trashsoftware.duckSonTranslator.options;
 
 import trashsoftware.duckSonTranslator.wordPickers.PickerFactory;
 
@@ -8,6 +8,7 @@ public class TranslatorOptions {
     private boolean chongqingMode = true;
     private boolean useBaseDict = true;
     private boolean useSameSoundChar = true;
+    private boolean useHugeDict = false;
     private PickerFactory pickerFactory = PickerFactory.COMBINED_CHAR;
     
     private TranslatorOptions() {
@@ -34,6 +35,10 @@ public class TranslatorOptions {
 
     public void setUseBaseDict(boolean useBaseDict) {
         this.useBaseDict = useBaseDict;
+    }
+
+    public boolean isUseHugeDict() {
+        return useHugeDict;
     }
 
     public boolean isUseSameSoundChar() {

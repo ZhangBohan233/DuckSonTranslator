@@ -169,7 +169,6 @@ public class BaseDict {
         for (BaseItem item : list) {
             if (item.pinyin.equals(pinyin[0]) && item.isCoverSameSound()) return item;
         }
-
         return defaultItem;
     }
 

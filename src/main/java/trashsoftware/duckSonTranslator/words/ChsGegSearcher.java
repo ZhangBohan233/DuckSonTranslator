@@ -3,6 +3,7 @@ package trashsoftware.duckSonTranslator.words;
 import trashsoftware.duckSonTranslator.dict.BaseItem;
 import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.BigDictValue;
+import trashsoftware.duckSonTranslator.dict.Util;
 import trashsoftware.duckSonTranslator.translators.StdLatinToChs;
 
 import java.util.*;
@@ -15,6 +16,7 @@ public class ChsGegSearcher extends Searcher {
 
     @Override
     protected List<WordResult> searchByText(String text) {
+//        text = text.toUpperCase(Locale.ROOT);  // 以防有中英混杂的 -- 在同音字里面用大小写替换了
         LinkedHashMap<String, WordResult> results = new LinkedHashMap<>();  // eng: results
 
         searchBySubstring(results, text, false);
@@ -37,13 +39,24 @@ public class ChsGegSearcher extends Searcher {
         if (parent.getOptions().isUseBaseDict()) {
             BaseItem baseItem = parent.baseDict.getByChs(word, 0);  // Base dict只搜本体，不搜substring，因为必要性不大
             if (baseItem != null && baseItem.chs.equals(word)) {
-                reverseSearch(word, results, baseItem.chs, Map.of(baseItem.partOfSpeech, Set.of(baseItem.eng)), isSameSound);
+                reverseSearch(word, results, baseItem.chs, Map.of(baseItem.partOfSpeech, 
+                        Set.of(baseItem.eng)), 
+                        isSameSound ? WordResultType.HOMOPHONE : WordResultType.EXACT);
             }
         }
-        BigDict.WordMatch wordMatch = parent.bigDict.findPrefixMatchesByChs(word, useHugeDict, true);
-        if (wordMatch != null) {
-            for (var entry : wordMatch.matches.entrySet()) {
-                reverseSearch(word, results, entry.getKey(), entry.getValue().value, isSameSound);
+        BigDict.WordMatch substringMatch = parent.bigDict.findSubstringMatchesByChs(word,
+                parent.options.isUseHugeDict());
+        if (substringMatch != null) {
+            for (var entry : substringMatch.matches.entrySet()) {
+                String gotChsWord = entry.getKey();
+                WordResultType type;
+                if (isSameSound) type = WordResultType.HOMOPHONE;
+                else if (word.equals(gotChsWord)) type = WordResultType.EXACT;
+                else if (gotChsWord.startsWith(word)) type = WordResultType.PREFIX;
+                else if (gotChsWord.contains(word)) type = WordResultType.SUBSTRING;
+                else type = WordResultType.ROUGH;
+                
+                reverseSearch(word, results, gotChsWord, entry.getValue().value, type);
             }
         }
     }
@@ -52,11 +65,11 @@ public class ChsGegSearcher extends Searcher {
                                LinkedHashMap<String, WordResult> results,
                                String chsWord,
                                Map<String, Set<String>> engPosDes,
-                               boolean isSameSound) {
+                               WordResultType type) {
         for (var entry : engPosDes.entrySet()) {
             for (String engWord : entry.getValue()) {
                 WordResult result = results.computeIfAbsent(engWord,
-                        k -> new WordResult(searchedOrig, chsWord, engWord, srcLang, dstLang, isSameSound));
+                        k -> new WordResult(searchedOrig, chsWord, engWord, srcLang, dstLang, type));
                 Map<String, LinkedHashSet<String>> chsPosDes = gegToChsList(engWord);
                 result.addPosDescription(chsPosDes);
             }
@@ -72,7 +85,7 @@ public class ChsGegSearcher extends Searcher {
                 chsPosDes.put(baseItem.partOfSpeech, new LinkedHashSet<>(List.of(baseItem.chs)));
             }
         }
-        BigDictValue bdv = parent.bigDict.getByEng(geg, isUseHugeDict());
+        BigDictValue bdv = parent.bigDict.getByEng(geg, parent.options.isUseHugeDict());
         if (bdv != null) {
             for (var entry : bdv.value.entrySet()) {
                 LinkedHashSet<String> des = chsPosDes.computeIfAbsent(entry.getKey(),

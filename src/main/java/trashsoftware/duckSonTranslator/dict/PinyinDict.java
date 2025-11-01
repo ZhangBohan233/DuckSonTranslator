@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PinyinDict {
-    
+
     private static PinyinDict instance;
 
     protected int cqPinCount = 0;
@@ -81,7 +81,14 @@ public class PinyinDict {
 
     public List<Character> getSameSoundChsChars(char chs, boolean chongqingMode) {
         String[] pinyin = getPinyinByChs(chs);
-        if (pinyin == null) return null;
+        if (pinyin == null) {
+            if (Character.isLetter(chs)) {
+                // 是英文字母
+                return new ArrayList<>(List.of(Character.toUpperCase(chs), Character.toLowerCase(chs)));
+            } else {
+                return new ArrayList<>(List.of(chs));
+            }
+        }
         List<Character> sameSound;
         if (chongqingMode) {
             sameSound = getChsListByCqPin(getPin(pinyin, true));

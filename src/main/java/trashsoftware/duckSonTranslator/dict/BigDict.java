@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 public class BigDict implements Serializable {
 
-    private static BigDict instance;
-
-    //    protected final Trie<BigDictValue> chsEngTrie = new Trie<>();
+    private static BigDict instanceHighSchool;
+    private static BigDict instanceHuge;
+    
     protected final Map<String, BigDictValue> engChsMap = new HashMap<>();
     protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
 
@@ -30,20 +30,26 @@ public class BigDict implements Serializable {
     protected final Map<Character, Map<String, BigDictValue>> chsCharEngHugeMap = new HashMap<>();
     protected final Map<Character, Map<String, BigDictValue>> engCharChsHugeMap = new HashMap<>();
 
-//    protected Trie<BigDictValue> chsKeyTrie;
-//    protected Trie<BigDictValue> chsKeyHugeTrie;
-
-    private BigDict() throws IOException {
+    private BigDict(boolean hugeDict) throws IOException {
         readHighSchoolDict();
 
-        readHugeDict();
+        if (hugeDict) {
+            readHugeDict();
+        }
     }
 
-    public static BigDict getInstance() throws IOException {
-        if (instance == null) {
-            instance = new BigDict();
+    public static BigDict getInstance(boolean containHugeDict) throws IOException {
+        if (containHugeDict) {
+            if (instanceHuge == null) {
+                instanceHuge = new BigDict(true);
+            }
+            return instanceHuge;
+        } else {
+            if (instanceHighSchool == null) {
+                instanceHighSchool = new BigDict(false);
+            }
+            return instanceHighSchool;
         }
-        return instance;
     }
 
     private static String standardizeChs(String chsWord) {
@@ -71,7 +77,7 @@ public class BigDict implements Serializable {
     }
 
     private static String addSpaceToFoolishOfHighSchoolTeacher(String s) {
-        if (s.length() == 0) return s;
+        if (s.isEmpty()) return s;
         StringBuilder builder = new StringBuilder();
         char last = s.charAt(0);
         for (char c : s.toCharArray()) {
@@ -230,16 +236,10 @@ public class BigDict implements Serializable {
                     for (var posDes : posMapChsValue.entrySet()) {
                         String pos = posDes.getKey();  // pos
                         for (String chs : posDes.getValue()) {
-                            BigDictValue chsKey = chsEngMap.get(chs);
-                            if (chsKey == null) {
-                                chsKey = new BigDictValue(new HashMap<>());
-                                chsEngMap.put(chs, chsKey);
-                            }
+                            BigDictValue chsKey = chsEngMap.computeIfAbsent(chs, k -> new BigDictValue(new HashMap<>()));
                             Set<String> posEngMap =
                                     chsKey.value.computeIfAbsent(pos, k -> new HashSet<>());
-                            if (!posEngMap.contains(eng)) {
-                                posEngMap.add(eng);
-                            }
+                            posEngMap.add(eng);
 //                            System.out.println(chs + posEngMap);
                         }
                     }
@@ -329,9 +329,7 @@ public class BigDict implements Serializable {
                                 Set<String> oldDes = sameWordDiffPos.value.computeIfAbsent(pos,
                                         k -> new HashSet<>());
                                 for (String s : newDes) {
-                                    if (!oldDes.contains(s)) {
-                                        oldDes.add(s);
-                                    }
+                                    oldDes.add(s);
                                 }
                             }
                         }
@@ -410,11 +408,11 @@ public class BigDict implements Serializable {
         return engChsHugeMap;
     }
 
-    public Map<String, BigDictValue> getAllMatches(char chs) {
-        return getAllMatches(chs, false);
+    public Map<String, BigDictValue> getAllChsMatches(char chs) {
+        return getAllChsMatches(chs, false);
     }
 
-    public Map<String, BigDictValue> getAllMatches(char chs, boolean hugeDict) {
+    public Map<String, BigDictValue> getAllChsMatches(char chs, boolean hugeDict) {
         Map<Character, Map<String, BigDictValue>> dict = hugeDict ? chsCharEngHugeMap : chsCharEngMap;
         Map<String, BigDictValue> allMatches = dict.get(chs);
         return allMatches == null ? new HashMap<>() : allMatches;
@@ -439,21 +437,23 @@ public class BigDict implements Serializable {
         }
         return result;
     }
-
-//    public Map<String, BigDictValue> getAllChsPrefixedBy(String prefix, boolean hugeDict) {
-//        Trie<BigDictValue> trie = hugeDict ? chsKeyHugeTrie : chsKeyTrie;
-//        return trie.getByPrefix(prefix);
-//    }
-
-    public WordMatch findWordMatches2(String sentence, boolean hugeDict) {
-        Map<String, BigDictValue> dict = hugeDict ? chsEngHugeMap : chsEngMap;
-        int len = 1;
-
-        for (int i = 1; i < sentence.length(); i++) {
-            String sub = sentence.substring(0, i);
-
+    
+    private WordMatch findSubstringMatches(CharMatchFinder finder,
+                                           String sentence, 
+                                           boolean hugeDict) {
+        Map<String, BigDictValue> matches = new HashMap<>();
+        for (int i = 0; i < sentence.length(); i++) {
+            char c = sentence.charAt(i);
+            Map<String, BigDictValue> allContainC = finder.find(c, hugeDict);
+            matches = matches.isEmpty() ? allContainC : Util.intersection(matches, allContainC);
         }
-        return null;
+        Map<String, BigDictValue> correctOrder = new HashMap<>();
+        for (var entry : matches.entrySet()) {
+            if (Util.isSubsequence(entry.getKey(), sentence)) {
+                correctOrder.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return new WordMatch(sentence.length(), correctOrder);
     }
 
     private WordMatch findPrefixMatches(CharMatchFinder finder, String sentence, boolean hugeDict, boolean requireExact) {
@@ -482,11 +482,21 @@ public class BigDict implements Serializable {
      * @param requireExact sentence是否必须为返回词的完全子串。例如“高速路”不是"高速公路"的完全子串
      */
     public WordMatch findPrefixMatchesByChs(String sentence, boolean hugeDict, boolean requireExact) {
-        return findPrefixMatches(this::getAllMatches, sentence, hugeDict, requireExact);
+        return findPrefixMatches(this::getAllChsMatches, sentence, hugeDict, requireExact);
     }
 
     public WordMatch findPrefixMatchesByEng(String sentence, boolean hugeDict, boolean requireExact) {
         return findPrefixMatches(this::getAllEngMatches, sentence, hugeDict, requireExact);
+    }
+    
+    public WordMatch findSubstringMatchesByChs(String sentence,
+                                               boolean hugeDict) {
+        return findSubstringMatches(this::getAllChsMatches, sentence, hugeDict);
+    }
+
+    public WordMatch findSubstringMatchesByEng(String sentence,
+                                               boolean hugeDict) {
+        return findSubstringMatches(this::getAllEngMatches, sentence, hugeDict);
     }
 
     private interface CharMatchFinder {

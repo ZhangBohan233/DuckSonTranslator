@@ -10,7 +10,7 @@ import static trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.Commo
 
 public class CombinedCharPicker extends SingleCharPicker {
     
-    public final static double STRONG_MATCH_THRESHOLD = 0.05;
+    public final static double STRONG_MATCH_THRESHOLD = 0.1;
     
     public static final List<String> POS_PRECEDENCE = List.of(
             "v", "pron", "n", "adj", "adv"
@@ -22,7 +22,7 @@ public class CombinedCharPicker extends SingleCharPicker {
 
     @Override
     protected ResultFromChs translateChar(char chs) {
-        var allMatches = bigDict.getAllMatches(chs);
+        var allMatches = bigDict.getAllChsMatches(chs);
         if (allMatches.isEmpty()) return ResultFromChs.NOT_FOUND;
         Map<String, Candidate> candidateMap = new HashMap<>();  // eng: {pos: [含chs的词数, 不含的词数]}
         for (var chsWordDes : allMatches.entrySet()) {
@@ -74,7 +74,7 @@ public class CombinedCharPicker extends SingleCharPicker {
 
         Candidate best = candidateList.get(0);
         double precedence = best.resultPrecedence();
-//        System.out.println(best + " " + precedence);
+//        System.out.println(best + " " + precedence + " " + best.minOccurIndex + " " + best.exactMatch);
 
         return new ResultFromChs(best.eng, best.bestPos, 1, 
                 precedence, precedence >= STRONG_MATCH_THRESHOLD);
@@ -168,7 +168,7 @@ public class CombinedCharPicker extends SingleCharPicker {
         }
 
         private double resultPrecedence() {
-            return exactMatch ? (1.0 / eng.length() * 2) : (bestPosPurity / eng.length());
+            return exactMatch ? (1.0 / eng.length() * 2) : (bestPosPurity / eng.length() / (minOccurIndex + 1));
         }
 
         @Override

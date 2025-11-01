@@ -1,6 +1,6 @@
 package trashsoftware.duckSonTranslator.words;
 
-import trashsoftware.duckSonTranslator.TranslatorOptions;
+import trashsoftware.duckSonTranslator.options.TranslatorOptions;
 import trashsoftware.duckSonTranslator.dict.BaseDict;
 import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.PinyinDict;
@@ -18,7 +18,7 @@ public class DuckSonDictionary {
     public DuckSonDictionary(TranslatorOptions options) throws IOException {
         this.options = options;
         this.baseDict = BaseDict.getInstance();
-        this.bigDict = BigDict.getInstance();
+        this.bigDict = BigDict.getInstance(options.isUseHugeDict());
         this.pinyinDict = PinyinDict.getInstance();
     }
 

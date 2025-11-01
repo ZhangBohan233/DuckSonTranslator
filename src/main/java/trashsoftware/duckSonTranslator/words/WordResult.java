@@ -12,7 +12,7 @@ public class WordResult implements Serializable, Comparable<WordResult> {
     private final String srcLang;
     private final String dstLang;
     private final String dst;
-    private final boolean fromSameSound;
+    private final WordResultType type;
     private final Map<String, LinkedHashSet<String>> posDescription = new HashMap<>();
     
     transient double origWordPurity;  // 搜的词占最好的反向解释的长度的比例
@@ -24,13 +24,13 @@ public class WordResult implements Serializable, Comparable<WordResult> {
                String translated, 
                String srcLang, 
                String dstLang, 
-               boolean fromSameSound) {
+               WordResultType type) {
         this.searchedOrig = searchedOrig;
         this.firstOriginal = firstOriginal;
         this.dst = translated;
         this.srcLang = srcLang;
         this.dstLang = dstLang;
-        this.fromSameSound = fromSameSound;
+        this.type = type;
     }
     
     private void computePurities() {
@@ -55,8 +55,8 @@ public class WordResult implements Serializable, Comparable<WordResult> {
         computed = true;
     }
 
-    public boolean isFromSameSound() {
-        return fromSameSound;
+    public WordResultType getType() {
+        return type;
     }
 
     public String getDst() {
@@ -80,8 +80,9 @@ public class WordResult implements Serializable, Comparable<WordResult> {
      */
     @Override
     public int compareTo(WordResult o) {
-        if (this.fromSameSound && !o.fromSameSound) return 1;
-        if (!this.fromSameSound && o.fromSameSound) return -1;
+        if (type != o.type) {
+            return Integer.compare(type.ordinal(), o.type.ordinal());
+        }
         
         if (!this.computed) this.computePurities();
         if (!o.computed) o.computePurities();
@@ -118,6 +119,7 @@ public class WordResult implements Serializable, Comparable<WordResult> {
                 ", srcLang='" + srcLang + '\'' +
                 ", dstLang='" + dstLang + '\'' +
                 ", dst='" + dst + '\'' +
+                ", type=" + type + 
                 ", posDescription=" + posDescription +
                 '}';
     }

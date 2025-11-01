@@ -68,7 +68,7 @@ public class CommonPrefixCharPicker extends SingleCharPicker {
 
     @Override
     protected ResultFromChs translateChar(char chs) {
-        var matches = bigDict.getAllMatches(chs);
+        var matches = bigDict.getAllChsMatches(chs);
         if (matches.isEmpty()) return ResultFromChs.NOT_FOUND;
         Map<String, Candidate> engCandidates = new HashMap<>();
         for (var entry : matches.entrySet()) {

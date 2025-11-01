@@ -30,7 +30,7 @@ public class NaiveChsPicker extends ChsCharPicker {
                     if (!CHS_EXCEPTIONS.contains(c)) {
                         ChsCharFreq ccf = charFreq.get(c);
                         if (ccf == null) {
-                            Map<String, BigDictValue> allMatches = bigDict.getAllMatches(c);
+                            Map<String, BigDictValue> allMatches = bigDict.getAllChsMatches(c);
                             ccf = new ChsCharFreq(c, index, allMatches.size(), posChs.getKey());
                             
                             for (var entry : allMatches.entrySet()) {

@@ -1,9 +1,14 @@
 package trashsoftware.duckSonTranslator;
 
+import trashsoftware.duckSonTranslator.options.TranslatorOptions;
 import trashsoftware.duckSonTranslator.result.TranslationResult;
 import trashsoftware.duckSonTranslator.translators.DuckSonTranslator;
+import trashsoftware.duckSonTranslator.words.DuckSonDictionary;
+import trashsoftware.duckSonTranslator.words.WordResult;
+import trashsoftware.duckSonTranslator.words.WordResultType;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Main {
     
@@ -28,10 +33,29 @@ public class Main {
         TranslationResult result = translator.chsToGeglish(s);
         System.out.println(result);
     }
+    
+    private static void testDictionary() throws IOException {
+        TranslatorOptions options = TranslatorOptions.getInstance();
+//        options.setUseSameSoundChar(false);
+        DuckSonDictionary dictionary = new DuckSonDictionary(options);
+        List<WordResult> wordResults = dictionary.search("x光", "chs", "geg");
+        System.out.println("=====");
+        for (WordResult wr : wordResults) {
+            System.out.println(wr);
+        }
+
+        List<WordResult> wordResults2 = dictionary.search("Centre", "geg", "chs");
+        System.out.println("=====");
+        for (WordResult wr : wordResults2) {
+            System.out.println(wr);
+        }
+    }
 
     public static void main(String[] args) throws IOException {
+        testDictionary();
 //        worldCupCountries();
         TranslatorOptions options = TranslatorOptions.getInstance();
+        if (true) return;
 //        options.setUseBaseDict(false);
 //        options.setUseSameSoundChar(false);
 //        options.setChsGegPicker(PickerFactory.COMBINED_CHAR);
@@ -44,58 +68,15 @@ public class Main {
 //        System.out.println(geglish);
 //        geglish.printTokens();
 
-        System.out.println(translator.chsToGeglish("死了"));
-        System.out.println(translator.chsToGeglish("好了"));
-        System.out.println(translator.chsToGeglish("好了"));
-        System.out.println(translator.geglishToChs("baggage claim"));
+//        System.out.println(translator.chsToGeglish("死了"));
+//        System.out.println(translator.chsToGeglish("好了"));
+        System.out.println(translator.chsToGeglish("好多"));
+//        System.out.println(translator.geglishToChs("baggage claim"));
 
-        TranslationResult geglish2 = translator.chsToGeglish("萌♣");
-        System.out.println(geglish2);
-        geglish2.printTokens();
-
-        System.out.println(translator.geglishToChs("de he is fight comen"));
-//        System.out.println(geglish.findTokensInRange(3, 5));
-//        String chs = translator.geglishToChs(geglish);
-//        System.out.println(chs);
+//        TranslationResult geglish2 = translator.chsToGeglish("萌♣");
+//        System.out.println(geglish2);
+//        geglish2.printTokens();
 //
-//        System.out.println(translator.chsToGeglish("这个b理由已经用了两次了"));
-//        System.out.println(translator.chsToGeglish("对比敏感度 视觉 感觉"));
-//        System.out.println(translator.chsToGeglish("是打来的"));
-//        var chs = translator.geglishToChs(
-//                "no shell's manier arrived where in, \n" +
-//                "we shaving and iron shave.\n" + 
-//                "then taking taxi to where. is confirm fuck");
-//        System.out.println(chs);
-//        chs.printTokens();  // todo
-//        List<ResultToken> engRange = chs.findTokensInRange(3, 4);
-//        System.out.println(engRange);
-//        var chsRange = TranslationResult.rangeOf(engRange);
-//        System.out.println(Util.listOfArrayToString(chsRange));
-
-//        List<ResultToken> rts = new ArrayList<>();
-//        rts.add(new ResultToken("a", 0, 2));
-//        rts.add(new ResultToken("b", 2, 1));
-//        rts.add(new ResultToken("b", 3, 3));
-//
-//        rts.add(new ResultToken("b", 7, 3));
-//        rts.add(new ResultToken("b", 10, 1));
-//        
-//        var intRes = TranslationResult.rangeOf(rts);
-//        for (int[] aaa : intRes) System.out.println(Arrays.toString(aaa));
-//        var aa = "啊\n" +
-//                "哦\n" +
-//                "额\n" +
-//                "一\n" +
-//                "我\n" +
-//                "与\n" +
-//                "博\n" +
-//                "破\n" +
-//                "莫\n" +
-//                "佛\n" +
-//                "的\n" +
-//                "特\n" +
-//                "呢\n" +
-//                "了";
-//        System.out.println(translator.chsToGeglish(aa));
+//        System.out.println(translator.geglishToChs("de he is fight comen"));
     }
 }

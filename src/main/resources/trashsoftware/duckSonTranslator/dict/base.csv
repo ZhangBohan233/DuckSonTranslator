@@ -193,6 +193,8 @@ chs, cq, pinyin, eng, pos
 黄, huang2, huang2, yellow, n
 会, hui4, hui4, meeting, n
 横, hun2, heng2, across, v
+好多, hao3 do1, hao3 duo1, how many, conj
+好久, hao3 jiu3, hao3 jiu3, when, conj
 后天, hou4 tian1, hou4 tian1, back day, n
 皇菊, huang2 jv2, huang2 jv2, asshole of sky emperor, n
 
@@ -219,6 +221,7 @@ chs, cq, pinyin, eng, pos
 件, jian4, jian4, ware, n
 接, jie2, jie1, receive, v
 洁, jie2, jie2, clean, adj
+节, jie2, jie2, festival, n
 姐, jie3, jie3, sister, n
 金, jin1, jin1, gold, n
 京, jin1, jing1, capital, n
@@ -227,8 +230,8 @@ chs, cq, pinyin, eng, pos
 警, jin3, jing3, police, n, cover=false
 近, jin4, jin4, near, adj, cover=false
 脚, jio2, jiao2, foot, n
-酒, jiu3, jiu3, wine, n
 九, jiu3, jiu3, nine, n
+酒, jiu3, jiu3, wine, n
 旧, jiu4, jiu4, old, adj
 就, jiu4, jiu4, then, conj
 卷, juan3, juan3, roll, n
@@ -251,6 +254,7 @@ chs, cq, pinyin, eng, pos
 可, ko3, ke3, can, v
 口, kou3, kou3, mouth, n
 快, kuai4, kuai4, fast, adv
+块, kuai4, kuai4, block, n
 亏, kui1, kui1, loss, n
 鲲, kun1, kun1, sing jump rap basketball, n
 
@@ -292,6 +296,7 @@ chs, cq, pinyin, eng, pos
 铝, lv3, lv3, aluminum, n
 女, lv3, nv3, woman, n
 啷个, lang3 go4, lang3 ge4, how to, adv
+老板, lao3 ban3, lao3 ban3, boss, n
 这个, le4 go4, zhe4 ge4, this, pron
 理由, li3 you2, li3 you2, reason, n
 凉了, liang2 lao3, liang2 le, gg, v
@@ -342,12 +347,14 @@ chs, cq, pinyin, eng, pos
 
 # Q
 溪, qi1, xi1, stream, n
-旗, qi2, qi2, flag, n, cover=false
+七, qi2, qi1, seven, n
+旗, qi2, qi2, flag, n
 起, qi3, qi3, raise, v
 启, qi3, qi3, launch, v
 气, qi4, qi4, gas, n
 器, qi4, qi4, instrument, n
 去, qi4, qu4, go, v
+前, qian2, qian2, front, adj
 枪, qiang1, qiang1, gun, n
 墙, qiang2, qiang2, wall, n
 强, qiang2, qiang2, strong, adj
@@ -544,8 +551,9 @@ chs, cq, pinyin, eng, pos
 游, you2, you2, swim, v
 有, you3, you3, have, v
 友, you3, you3, friend, n
-幼, you4, you4, small, adj
+右, you4, you4, right, adj
 又, you4, you4, both, det
+幼, you4, you4, small, adj
 鱼, yu2, yu2, fish, n
 渝, yu2, yu2, double celebrity, n
 余, yu2, yu2, remainder, n

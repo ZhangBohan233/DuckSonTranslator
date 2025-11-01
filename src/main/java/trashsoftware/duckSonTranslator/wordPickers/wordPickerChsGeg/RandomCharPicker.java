@@ -15,7 +15,7 @@ public class RandomCharPicker extends SingleCharPicker {
 
     @Override
     protected ResultFromChs translateChar(char chs) {
-        Map<String, BigDictValue> matches = bigDict.getAllMatches(chs);
+        Map<String, BigDictValue> matches = bigDict.getAllChsMatches(chs);
         if (matches.isEmpty()) return ResultFromChs.NOT_FOUND;
         
         List<BigDictValue> values = new ArrayList<>(matches.values());

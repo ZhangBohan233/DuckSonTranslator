@@ -1,6 +1,6 @@
 package trashsoftware.duckSonTranslator.translators;
 
-import trashsoftware.duckSonTranslator.TranslatorOptions;
+import trashsoftware.duckSonTranslator.options.TranslatorOptions;
 import trashsoftware.duckSonTranslator.dict.BaseDict;
 import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.PinyinDict;
@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.8.2";
+    public static final String CORE_VERSION = "0.8.3";
 
     final BaseDict baseDict;
     final PinyinDict pinyinDict;
@@ -49,7 +49,7 @@ public class DuckSonTranslator {
         this.options = options;
         this.baseDict = BaseDict.getInstance();
         this.pinyinDict = PinyinDict.getInstance();
-        this.bigDict = BigDict.getInstance();
+        this.bigDict = BigDict.getInstance(options.isUseHugeDict());
         this.grammarDict = new GrammarDict();
 
 //        createPickerInstances();
