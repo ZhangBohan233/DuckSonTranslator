@@ -55,4 +55,9 @@ public class DuckSonDictionary {
         }
         return null;
     }
+    
+    public boolean translatePossible(char chs) {
+        if (baseDict.getByChs(String.valueOf(chs), 0) != null) return true;
+        return bigDict.hasChs(chs, options.isUseHugeDict());
+    }
 }

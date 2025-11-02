@@ -38,24 +38,29 @@ public class Main {
         TranslatorOptions options = TranslatorOptions.getInstance();
 //        options.setUseSameSoundChar(false);
         DuckSonDictionary dictionary = new DuckSonDictionary(options);
-        List<WordResult> wordResults = dictionary.search("x光", "chs", "geg");
+//        List<WordResult> wordResults = dictionary.search("x光", "chs", "geg");
+//        System.out.println("=====");
+//        for (WordResult wr : wordResults) {
+//            System.out.println(wr);
+//        }
+        List<WordResult> wordResults3 = dictionary.search("目录一百七十六", "chs", "geg");
         System.out.println("=====");
-        for (WordResult wr : wordResults) {
+        for (WordResult wr : wordResults3) {
             System.out.println(wr);
         }
 
-        List<WordResult> wordResults2 = dictionary.search("Centre", "geg", "chs");
-        System.out.println("=====");
-        for (WordResult wr : wordResults2) {
-            System.out.println(wr);
-        }
+//        List<WordResult> wordResults2 = dictionary.search("Centre", "geg", "chs");
+//        System.out.println("=====");
+//        for (WordResult wr : wordResults2) {
+//            System.out.println(wr);
+//        }
     }
 
     public static void main(String[] args) throws IOException {
         testDictionary();
 //        worldCupCountries();
         TranslatorOptions options = TranslatorOptions.getInstance();
-        if (true) return;
+//        if (true) return;
 //        options.setUseBaseDict(false);
 //        options.setUseSameSoundChar(false);
 //        options.setChsGegPicker(PickerFactory.COMBINED_CHAR);
@@ -70,7 +75,7 @@ public class Main {
 
 //        System.out.println(translator.chsToGeglish("死了"));
 //        System.out.println(translator.chsToGeglish("好了"));
-        System.out.println(translator.chsToGeglish("好多"));
+        System.out.println(translator.chsToGeglish("冷却"));
 //        System.out.println(translator.geglishToChs("baggage claim"));
 
 //        TranslationResult geglish2 = translator.chsToGeglish("萌♣");

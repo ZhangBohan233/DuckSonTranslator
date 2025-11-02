@@ -417,6 +417,11 @@ public class BigDict implements Serializable {
         Map<String, BigDictValue> allMatches = dict.get(chs);
         return allMatches == null ? new HashMap<>() : allMatches;
     }
+    
+    public boolean hasChs(char chs, boolean hugeDict) {
+        Map<Character, Map<String, BigDictValue>> dict = hugeDict ? chsCharEngHugeMap : chsCharEngMap;
+        return dict.containsKey(chs);
+    }
 
     public Map<String, BigDictValue> getAllEngMatches(char c, boolean hugeDict) {
         Map<Character, Map<String, BigDictValue>> dict = hugeDict ? engCharChsHugeMap : engCharChsMap;

@@ -34,6 +34,15 @@ public class Util {
         }
         return res;
     }
+
+    public static <K, V> Map<V, List<K>> invertNonBijectionMap(Map<K, V> map) {
+        Map<V, List<K>> res = new HashMap<>();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            List<K> lst = res.computeIfAbsent(entry.getValue(), v -> new ArrayList<>());
+            lst.add(entry.getKey());
+        }
+        return res;
+    }
     
     @SafeVarargs
     public static <T> Set<T> mergeSets(Set<T>... sets) {

@@ -45,10 +45,12 @@ chs, cq, pinyin, eng, pos
 # C
 差, ca1, cha1, gap, n
 才, cai2, cai2, just, adv
+彩, cai3, cai3, color, n
 菜, cai4, cai4, vegetable, n
 长, cang2, chang2, long, adj
 场, cang2, chang3, field, n
 藏, cang2, cang2, hide, v
+唱, cang4, chang4, sing, v
 草, cao3, cao3, grass, n
 造, cao4, zao4, build, v
 车, ce1, che2, car, n
@@ -59,6 +61,7 @@ chs, cq, pinyin, eng, pos
 吃, ci2, chi1, eat, v
 词, ci2, ci2, word, n
 磁, ci2, ci2, magnetic, adj
+雌, ci2, ci2, female, n
 次, ci4, ci4, time, n
 出, cu2, chu1, out, v
 除, cu2, chu2, divide, v
@@ -139,16 +142,21 @@ chs, cq, pinyin, eng, pos
 甘, gan1, gan1, sweet, adj
 感, gan3, gan3, feel, v
 高, gao1, gao1, high, adj
+搞, gao3, gao3, make, v
 给, ge3, gei3, give, v
+根, gen1, gen1, root, n
+根, gen1, gen1, heel, n
 更, gen4, geng4, more, adv
 哥, go1, ge1, brother, n
 歌, go1, ge1, song, n
 鸽, go2, ge1, pigeon, n
 各, go2, ge4, each, det
+角, go2, jiao3, angle, n
 果, go3, guo3, fruit, n
 弓, gong1, gong1, bow, n
 工, gong1, gong1, job, n
 公, gong1, gong1, public, n
+狗, gou3, gou3, dog, n
 谷, gu2, gu3, valley, n
 骨, gu2, gu3, bone, n
 关, guan1, guan1, close, v, eng_default=true
@@ -257,6 +265,7 @@ chs, cq, pinyin, eng, pos
 块, kuai4, kuai4, block, n
 亏, kui1, kui1, loss, n
 鲲, kun1, kun1, sing jump rap basketball, n
+可以, ko3 yi3, ke3 yi3, can, v
 
 # L
 拉, la1, la1, pull, v
@@ -278,6 +287,7 @@ chs, cq, pinyin, eng, pos
 力, li2, li4, power, n
 里, li3, li3, in, prep
 你, li3, ni3, you, pron
+连, lian2, lian2, connect, v
 脸, lian3, lian3, face, n
 尿, liao4, niao4, piss, n
 林, lin2, lin2, forest, n
@@ -295,6 +305,7 @@ chs, cq, pinyin, eng, pos
 类, lui4, lei4, kind, n
 铝, lv3, lv3, aluminum, n
 女, lv3, nv3, woman, n
+劣, lve2, lie4, bad, adj
 啷个, lang3 go4, lang3 ge4, how to, adv
 老板, lao3 ban3, lao3 ban3, boss, n
 这个, le4 go4, zhe4 ge4, this, pron
@@ -304,6 +315,7 @@ chs, cq, pinyin, eng, pos
 # M
 买, mai3, mai3, buy, v
 卖, mai4, mai4, sell, v
+猫, mao1, mao1, cat, n
 毛, mao2, mao2, fur, n
 墨, me2, mo4, ink, n
 麦, me2, mai4, wheat, n
@@ -330,7 +342,7 @@ chs, cq, pinyin, eng, pos
 饿, o4, e4, hungry, adj
 
 # P
-, pa1, pa1, soft, adj
+𤆵, pa1, pa1, soft, adj
 跑, pao3, pao3, run, v
 泡, pao4, pao4, bubble, n
 炮, pao4, pao4, cannon, n
@@ -367,6 +379,7 @@ chs, cq, pinyin, eng, pos
 晴, qin2, qing2, sunny, adj
 请, qin3, qing3, please, v
 庆, qin4, qing4, celebrate, v
+却, qio2, que4, but, conj
 球, qiu2, qiu2, ball, n
 取, qu3, qu3, take, v
 全, quan2, quan2, all, adj
@@ -398,17 +411,21 @@ chs, cq, pinyin, eng, pos
 上, sang4, shang4, up, v
 烧, sao1, shao1, burn, v
 少, sao3, shao3, less, adv
+色, se2, se4, color, n
+蛇, se2, she2, snake, n
 生, sen1, sheng1, birth, n
 僧, sen1, seng1, monk, n
+声, sen1, sheng1, sound, n
 神, sen2, shen2, god, n
 乘, sen2, cheng2, multiply, v
 笋, sen3, sun3, bamboo, n
 省, sen3, sheng3, province, n
 思, si1, si1, think, v
+私, si1, si1, private, adj
 狮, si1, shi1, lion, n
 师, si1, shi1, teacher, n
 诗, si1, shi1, poem, n
-石, si2, shi2, stone, n, cover=false
+石, si2, shi2, stone, n
 湿, si2, shi1, wet, adj
 食, si2, shi2, food, n
 时, si2, shi2, time, n
@@ -585,6 +602,7 @@ chs, cq, pinyin, eng, pos
 站, zan4, zhan4, stand, v
 占, zan4, zhan4, occupy, v
 嗞, zi1, zi1, erase, v
+知, zi1, zhi1, know, v
 植, zi2, zhi2, plant, n
 子, zi3, zi3, son, n
 紫, zi3, zi3, purple, n

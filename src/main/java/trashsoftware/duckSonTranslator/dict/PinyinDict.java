@@ -1,25 +1,34 @@
 package trashsoftware.duckSonTranslator.dict;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PinyinDict {
 
     private static PinyinDict instance;
 
     protected int cqPinCount = 0;
-    protected Map<Character, String[]> pinyin;  // 长度2, [拼音，重庆拼音]
+    protected Map<Character, String[]> pinyin;  // 值的长度3, [普通话拼音数字版，重庆拼音，真拼音]
+    protected Map<String, String[]> fullPinyin;  // 补充用的多音字拼音，长度任意。键为String因为unicode有些字符长度不为1
+//    protected Map<String, List<String[]>> cantonesePin;  // 用于判断入声用，每个读音有[粤拼，声母，韵母，声调]
+    
+    // 繁体字表，暂时还没用上
+    protected Map<Character, Character> traditionalSimplified;
+    protected Map<Character, List<Character>> simplifiedTraditional;
 
     protected Map<String, List<Character>> pinyinToChs = new HashMap<>();
     protected Map<String, List<Character>> cqPinToChs = new HashMap<>();
 
     protected PinyinDict() throws IOException {
         pinyin = DictMaker.getChsPinyinDict();
+        fullPinyin = DictMaker.readFullPinyinDict();
+        traditionalSimplified = DictMaker.readTraditionalSimplifiedConversion();
+        simplifiedTraditional = Util.invertNonBijectionMap(traditionalSimplified);
+        Map<String, List<String[]>> cantonesePin = DictMaker.readCantonesePinyin();  // 就用这一次了，放这里省内存
+        DictMaker.processRuShengForCqPin(pinyin, cantonesePin);
+        
         List<String[]> csv = DictMaker.readCsv(
-                DictMaker.class.getResourceAsStream("cq_pin.csv"));
+                DictMaker.class.getResourceAsStream("cq_pin.txt"));
         for (String[] line : csv) {
             if (line[0].length() != 1) throw new RuntimeException("Duck son");
             String[] arr = pinyin.get(line[0].charAt(0));
@@ -67,6 +76,13 @@ public class PinyinDict {
         return pinyin.get(ch);
     }
 
+    /**
+     * 返回这个字的全部普通话拼音。注意，这里的String是因为有些生僻字占用2个char，但整个DuckSonTranslator其实是不支持的
+     */
+    public String[] getFullPinyinByChs(String chars) {
+        return fullPinyin.get(chars);
+    }
+
     public List<Character> getChsListByCqPin(String cqPin) {
         return cqPinToChs.get(cqPin);
     }
@@ -89,6 +105,10 @@ public class PinyinDict {
                 return new ArrayList<>(List.of(chs));
             }
         }
+
+//        Set<Character> otherForms = new HashSet<>(simplifiedTraditional.get(chs));
+//        otherForms.add(traditionalSimplified.get(chs));
+        
         List<Character> sameSound;
         if (chongqingMode) {
             sameSound = getChsListByCqPin(getPin(pinyin, true));

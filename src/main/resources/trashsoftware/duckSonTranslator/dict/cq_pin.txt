@@ -1,0 +1,196 @@
+chs, cq_pin,
+
+# A
+崖, ai2,
+涯, ai2,
+岩, ai2,
+
+# B
+白, be2,
+百, be2,
+柏, be2,
+伯, be2,
+
+# C
+造, cao4,
+凿, co2,
+
+# D
+戳, duo2,
+
+# E
+
+# F
+佛, fu2,
+
+# G
+街, gai1,
+皆, gai1,
+解, gai3,
+给, ge3,
+哥, go1,
+歌, go1,
+戈, go1,
+角, go2,
+各, go2,
+鸽, go2,
+割, go2,
+葛, go2,
+阁, go2,
+铬, go2,
+个, go4,
+国, gue2,
+
+# H
+傻, ha3,
+下, ha4,
+鞋, hai2,
+咸, han2,
+很, he1,
+吓, he2,
+黑, he2,
+豁, ho1,
+喝, ho1,
+呵, ho1,
+和, ho2,
+褐, ho2,
+河, ho2,
+何, ho2,
+盒, ho2,
+合, ho2,
+横, hun2,
+
+# J
+甲, jia2,
+脚, jio2,
+觉, jio2,
+扭, jiu3,
+吮, juu2,
+足, juu2,
+局, juu2,
+菊, juu2,
+
+# K
+掐, ka2,
+蟹, kai3,
+科, ko1,
+柯, ko1,
+搁, ko1,
+壳, ko2,
+渴, ko2,
+可, ko3,
+颗, ko3,
+课, ko4,
+扩, kue2,
+括, kue2,
+阔, kue2,
+
+# L
+的, li1,
+研, lian1,
+略, lio2,
+业, lie2,
+虐, lio2,
+勒, le2,
+肋, le2,
+这, le4,
+乐, lo2,
+绿, lu2,
+六, lu2,
+氯, lu2,
+律, lu2,
+率, lu2,
+劣, lve2,
+
+# M
+墨, me2,
+麦, me2,
+迈, me2,
+脉, me2,
+没, mei1,
+摩, mo1,
+墓, mo4,
+慕, mo4,
+
+# O
+屙, o1,
+恶, o2,
+鹅, o2,
+俄, o2,
+娥, o2,
+鄂, o2,
+鳄, o2,
+蛾, o2,
+饿, o4,
+
+# P
+屄, pi1,
+批, pei1,
+披, pei1,
+
+# Q
+溪, qi1,
+确, qio2,
+雀, qio2,
+却, qio2,
+曲, quu2,
+屈, quu2,
+族, quu2,
+渠, quu2,
+龋, quu2,
+
+# R
+肏, ri2,
+允, run3,
+孕, run4,
+
+# S
+孙, sen1,
+乘, sen2,
+豉, si2,
+删, suan1,
+纯, sun2,
+鹑, sun2,
+
+# T
+
+# W
+微, wei2,
+薇, wei2,
+危, wei2,
+棵, wo1,
+
+# X
+学, xio2,
+隧, xu4,
+遂, xu4,
+鲜, xuan1,
+掀, xuan1,
+续, xuu2,
+蓄, xuu2,
+速, xuu2,
+
+# Y
+药, yo2,
+约, yo2,
+岳, yo2,
+钥, yo2,
+跃, yo2,
+疫, yu2,
+玉, yu4,
+沿, yuan2,
+荣, yun2,
+永, yun3,
+咏, yun4,
+泳, yun4,
+育, yuu2,
+欲, yuu2,
+郁, yuu2,
+
+# Z
+窄, ze2,
+宅, ze2,
+摘, ze2,
+翅, zi4,
+着, zo2,
+做, zu4,
