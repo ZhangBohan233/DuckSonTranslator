@@ -1,9 +1,6 @@
 package trashsoftware.duckSonTranslator.grammar;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Token {
 
@@ -180,12 +177,17 @@ public class Token {
     public List<Token> applyTenseToChs(GrammarDict grammarDict) {
         List<Token> result = new ArrayList<>();
         for (String tense : appliedTenses) {
-            GrammarEffect ge = grammarDict.tenseNameMap.get(tense);
-            if (ge.effectiveIndex < 0) {
-                return List.of(this, new Token(ge.tenseKeyWord, ge.engDirect, ge, posInOrig, lengthInOrig));
-            } else {
+            Map<String, GrammarEffect> ges = grammarDict.tenseByEng.get(tense);
+            GrammarEffect ge = ges.get(partOfSpeech);
+            if (ge != null) {
+                if (ge.effectiveIndex < 0) {
+                    return List.of(this, new Token(ge.tenseKeyWord, ge.engDirect, ge, posInOrig, lengthInOrig));
+                } else {
 //                System.out.println(eng + " " + engAfterTense);
-                return List.of(new Token(ge.tenseKeyWord, ge.engDirect, ge, posInOrig, lengthInOrig), this);
+                    return List.of(new Token(ge.tenseKeyWord, ge.engDirect, ge, posInOrig, lengthInOrig), this);
+                }
+            } else {
+                result.add(new Token(engAfterTense));
             }
         }
         return result;

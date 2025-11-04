@@ -270,8 +270,8 @@ public class DictMaker {
                 }
                 double ruPercent = (double) ruCount / jyutPins.size();
                 
-                if (ruPercent > 0.51) {
-                    // 多音字半数以上读入声才算
+                if (ruPercent > 0.51 || (jyutPins.size() <= 2 && ruPercent > 0)) {
+                    // 超过3个读音的多音字半数以上读入声才算
                     String[] chsCq = entry.getValue();
                     if (Character.isDigit(chsCq[1].charAt(chsCq[1].length() - 1))) {
                         chsCq[1] = chsCq[1].substring(0, chsCq[1].length() - 1) + '2';  // 入声归阳平

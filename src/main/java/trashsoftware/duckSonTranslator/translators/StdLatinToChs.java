@@ -155,7 +155,7 @@ public abstract class StdLatinToChs extends Translator {
                 }
                 String[][][] permutation = makeCombinations(possibles);
 
-                for (Map.Entry<String, GrammarEffect> entry : parent.grammarDict.tenseInfo.entrySet()) {
+                for (Map.Entry<String, GrammarEffect> entry : parent.grammarDict.tenseByChs.entrySet()) {
                     GrammarEffect effect = entry.getValue();
                     for (Map.Entry<String[][], String> savedCombo : effect.combsEngChs.entrySet()) {
                         String[][] engPos = savedCombo.getKey();

@@ -4,8 +4,6 @@ import trashsoftware.duckSonTranslator.dict.BaseItem;
 import trashsoftware.duckSonTranslator.grammar.ChsToGegCase;
 import trashsoftware.duckSonTranslator.grammar.GrammarEffect;
 import trashsoftware.duckSonTranslator.grammar.Token;
-import trashsoftware.duckSonTranslator.result.ResultToken;
-import trashsoftware.duckSonTranslator.result.TranslationResult;
 import trashsoftware.duckSonTranslator.wordPickers.PickerFromChs;
 import trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.ResultFromChs;
 
@@ -235,7 +233,7 @@ public abstract class StdChsToLatin extends Translator {
             GrammarEffect ge;
             if (i < chs.length() - 2) {
                 len2 = chs.substring(i, i + 2);
-                ge = parent.grammarDict.tenseInfo.get(len2);
+                ge = parent.grammarDict.tenseByChs.get(len2);
                 if (ge != null) {
                     if (!addSpecial(ge, chs, i, grammars)) {
                         grammars.put(i, new Token(len2, ge.engDirect, ge, i, 2));
@@ -244,7 +242,7 @@ public abstract class StdChsToLatin extends Translator {
                     }
                 }
             }
-            ge = parent.grammarDict.tenseInfo.get(len1);
+            ge = parent.grammarDict.tenseByChs.get(len1);
             if (ge != null) {
                 if (!addSpecial(ge, chs, i, grammars)) {
                     grammars.put(i, new Token(len1, ge.engDirect, ge, i, 1));

@@ -15334,7 +15334,7 @@ CH	UCODE	JP	INIT	FINL	TONE	DESC	DESC_JP
 祜	U+795C	wu2	w	u	2		
 祜	U+795C	wu6	w	u	6		
 祝	U+795D	zuk1	z	uk	1		
-祝	U+795D	zau3	z	au	3		
+# 祝	U+795D	zau3	z	au	3		
 神	U+795E	san4	s	an	4		
 神	U+795E	san2	s	an	2		
 神	U+795E	san1	s	an	1		

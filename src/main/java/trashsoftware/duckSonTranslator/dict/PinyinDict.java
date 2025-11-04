@@ -26,7 +26,23 @@ public class PinyinDict {
         simplifiedTraditional = Util.invertNonBijectionMap(traditionalSimplified);
         Map<String, List<String[]>> cantonesePin = DictMaker.readCantonesePinyin();  // 就用这一次了，放这里省内存
         DictMaker.processRuShengForCqPin(pinyin, cantonesePin);
+
+        // 把baseDict里面说明了的重庆拼音写进去
+        BaseDict baseDict = BaseDict.getInstance();
+        System.out.println(baseDict.chsMap);
+        for (var entry : baseDict.chsMap.entrySet()) {
+            String word = entry.getKey();
+            if (word.length() == 1) {
+                char c = word.charAt(0);
+                String[] arr = pinyin.get(c);
+                if (arr == null) throw new RuntimeException(c + " not have pinyin");
+                arr[0] = entry.getValue().pinyin;
+                arr[1] = entry.getValue().cq;
+            }
+        }
         
+        // cq_pin里面的读音是优先级最高的
+        // 不应不baseDict里面冲突，但不排除开发者脑壳有bing bong。这种情况下以cq_pin为准
         List<String[]> csv = DictMaker.readCsv(
                 DictMaker.class.getResourceAsStream("cq_pin.txt"));
         for (String[] line : csv) {

@@ -26,6 +26,7 @@ chs, cq, pinyin, eng, pos
 百, be2, bai3, hundred, n
 杯, bei1, bei1, cup, n
 倍, bei4, bei4, times, n
+本, ben3, ben3, note, n
 壁, bi2, bi4, wall, n
 必, bi2, bi4, must, aux
 闭, bi4, bi4, close, v
@@ -41,6 +42,7 @@ chs, cq, pinyin, eng, pos
 版本, ban3 ben3, ban3 ben3, version, n
 包弟, bao1 di4, bao1 di4, baggage, n
 百万, be2 wan4, bai3 wan4, million, n
+板蓝根, ban3 lan2 gen1, ban3 lan2 gen1, blg, n
 
 # C
 差, ca1, cha1, gap, n
@@ -81,6 +83,7 @@ chs, cq, pinyin, eng, pos
 代, dai4, dai4, represent, v
 带, dai4, dai4, bring, v
 单, dan1, dan1, single, adj
+当, dang1, dang1, when, adv
 倒, dao4, dao4, reverse, v
 到, dao4, dao4, arrive, v
 导, dao4, dao3, navigate, v
@@ -136,13 +139,13 @@ chs, cq, pinyin, eng, pos
 该, gai1, gai1, should, aux
 改, gai3, gai3, change, v
 解, gai3, jie3, solve, v
-告, gao4, gao4, try, v
 干, gan1, gan1, dry, adj
 杆, gan1, gan1, cue, n
 甘, gan1, gan1, sweet, adj
 感, gan3, gan3, feel, v
 高, gao1, gao1, high, adj
 搞, gao3, gao3, make, v
+告, gao4, gao4, try, v
 给, ge3, gei3, give, v
 根, gen1, gen1, root, n
 根, gen1, gen1, heel, n
@@ -478,6 +481,7 @@ chs, cq, pinyin, eng, pos
 天, tian1, tian1, sky, n
 统, tong3, tong3, unify, v
 头, tou2, tou2, head, n
+抖, tou3, dou3, shake, v
 图, tu2, tu2, graph, n
 突, tu2, tu1, sudden, adj
 兔, tu4, tu4, rabbit, n
@@ -556,6 +560,7 @@ chs, cq, pinyin, eng, pos
 夜, ye4, ye4, night, n
 液, ye4, ye4, liquid, n
 衣, yi1, yi1, clothes, n
+医, yi1, yi1, cure, v
 一, yi2, yi1, one, n
 疑, yi2, yi2, question, v
 乙, yi2, yi3, B, n

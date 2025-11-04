@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class GrammarDict {
-    public final Map<String, GrammarEffect> tenseInfo = new HashMap<>();
-    public final Map<String, GrammarEffect> tenseNameMap = new HashMap<>();
+    public final Map<String, GrammarEffect> tenseByChs = new HashMap<>();  // 键为中文
+    public final Map<String, Map<String, GrammarEffect>> tenseByEng = new HashMap<>();  // {tenseMark: {pos: grammar}}
     private int maxKeyLength;
     private int maxEngCombLength;
 
@@ -46,10 +46,15 @@ public class GrammarDict {
                     postCombos
             );
             for (String keyWord : keyWords) {
-                tenseInfo.put(keyWord, grammarEffect);
+                tenseByChs.put(keyWord, grammarEffect);
             }
-            tenseNameMap.put(tenseName, grammarEffect);
+            Map<String, GrammarEffect> tensesOfThisMark = tenseByEng.computeIfAbsent(tenseName, k -> new TreeMap<>());
+            // 多个pos可用的情况下就都加
+            for (String pos : partOfSpeech) {
+                tensesOfThisMark.put(pos, grammarEffect);
+            }
         }
+        System.out.println(tenseByEng);
     }
 
     private Map<String, String[][]> analyzeCombo(String part) {

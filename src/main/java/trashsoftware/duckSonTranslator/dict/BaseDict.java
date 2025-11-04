@@ -72,25 +72,8 @@ public class BaseDict {
             if (line.length < 5) {
                 throw new IndexOutOfBoundsException("Line " + Arrays.toString(line) + " not good.");
             }
-            
-            BaseItem bi = new BaseItem(line[0], line[1], line[2], line[3], line[4]);
-            if (line.length > 5) {
-                for (int i = 5; i < line.length; i++) {
-                    String[] kwArgs = line[i].split("=");
-                    if (kwArgs.length == 2) {
-                        String key = kwArgs[0].strip();
-                        if ("cover".equals(key)) {
-                            boolean cover = Boolean.parseBoolean(kwArgs[1].strip());
-                            bi.setCoverSameSound(cover);
-                        } else if ("eng_default".equals(key)) {
-                            boolean ed = Boolean.parseBoolean(kwArgs[1].strip());
-                            bi.setEngDefault(ed);
-                        }
-                    } else {
-                        throw new RuntimeException("Unrecognized part '" + line[i] + '\'');
-                    }
-                }
-            }
+
+            BaseItem bi = getBaseItem(line);
 
             if (line[0].length() > maxChsWordLen) maxChsWordLen = line[0].length();
 
@@ -106,6 +89,28 @@ public class BaseDict {
             engList.add(bi);
 //            if (!engMap.containsKey(line[3])) engMap.put(line[3], bi);
         }
+    }
+
+    private static BaseItem getBaseItem(String[] line) {
+        BaseItem bi = new BaseItem(line[0], line[1], line[2], line[3], line[4]);
+        if (line.length > 5) {
+            for (int i = 5; i < line.length; i++) {
+                String[] kwArgs = line[i].split("=");
+                if (kwArgs.length == 2) {
+                    String key = kwArgs[0].strip();
+                    if ("cover".equals(key)) {
+                        boolean cover = Boolean.parseBoolean(kwArgs[1].strip());
+                        bi.setCoverSameSound(cover);
+                    } else if ("eng_default".equals(key)) {
+                        boolean ed = Boolean.parseBoolean(kwArgs[1].strip());
+                        bi.setEngDefault(ed);
+                    }
+                } else {
+                    throw new RuntimeException("Unrecognized part '" + line[i] + '\'');
+                }
+            }
+        }
+        return bi;
     }
 
     public static BaseDict getInstance() throws IOException {

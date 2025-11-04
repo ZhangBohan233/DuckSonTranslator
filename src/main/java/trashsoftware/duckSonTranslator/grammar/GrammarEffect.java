@@ -53,4 +53,18 @@ public class GrammarEffect {
         
         throw new RuntimeException();
     }
+
+    @Override
+    public String toString() {
+        return "GrammarEffect{" +
+                "tenseKeyWord='" + tenseKeyWord + '\'' +
+                ", engDirect='" + engDirect + '\'' +
+                ", tenseName='" + tenseName + '\'' +
+                ", effectiveIndex=" + effectiveIndex +
+                ", effectivePos=" + effectivePos +
+                ", specialPreComb=" + specialPreComb +
+                ", specialPostComb=" + specialPostComb +
+                ", combsEngChs=" + combsEngChs +
+                '}';
+    }
 }

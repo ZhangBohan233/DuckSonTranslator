@@ -43,7 +43,7 @@ public class Main {
 //        for (WordResult wr : wordResults) {
 //            System.out.println(wr);
 //        }
-        List<WordResult> wordResults3 = dictionary.search("目录一百七十六", "chs", "geg");
+        List<WordResult> wordResults3 = dictionary.search("剧", "chs", "geg");
         System.out.println("=====");
         for (WordResult wr : wordResults3) {
             System.out.println(wr);
@@ -57,7 +57,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        testDictionary();
+//        testDictionary();
 //        worldCupCountries();
         TranslatorOptions options = TranslatorOptions.getInstance();
 //        if (true) return;
@@ -75,7 +75,9 @@ public class Main {
 
 //        System.out.println(translator.chsToGeglish("死了"));
 //        System.out.println(translator.chsToGeglish("好了"));
-        System.out.println(translator.chsToGeglish("冷却"));
+//        System.out.println(translator.chsToGeglish("冷却"));
+        System.out.println(translator.geglishToChs("seer shit"));
+        System.out.println(translator.chinglishToChs("seer shit"));
 //        System.out.println(translator.geglishToChs("baggage claim"));
 
 //        TranslationResult geglish2 = translator.chsToGeglish("萌♣");
