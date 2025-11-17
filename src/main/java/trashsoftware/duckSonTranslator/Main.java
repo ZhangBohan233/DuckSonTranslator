@@ -76,8 +76,8 @@ public class Main {
 //        System.out.println(translator.chsToGeglish("死了"));
 //        System.out.println(translator.chsToGeglish("好了"));
 //        System.out.println(translator.chsToGeglish("冷却"));
-        System.out.println(translator.geglishToChs("seer shit"));
-        System.out.println(translator.chinglishToChs("seer shit"));
+//        System.out.println(translator.geglishToChs("seer shit"));
+        System.out.println(translator.chsToGeglish("筷子"));
 //        System.out.println(translator.geglishToChs("baggage claim"));
 
 //        TranslationResult geglish2 = translator.chsToGeglish("萌♣");

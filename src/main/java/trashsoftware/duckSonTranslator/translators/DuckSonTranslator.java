@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.9.0";
+    public static final String CORE_VERSION = "0.9.3";
 
     final BaseDict baseDict;
     final PinyinDict pinyinDict;

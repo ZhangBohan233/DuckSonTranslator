@@ -9,13 +9,13 @@ import static trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.Commo
 import static trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.CommonPrefixCharPicker.commonSubstringLength;
 
 public class CombinedCharPicker extends SingleCharPicker {
-    
+
     public final static double STRONG_MATCH_THRESHOLD = 0.1;
-    
+
     public static final List<String> POS_PRECEDENCE = List.of(
             "v", "pron", "n", "adj", "adv"
     );
-    
+
     public CombinedCharPicker(BigDict bigDict, PickerFactory factory) {
         super(bigDict, factory);
     }
@@ -23,6 +23,7 @@ public class CombinedCharPicker extends SingleCharPicker {
     @Override
     protected ResultFromChs translateChar(char chs) {
         var allMatches = bigDict.getAllChsMatches(chs);
+//        System.out.println(allMatches);
         if (allMatches.isEmpty()) return ResultFromChs.NOT_FOUND;
         Map<String, Candidate> candidateMap = new HashMap<>();  // eng: {pos: [含chs的词数, 不含的词数]}
         for (var chsWordDes : allMatches.entrySet()) {
@@ -50,7 +51,7 @@ public class CombinedCharPicker extends SingleCharPicker {
                                     // is exact
                                     if (isBetterExactMatch(candidate, nearPos)) {
                                         candidate.exactMatch = true;
-                                        candidate.bestPos = nearPos;
+                                        candidate.puristPos = nearPos;
                                     }
                                 }
 //                                candidate.matches.add(invChsDes);
@@ -70,13 +71,16 @@ public class CombinedCharPicker extends SingleCharPicker {
         Collections.sort(candidateList);
         Collections.reverse(candidateList);
 //        System.out.println(chs);
+//        for (Candidate candidate : candidateList) {
+//            System.out.println(candidate);
+//        }
 //        System.out.println(candidateList);
 
         Candidate best = candidateList.get(0);
         double precedence = best.resultPrecedence();
 //        System.out.println(best + " " + precedence + " " + best.minOccurIndex + " " + best.exactMatch);
 
-        return new ResultFromChs(best.eng, best.bestPos, 1, 
+        return new ResultFromChs(best.eng, best.puristPos, 1,
                 precedence, precedence >= STRONG_MATCH_THRESHOLD);
     }
 
@@ -84,13 +88,13 @@ public class CombinedCharPicker extends SingleCharPicker {
      * Precondition: newExactPos是exact
      */
     private static boolean isBetterExactMatch(Candidate candidate, String newExactPos) {
-        if (candidate.exactMatch && candidate.bestPos != null) {
-            int curIndex = POS_PRECEDENCE.indexOf(candidate.bestPos);
+        if (candidate.exactMatch && candidate.puristPos != null) {
+            int curIndex = POS_PRECEDENCE.indexOf(candidate.puristPos);
             if (curIndex == -1) curIndex = Integer.MAX_VALUE;
 
             int newIndex = POS_PRECEDENCE.indexOf(newExactPos);
             if (newIndex == -1) newIndex = Integer.MAX_VALUE;
-            
+
             return newIndex < curIndex;
         } else {
             return true;
@@ -107,8 +111,11 @@ public class CombinedCharPicker extends SingleCharPicker {
         private int minWordLen = Integer.MAX_VALUE;
         private int minOccurIndex = Integer.MAX_VALUE;
 
-        private String bestPos;
-        private double bestPosPurity;
+        private String puristPos;  // 最纯的词性
+        private double puristPosPurity;
+        private String mostMeansPos;  // 释义最多的词性 # 暂时没想好怎么写
+        private int mostMeansMatchCount;
+        private double mostMeansPosPurity;
         private int totalMatchCount;
         private double totalPurity;
 
@@ -130,33 +137,39 @@ public class CombinedCharPicker extends SingleCharPicker {
         }
 
         private void compute() {
-            if (bestPos == null) {
+            if (puristPos == null) {
                 for (var entry : posMatches.entrySet()) {
                     Set<String> posAllDes = posDes.get(entry.getKey());
                     double posPurity = (double) entry.getValue().size() / posAllDes.size();
-                    if (posPurity > bestPosPurity) {
-                        bestPosPurity = posPurity;
-                        bestPos = entry.getKey();
+                    if (posPurity > puristPosPurity) {
+                        puristPosPurity = posPurity;
+                        puristPos = entry.getKey();
                     }
                 }
             } else {
-                bestPosPurity = 1.0;
+                puristPosPurity = 1.0;
             }
-            if (bestPos == null) throw new RuntimeException();
+            if (puristPos == null) throw new RuntimeException();
 
             int allPosTotal = 0;
             totalMatchCount = 0;
             for (var entry : posMatches.entrySet()) {
 //                if (!entry.getKey().equals(bestPos)) {
-                    Set<String> posAllDes = posDes.get(entry.getKey());
-                    allPosTotal += posAllDes.size();
+                String pos = entry.getKey();
+                Set<String> posAllDes = posDes.get(pos);
+                allPosTotal += posAllDes.size();
                 totalMatchCount += entry.getValue().size();
 //                }
+                if (posAllDes.size() > mostMeansMatchCount) {
+                    mostMeansMatchCount = posAllDes.size();
+                    mostMeansPos = entry.getKey();
+                    mostMeansPosPurity = (double) entry.getValue().size() / posAllDes.size();
+                }
             }
             totalPurity = (double) totalMatchCount / allPosTotal;
 //            if (Double.isNaN(otherPosPurity)) otherPosPurity = 0.99;
 
-            Set<String> bestPosDes = posMatches.get(bestPos);
+            Set<String> bestPosDes = posMatches.get(puristPos);
             for (String s : bestPosDes) {
                 int len = s.length();
                 int index = s.indexOf(chs);
@@ -168,7 +181,7 @@ public class CombinedCharPicker extends SingleCharPicker {
         }
 
         private double resultPrecedence() {
-            return exactMatch ? (1.0 / eng.length() * 2) : (bestPosPurity / eng.length() / (minOccurIndex + 1));
+            return exactMatch ? (1.0 / eng.length() * 2) : (puristPosPurity / eng.length() / (minOccurIndex + 1));
         }
 
         @Override
@@ -179,20 +192,27 @@ public class CombinedCharPicker extends SingleCharPicker {
             if (this.superStrings.contains(o.eng)) return 1;
             if (o.superStrings.contains(this.eng)) return -1;
 
-            int purityCmp = Double.compare(this.bestPosPurity, o.bestPosPurity);
+            int purityCmp = Double.compare(this.puristPosPurity, o.puristPosPurity);
             if (purityCmp != 0) return purityCmp;
+
+            // 这两个一般区别不大
+            int mostMeansPurCmp = Double.compare(this.mostMeansPosPurity, o.mostMeansPosPurity);
+            if (mostMeansPurCmp != 0) return mostMeansPurCmp;
+
+            int otherCmp = Double.compare(this.totalPurity, o.totalPurity);
+            if (otherCmp != 0) return otherCmp;
+
+            int avgOccurIndex = Integer.compare(this.minOccurIndex, o.minOccurIndex);
+            if (avgOccurIndex != 0) return -avgOccurIndex;
+
+            int avgLenCmp = Integer.compare(this.minWordLen, o.minWordLen);
+            if (avgLenCmp != 0) return -avgLenCmp;
+
+            int mostMeansCountCmp = Integer.compare(this.mostMeansMatchCount, o.mostMeansMatchCount);
+            if (mostMeansCountCmp != 0) return mostMeansCountCmp;
 
             int matchCountCmp = Integer.compare(this.totalMatchCount, o.totalMatchCount);
             if (matchCountCmp != 0) return matchCountCmp;
-
-            int avgOccurIndex = Double.compare(this.minOccurIndex, o.minOccurIndex);
-            if (avgOccurIndex != 0) return -avgOccurIndex;
-
-            int avgLenCmp = Double.compare(this.minWordLen, o.minWordLen);
-            if (avgLenCmp != 0) return -avgLenCmp;
-            
-            int otherCmp = Double.compare(this.totalPurity, o.totalPurity);
-            if (otherCmp != 0) return otherCmp;
 
             return -Integer.compare(this.eng.length(), o.eng.length());
         }
@@ -204,11 +224,11 @@ public class CombinedCharPicker extends SingleCharPicker {
                     ", posMatch=" + posMatches +
                     ", allPos=" + posDes +
                     ", superStrings=" + superStrings +
-                    ", " + bestPos + ", " + bestPosPurity +
-                    ", " + minOccurIndex +
-                    ", " + minWordLen +
-                    ", " + totalPurity +
-                    '}';
+                    ", bestPosPurity={" + puristPos + ": " + puristPosPurity + "}" +
+                    ", minIdx=" + minOccurIndex +
+                    ", minLen=" + minWordLen +
+                    ", purity=" + totalPurity +
+                    ", most={" + mostMeansPos + ": " + mostMeansMatchCount + ": " + mostMeansPosPurity + "}";
         }
     }
 }
