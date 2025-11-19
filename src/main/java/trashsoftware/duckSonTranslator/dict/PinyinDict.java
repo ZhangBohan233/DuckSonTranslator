@@ -27,9 +27,10 @@ public class PinyinDict {
         Map<String, List<String[]>> cantonesePin = DictMaker.readCantonesePinyin();  // 就用这一次了，放这里省内存
         DictMaker.processRuShengForCqPin(pinyin, cantonesePin);
 
+        System.out.println(Arrays.toString(fullPinyin.get("压")));
+
         // 把baseDict里面说明了的重庆拼音写进去
         BaseDict baseDict = BaseDict.getInstance();
-        System.out.println(baseDict.chsMap);
         for (var entry : baseDict.chsMap.entrySet()) {
             String word = entry.getKey();
             if (word.length() == 1) {

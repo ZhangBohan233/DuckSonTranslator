@@ -6,7 +6,7 @@ import trashsoftware.duckSonTranslator.result.TranslationResult;
 public class IdentityTranslator extends Translator {
     
     public IdentityTranslator(DuckSonTranslator parent) {
-        super(parent);
+        super(parent, "", "");
     }
 
     @Override

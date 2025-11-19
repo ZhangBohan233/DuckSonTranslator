@@ -189,7 +189,7 @@ chs, cq, pinyin, eng, pos
 号, hao4, hao4, number, n
 很, he1, hen3, very, adv
 核, he2, he2, nuclear, n
-吓, he2, xia4, scare, v
+# 吓, he2, xia4, scare, v
 喝, ho1, he1, drink, v
 呵, ho1, he1, he, int
 河, ho2, he2, river, n
@@ -207,6 +207,7 @@ chs, cq, pinyin, eng, pos
 横, hun2, heng2, across, v
 好多, hao3 do1, hao3 duo1, how many, conj
 好久, hao3 jiu3, hao3 jiu3, when, conj
+吓人, he2 ren2, xia4 ren2, black man, adj, cq_only=true
 后天, hou4 tian1, hou4 tian1, back day, n
 皇菊, huang2 jv2, huang2 jv2, asshole of sky emperor, n
 

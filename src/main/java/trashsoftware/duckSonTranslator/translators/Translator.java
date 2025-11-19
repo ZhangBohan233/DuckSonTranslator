@@ -36,9 +36,13 @@ public abstract class Translator {
             Util.invertMap(CHS_PUNCTUATIONS);
 
     protected DuckSonTranslator parent;
+    protected final String srcLangCode;
+    protected final String dstLangCode;
 
-    protected Translator(DuckSonTranslator parent) {
+    protected Translator(DuckSonTranslator parent, String srcLangCode, String dstLangCode) {
         this.parent = parent;
+        this.srcLangCode = srcLangCode;
+        this.dstLangCode = dstLangCode;
     }
     
     public abstract TranslationResult translate(String text);
@@ -60,5 +64,9 @@ public abstract class Translator {
             res[i] = part;
         }
         return res;
+    }
+    
+    protected String getLangCodeDashed() {
+        return srcLangCode + "-" + dstLangCode;
     }
 }

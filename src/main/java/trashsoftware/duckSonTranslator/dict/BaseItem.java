@@ -10,6 +10,7 @@ public class BaseItem {
     public final String partOfSpeech;
     private boolean coverSameSound = false;  // 是否覆盖同音字
     private boolean engDefault = false;  // 该词条是否是这个英文单词的默认词条
+    private boolean cqOnly = false;  // 是否仅在重庆话翻译中生效
 
     BaseItem(String chs,
              String cq,
@@ -37,6 +38,14 @@ public class BaseItem {
 
     public boolean isEngDefault() {
         return engDefault;
+    }
+
+    public void setCqOnly(boolean cqOnly) {
+        this.cqOnly = cqOnly;
+    }
+
+    public boolean isCqOnly() {
+        return cqOnly;
     }
 
     @Override

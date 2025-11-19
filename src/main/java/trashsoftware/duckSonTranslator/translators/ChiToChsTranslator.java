@@ -6,7 +6,7 @@ import trashsoftware.duckSonTranslator.wordPickers.ResultFromLatin;
 
 public class ChiToChsTranslator extends StdLatinToChs {
     protected ChiToChsTranslator(DuckSonTranslator parent) {
-        super(parent);
+        super(parent, "chi", "chs");
     }
 
     @Override

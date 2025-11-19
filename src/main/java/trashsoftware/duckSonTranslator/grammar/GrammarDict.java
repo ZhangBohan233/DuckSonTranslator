@@ -35,7 +35,7 @@ public class GrammarDict {
 
             Map<String, String[][]> preCombos = analyzeCombo(line[5]);
             Map<String, String[][]> postCombos = analyzeCombo(line[6]);
-
+            
             GrammarEffect grammarEffect = new GrammarEffect(
                     keyWords[0],
                     engDirect,
@@ -45,6 +45,9 @@ public class GrammarDict {
                     preCombos,
                     postCombos
             );
+            if (line.length >= 8) {
+                addKwargs(line[7], grammarEffect);
+            }
             for (String keyWord : keyWords) {
                 tenseByChs.put(keyWord, grammarEffect);
             }
@@ -54,7 +57,6 @@ public class GrammarDict {
                 tensesOfThisMark.put(pos, grammarEffect);
             }
         }
-        System.out.println(tenseByEng);
     }
 
     private Map<String, String[][]> analyzeCombo(String part) {
@@ -84,5 +86,27 @@ public class GrammarDict {
     
     public int getMaxEngCombLength() {
         return maxEngCombLength;
+    }
+    
+    private void addKwargs(String argText, GrammarEffect grammarEffect) {
+        if (argText == null) return;
+        argText = argText.strip();
+        if (argText.isEmpty()) return;
+        String[] kwargs = argText.split(";");
+        for (String kwarg : kwargs) {
+            kwarg = kwarg.strip();
+            String[] ka = kwarg.split("=");
+            if (ka.length == 2) {
+                String key = ka[0].strip();
+                String val = ka[1].strip();
+                if ("ignores".equalsIgnoreCase(key)) {
+                    // ignore
+                    String[] ignoresLine = val.split("/");
+                    for (String ig : ignoresLine) {
+                        grammarEffect.ignoresLanguages.add(ig.strip());
+                    }
+                }
+            }
+        }
     }
 }

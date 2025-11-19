@@ -7,7 +7,7 @@ import trashsoftware.duckSonTranslator.wordPickers.ResultFromLatin;
 public class GegToChsTranslator extends StdLatinToChs {
 
     public GegToChsTranslator(DuckSonTranslator parent) {
-        super(parent);
+        super(parent, "geg", "chs");
     }
 
     @Override

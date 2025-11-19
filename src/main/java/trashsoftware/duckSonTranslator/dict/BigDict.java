@@ -16,6 +16,16 @@ public class BigDict implements Serializable {
     protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
 
     /**
+     * 每个英文单词最有代表性的中文字
+     */
+    protected final Map<String, List<Character>> engChsMostRep = new HashMap<>();
+
+    /**
+     * 根据上一个算出来的reverse
+     */
+    protected final Map<Character, List<String>> chsEngMostRep = new HashMap<>();
+
+    /**
      * 中文字符与词条的表，用于加速搜索
      */
     protected final Map<Character, Map<String, BigDictValue>> chsCharEngMap = new HashMap<>();
@@ -136,6 +146,55 @@ public class BigDict implements Serializable {
             }
         }
     }
+    
+    private static void createRepresentativeMap(Map<String, BigDictValue> engChsMap, 
+                                                Map<String, List<Character>> engChsMostRep) {
+        for (var entry : engChsMap.entrySet()) {
+            BigDictValue meanings = entry.getValue();
+            Map<Character, int[]> counts = new TreeMap<>();  // 值为: [计数，index的和]
+            for (var posDes : meanings.value.entrySet()) {
+                Set<String> desLst = posDes.getValue();
+                for (String des : desLst) {
+                    for (int i = 0; i < des.length(); i++) {
+                        char c = des.charAt(i);
+                        int[] vals = counts.computeIfAbsent(c, k -> new int[2]);
+                        vals[0]++;  // 计数+1
+                        vals[1] += i;  // 出现的index + 1
+                    }
+                }
+            }
+            List<Character> chsChars = new ArrayList<>(counts.keySet());
+            if (chsChars.isEmpty()) continue;
+            Comparator<Character> priceCmp = (o1, o2) -> {
+                int[] val1 = counts.get(o1);
+                int[] val2 = counts.get(o2);
+                int countCmp = Integer.compare(val1[0], val2[0]);
+                if (countCmp != 0) return -countCmp;
+                int indexCmp = Integer.compare(val1[1], val2[1]);
+                if (indexCmp != 0) return indexCmp;
+                return 0;
+            };
+            chsChars.sort(priceCmp);
+            char first = chsChars.get(0);
+            List<Character> res = new ArrayList<>();
+            res.add(first);
+            for (int i = 1; i < chsChars.size() ; i++) {
+                char charI = chsChars.get(i);
+                if (priceCmp.compare(first, charI) == 0) res.add(charI);
+            }
+            engChsMostRep.put(entry.getKey(), res);
+        }
+    }
+    
+    private static void createReverseRepMap(Map<String, List<Character>> engChsMostRep,
+                                            Map<Character, List<String>> revMap) {
+        for (var entry : engChsMostRep.entrySet()) {
+            for (Character chs : entry.getValue()) {
+                List<String> got = revMap.computeIfAbsent(chs, k -> new ArrayList<>());
+                got.add(entry.getKey());
+            }
+        }
+    }
 
     private static void copyTo(Map<String, BigDictValue> src, Map<String, BigDictValue> dst) {
         for (var entry : src.entrySet()) {
@@ -248,18 +307,11 @@ public class BigDict implements Serializable {
         }
         createCharMap(chsEngMap, chsCharEngMap);
         createCharMap(engChsMap, engCharChsMap);
-//        chsKeyTrie = new Trie<>();
-//        for (var entry : chsEngMap.entrySet()) {
-//            chsKeyTrie.insert(entry.getKey(), entry.getValue());
-//        }
-//        for (Map.Entry<String, BigDictValue> entry : chsEngMap.entrySet()) {
-//            chsEngTrie.insert(entry.getKey(), entry.getValue());
-//        }
-//        System.out.println(engChsMap.get("feel"));
-//        System.out.println(getAllMatches('蝇'));
-//        System.out.println(chsEngMap.get("因此"));
-//        System.out.println(engChsMap.size());
-//        System.out.println(chsEngMap);
+        
+        createRepresentativeMap(engChsMap, engChsMostRep);
+        createReverseRepMap(engChsMostRep, chsEngMostRep);
+
+//        System.out.println("Rep: " + chsEngMostRep);
     }
 
     private void readHugeDict() throws IOException {
@@ -416,6 +468,10 @@ public class BigDict implements Serializable {
         Map<Character, Map<String, BigDictValue>> dict = hugeDict ? chsCharEngHugeMap : chsCharEngMap;
         Map<String, BigDictValue> allMatches = dict.get(chs);
         return allMatches == null ? new HashMap<>() : allMatches;
+    }
+    
+    public List<Character> mostRepChsByEng(String eng) {
+        return engChsMostRep.get(eng);
     }
     
     public boolean hasChs(char chs, boolean hugeDict) {

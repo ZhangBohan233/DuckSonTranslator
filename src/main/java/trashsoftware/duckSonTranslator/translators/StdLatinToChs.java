@@ -8,8 +8,8 @@ import trashsoftware.duckSonTranslator.result.TranslationResult;
 import java.util.*;
 
 public abstract class StdLatinToChs extends Translator {
-    protected StdLatinToChs(DuckSonTranslator parent) {
-        super(parent);
+    protected StdLatinToChs(DuckSonTranslator parent, String srcLangCode, String dstLangCode) {
+        super(parent, srcLangCode, dstLangCode);
     }
 
     private static void increase(int[] limits, int[] indices) {

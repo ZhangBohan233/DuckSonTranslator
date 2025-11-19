@@ -89,7 +89,7 @@ public class ChsGegSearcher extends Searcher {
                                    String word,
                                    boolean isSameSound) {
         if (parent.getOptions().isUseBaseDict()) {
-            BaseItem baseItem = parent.baseDict.getByChs(word, 0);  // Base dict只搜本体，不搜substring，因为必要性不大
+            BaseItem baseItem = parent.baseDict.getByChs(word, 0, parent.getOptions());  // Base dict只搜本体，不搜substring，因为必要性不大
             if (baseItem != null && baseItem.chs.equals(word)) {
                 reverseSearch(word, results, baseItem.chs, Map.of(baseItem.partOfSpeech,
                                 Set.of(baseItem.eng)),

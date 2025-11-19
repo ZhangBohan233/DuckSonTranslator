@@ -1,11 +1,13 @@
 package trashsoftware.duckSonTranslator.dict;
 
+import trashsoftware.duckSonTranslator.options.TranslatorOptions;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class BaseDict {
-    
+
     private static BaseDict instance;
 
     protected final Map<String, BaseItem> chsMap = new HashMap<>();
@@ -85,7 +87,7 @@ public class BaseDict {
             List<BaseItem> pinyinList = pinyinMap.computeIfAbsent(line[2], k -> new ArrayList<>());
             pinyinList.add(bi);
 
-            List<BaseItem> engList = engMap.computeIfAbsent(line[3], k-> new ArrayList<>());
+            List<BaseItem> engList = engMap.computeIfAbsent(line[3], k -> new ArrayList<>());
             engList.add(bi);
 //            if (!engMap.containsKey(line[3])) engMap.put(line[3], bi);
         }
@@ -98,12 +100,19 @@ public class BaseDict {
                 String[] kwArgs = line[i].split("=");
                 if (kwArgs.length == 2) {
                     String key = kwArgs[0].strip();
-                    if ("cover".equals(key)) {
-                        boolean cover = Boolean.parseBoolean(kwArgs[1].strip());
-                        bi.setCoverSameSound(cover);
-                    } else if ("eng_default".equals(key)) {
-                        boolean ed = Boolean.parseBoolean(kwArgs[1].strip());
-                        bi.setEngDefault(ed);
+                    switch (key) {
+                        case "cover":
+                            boolean cover = Boolean.parseBoolean(kwArgs[1].strip());
+                            bi.setCoverSameSound(cover);
+                            break;
+                        case "eng_default":
+                            boolean ed = Boolean.parseBoolean(kwArgs[1].strip());
+                            bi.setEngDefault(ed);
+                            break;
+                        case "cq_only":
+                            boolean cqOnly = Boolean.parseBoolean(kwArgs[1].strip());
+                            bi.setCqOnly(cqOnly);
+                            break;
                     }
                 } else {
                     throw new RuntimeException("Unrecognized part '" + line[i] + '\'');
@@ -124,14 +133,19 @@ public class BaseDict {
         return String.valueOf(chsMap.size());
     }
 
-    public BaseItem getByChs(String sentence, int index) {
+    public BaseItem getByChs(String sentence, int index, TranslatorOptions options) {
         for (int len = maxChsWordLen; len >= 1; len--) {
             int endIndex = index + len;
             if (endIndex > sentence.length()) continue;
 
             String sub = sentence.substring(index, endIndex);
             BaseItem item = chsMap.get(sub);
-            if (item != null) return item;
+            if (item != null) {
+                if (item.isCqOnly() && !options.isChongqingMode()) {
+                    continue;
+                }
+                return item;
+            }
         }
         return null;
     }

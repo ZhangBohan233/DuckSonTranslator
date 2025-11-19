@@ -17,9 +17,25 @@ public class GegChsSearcher extends Searcher {
         String lower = text.toLowerCase(Locale.ROOT);
         LinkedHashMap<String, WordResult> results = new LinkedHashMap<>();  // chs: results
 
+        searchRepresentative(results, lower);
         searchBySubstring(results, lower);
 
         return new ArrayList<>(results.values());
+    }
+    
+    private void searchRepresentative(LinkedHashMap<String, WordResult> results,
+                                      String engWord) {
+        List<Character> chChars = parent.bigDict.mostRepChsByEng(engWord);
+        if (chChars.isEmpty()) return;
+//        Map<String, Set<String>> rep = new TreeMap<>();
+//        Set<String> repStrings = new TreeSet<>();
+//        for (Character c : chChars) repStrings.add(String.valueOf(c));
+//        rep.put("rep", repStrings);
+        LinkedHashSet<String> lhs = new LinkedHashSet<>();
+        for (Character c : chChars) lhs.add(String.valueOf(c));
+        WordResult wordResult = new WordResult(engWord, engWord, engWord, "eng", "chs", WordResultType.REPRESENTATIVE);
+        wordResult.addPosDescription(Map.of("rep", lhs));
+        results.put(engWord, wordResult);
     }
     
     private void searchBySubstring(LinkedHashMap<String, WordResult> results,
@@ -62,7 +78,7 @@ public class GegChsSearcher extends Searcher {
     private Map<String, LinkedHashSet<String>> chsToGegList(String chs) {
         Map<String, LinkedHashSet<String>> engPosDes = new HashMap<>();
         if (parent.getOptions().isUseBaseDict()) {
-            BaseItem baseItem = parent.baseDict.getByChs(chs, 0);
+            BaseItem baseItem = parent.baseDict.getByChs(chs, 0, parent.getOptions());
             if (baseItem != null && baseItem.chs.equals(chs)) {
                 engPosDes.put(baseItem.partOfSpeech, new LinkedHashSet<>(List.of(baseItem.eng)));
             }

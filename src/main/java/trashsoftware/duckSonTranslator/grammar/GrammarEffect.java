@@ -3,6 +3,7 @@ package trashsoftware.duckSonTranslator.grammar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class GrammarEffect {
 
@@ -15,6 +16,8 @@ public class GrammarEffect {
     public final Map<String, String[][]> specialPostComb;
 
     public final Map<String[][], String> combsEngChs = new HashMap<>();
+    
+    public final Set<String> ignoresLanguages = new TreeSet<>();  // e.g., chs-geg
 
     public GrammarEffect(
             String tenseKeyWord,
@@ -65,6 +68,7 @@ public class GrammarEffect {
                 ", specialPreComb=" + specialPreComb +
                 ", specialPostComb=" + specialPostComb +
                 ", combsEngChs=" + combsEngChs +
+                ", ignores=" + ignoresLanguages +
                 '}';
     }
 }

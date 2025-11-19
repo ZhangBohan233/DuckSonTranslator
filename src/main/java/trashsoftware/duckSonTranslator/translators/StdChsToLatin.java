@@ -14,8 +14,8 @@ public abstract class StdChsToLatin extends Translator {
 
     protected ChsToGegCase chsToGegCaseAnalyzer;
 
-    protected StdChsToLatin(DuckSonTranslator parent) {
-        super(parent);
+    protected StdChsToLatin(DuckSonTranslator parent, String srcLangCode, String dstLangCode) {
+        super(parent, srcLangCode, dstLangCode);
         
         try {
             chsToGegCaseAnalyzer = ChsToGegCase.getInstance();
@@ -24,6 +24,9 @@ public abstract class StdChsToLatin extends Translator {
         }
     }
 
+    /**
+     * 
+     */
     private static boolean addSpecial(GrammarEffect ge,
                                       String chs,
                                       int index,
@@ -223,8 +226,9 @@ public abstract class StdChsToLatin extends Translator {
         }
     }
 
-    protected Map<Integer, Token> grammarTokens(String chs) {
+    protected Map<Integer, Token> findGrammarTokens(String chs) {
         SortedMap<Integer, Token> grammars = new TreeMap<>();
+        String thisTransRep = getLangCodeDashed();
 
         // 处理语法token
         for (int i = 0; i < chs.length(); i++) {
@@ -234,7 +238,7 @@ public abstract class StdChsToLatin extends Translator {
             if (i < chs.length() - 2) {
                 len2 = chs.substring(i, i + 2);
                 ge = parent.grammarDict.tenseByChs.get(len2);
-                if (ge != null) {
+                if (ge != null && !ge.ignoresLanguages.contains(thisTransRep)) {
                     if (!addSpecial(ge, chs, i, grammars)) {
                         grammars.put(i, new Token(len2, ge.engDirect, ge, i, 2));
                         i += 1;
@@ -243,12 +247,13 @@ public abstract class StdChsToLatin extends Translator {
                 }
             }
             ge = parent.grammarDict.tenseByChs.get(len1);
-            if (ge != null) {
+            if (ge != null && !ge.ignoresLanguages.contains(thisTransRep)) {
                 if (!addSpecial(ge, chs, i, grammars)) {
                     grammars.put(i, new Token(len1, ge.engDirect, ge, i, 1));
                 }
             }
         }
+//        System.out.println(grammars);
         return grammars;
     }
 

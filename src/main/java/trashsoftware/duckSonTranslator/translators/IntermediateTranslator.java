@@ -15,7 +15,7 @@ public abstract class IntermediateTranslator extends Translator {
     private final Translator t2;
     
     protected IntermediateTranslator(DuckSonTranslator parent, Translator t1, Translator t2) {
-        super(parent);
+        super(parent, t1.srcLangCode, t2.dstLangCode);
         
         this.t1 = t1;
         this.t2 = t2;

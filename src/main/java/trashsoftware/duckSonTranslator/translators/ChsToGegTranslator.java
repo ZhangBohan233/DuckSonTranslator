@@ -1,7 +1,6 @@
 package trashsoftware.duckSonTranslator.translators;
 
 import trashsoftware.duckSonTranslator.dict.BaseItem;
-import trashsoftware.duckSonTranslator.dict.BigDictValue;
 import trashsoftware.duckSonTranslator.grammar.Token;
 import trashsoftware.duckSonTranslator.result.ResultToken;
 import trashsoftware.duckSonTranslator.result.TranslationResult;
@@ -12,12 +11,12 @@ import java.util.*;
 
 public class ChsToGegTranslator extends StdChsToLatin {
     public ChsToGegTranslator(DuckSonTranslator parent) {
-        super(parent);
+        super(parent, "chs", "geg");
     }
 
     @Override
     public TranslationResult translate(String chs) {
-        Map<Integer, Token> grammars = grammarTokens(chs);
+        Map<Integer, Token> grammars = findGrammarTokens(chs);
 
         SortedMap<Integer, Token> origIndexTokens = new TreeMap<>();
         SortedMap<Integer, String> notTranslated = new TreeMap<>();
@@ -66,7 +65,7 @@ public class ChsToGegTranslator extends StdChsToLatin {
 
             // 查小字典
             BaseItem direct = parent.getOptions().isUseBaseDict()
-                    ? parent.baseDict.getByChs(chs, index)
+                    ? parent.baseDict.getByChs(chs, index, parent.getOptions())
                     : null;
             if (direct != null) {
                 Token token = new Token(direct.chs, direct.eng, direct.partOfSpeech,

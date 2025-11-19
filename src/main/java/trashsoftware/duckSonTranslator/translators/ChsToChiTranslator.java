@@ -11,12 +11,12 @@ import java.util.*;
 public class ChsToChiTranslator extends StdChsToLatin {
 
     public ChsToChiTranslator(DuckSonTranslator parent) {
-        super(parent);
+        super(parent, "chs", "chi");
     }
 
     @Override
     public TranslationResult translate(String chs) {
-        Map<Integer, Token> grammars = grammarTokens(chs);
+        Map<Integer, Token> grammars = findGrammarTokens(chs);
 
         SortedMap<Integer, Token> origIndexTokens = new TreeMap<>();
         SortedMap<Integer, String> notTranslated = new TreeMap<>();
@@ -65,7 +65,7 @@ public class ChsToChiTranslator extends StdChsToLatin {
 
             // 查小字典
             BaseItem direct = parent.getOptions().isUseBaseDict()
-                    ? parent.baseDict.getByChs(chs, index)
+                    ? parent.baseDict.getByChs(chs, index, parent.getOptions())
                     : null;
             if (direct != null) {
                 int chsLen = direct.chs.length();
@@ -197,7 +197,7 @@ public class ChsToChiTranslator extends StdChsToLatin {
             if (match != null) {
                 if (match.matchLength == 1 && parent.getOptions().isUseBaseDict()) {
                     // 一个字的，去小字典看看
-                    BaseItem direct = parent.baseDict.getByChs(notTransSeg, 0);
+                    BaseItem direct = parent.baseDict.getByChs(notTransSeg, 0, parent.getOptions());
                     if (direct != null) {
                         // 我敢保证这里的length是1
                         Token token = new Token(direct.chs, direct.eng, direct.partOfSpeech, 
@@ -222,7 +222,7 @@ public class ChsToChiTranslator extends StdChsToLatin {
             }
 
             BaseItem direct = parent.getOptions().isUseBaseDict()
-                    ? parent.baseDict.getByChs(notTransSeg, 0)
+                    ? parent.baseDict.getByChs(notTransSeg, 0, parent.getOptions())
                     : null;
             if (direct != null) {
                 Token token = new Token(direct.chs, direct.eng, direct.partOfSpeech,

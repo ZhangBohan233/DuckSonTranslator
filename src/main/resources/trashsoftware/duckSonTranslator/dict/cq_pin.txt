@@ -175,6 +175,7 @@ chs, cq_pin,
 速, xuu2,
 
 # Y
+压, ya4;ya2,
 药, yo2,
 约, yo2,
 岳, yo2,

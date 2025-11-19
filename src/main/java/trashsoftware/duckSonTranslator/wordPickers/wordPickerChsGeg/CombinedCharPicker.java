@@ -33,7 +33,12 @@ public class CombinedCharPicker extends SingleCharPicker {
                 var pos = engPosDes.getKey();
                 for (var des : engPosDes.getValue()) {
 //                    System.out.println(pos + " " + des);
+                    List<Character> mostRepChars = bigDict.mostRepChsByEng(des);
+//                    System.out.println(des + " " + mostRepChars);
+                    boolean isRepresentative = mostRepChars.contains(chs);
+//                    if (isRepresentative) System.out.println(chs + des + " " + mostRepChars);
                     var chsValues = bigDict.getEngChsMap().get(des);
+//                    System.out.println(chsValues);
                     for (var posChs : chsValues.value.entrySet()) {
                         String nearPos = posChs.getKey();
                         if (!posChs.getKey().equals(pos) && engPosDesList.containsKey(nearPos)) {
@@ -41,6 +46,7 @@ public class CombinedCharPicker extends SingleCharPicker {
                         }
 //                        System.out.println(posChs.getKey() + " " + posChs.getValue());
                         Candidate candidate = candidateMap.computeIfAbsent(des, k -> new Candidate(des, chs));
+                        candidate.representative = isRepresentative;
                         for (String invChsDes : posChs.getValue()) {
 //                            candidate.chsUniqueDes.add(invChsDes);
                             Set<String> desOfThisPos = candidate.posDes.computeIfAbsent(nearPos, k -> new HashSet<>());
@@ -104,6 +110,7 @@ public class CombinedCharPicker extends SingleCharPicker {
     private static class Candidate implements Comparable<Candidate> {
         final String eng;
         final char chs;
+        boolean representative;
         final Map<String, Set<String>> posDes = new HashMap<>();  // 每个pos所有match集合
         final Map<String, Set<String>> posMatches = new HashMap<>();  // 每个pos的match集合
         private final Set<String> superStrings = new HashSet<>();  // 这个的父串集合
@@ -191,6 +198,11 @@ public class CombinedCharPicker extends SingleCharPicker {
 
             if (this.superStrings.contains(o.eng)) return 1;
             if (o.superStrings.contains(this.eng)) return -1;
+            
+            if (this.representative != o.representative) {
+                if (this.representative) return 1;
+                else return -1;
+            }
 
             int purityCmp = Double.compare(this.puristPosPurity, o.puristPosPurity);
             if (purityCmp != 0) return purityCmp;
