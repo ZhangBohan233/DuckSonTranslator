@@ -11,7 +11,7 @@ chs, cq, pinyin, eng, pos
 奥, ao4, ao4, olympic, n
 
 # B
-拜, bai1, bai1, lame, adj  # 指足拜，跛
+拜, bai1, bai1, lame, adj, cq_only=true  # 指足拜，跛
 摆, bai3, bai3, swing, v
 班, ban1, ban1, class, n
 版, ban3, ban3, version, n
@@ -100,7 +100,7 @@ chs, cq, pinyin, eng, pos
 度, du4, du4, degree, n
 肚, du4, du4, belly, n
 # 打的, da3 di1, da3 di1, take taxi, n
-达死, da2 si3, da2 di3, fall die, v
+达死, da2 si3, da2 di3, fall die, v, cq_only=true
 的确, di2 qio2, di2 que4, is confirm, v
 # 的士, di1 si4, di1 shi4, taxi, n
 电视, dian4 si4, dian4 shi4, tv, n
@@ -463,7 +463,7 @@ chs, cq, pinyin, eng, pos
 随, sui2, sui2, follow, v
 水, sui3, shui3, water, n
 纯, sun2, chun2, pure, adj
-撒子, sa4 zi2, sa4 zi2, what, pron
+撒子, sa4 zi2, sa4 zi2, what, pron, cq_only=true
 什么, sen2 mo1, shen2 me, what, pron
 时候, si2 hou4, shi2 hou4, time, n
 时间, si2 jian1, shi2 jian1, time, n
@@ -543,7 +543,7 @@ chs, cq, pinyin, eng, pos
 须, xu1, xu1, beard, n
 鲜, xuan1, xian1, good taste, adj
 速, xuu2, su4, speed, n
-洗白, xi3 be2, xi3 bai2, die, v
+洗白, xi3 be2, xi3 bai2, die, v, cq_only=true
 小什字, xiao3 si2 zi4, xiao3 shi2 zi4, small stone word, n
 
 # Y
@@ -592,7 +592,7 @@ chs, cq, pinyin, eng, pos
 远, yuan3, yuan3, far, adj
 永, yun3, yong3, forever, adj, cover=false
 一个, yi2 go4, gi2 ge4, one, n
-一哈, yi2 ha1, yi4 ha1, wait a minute, v
+一哈, yi2 ha1, yi4 ha1, wait a minute, v, cq_only=true
 一下, yi2 ha4, yi2 xia4, once, adv
 已经, yi3 jin1, yi3 jing1, already, adv
 一起, yi2 qi3, yi4 qi3, together, adv

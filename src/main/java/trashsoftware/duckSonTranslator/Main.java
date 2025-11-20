@@ -43,13 +43,13 @@ public class Main {
 //        for (WordResult wr : wordResults) {
 //            System.out.println(wr);
 //        }
-        List<WordResult> wordResults3 = dictionary.search("压", "chs", "geg");
+        List<WordResult> wordResults3 = dictionary.search("驴", "chs", "geg");
         System.out.println("=====");
         for (WordResult wr : wordResults3) {
             System.out.println(wr);
         }
 
-        List<WordResult> wordResults2 = dictionary.search("look", "geg", "chs");
+        List<WordResult> wordResults2 = dictionary.search("pretend", "geg", "chs");
         System.out.println("=====");
         for (WordResult wr : wordResults2) {
             System.out.println(wr);

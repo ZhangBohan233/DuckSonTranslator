@@ -1,6 +1,7 @@
 package trashsoftware.duckSonTranslator.dict;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Util {
@@ -23,6 +24,14 @@ public class Util {
         Map<K, V> res = new HashMap<>();
         for (Map<K, V> map : maps) {
             res.putAll(map);
+        }
+        return res;
+    }
+    
+    public static <Ko, Kn, V> Map<Kn, V> replaceMapKey(Map<Ko, V> map, Function<Ko, Kn> function) {
+        Map<Kn, V> res = new HashMap<>();
+        for (Map.Entry<Ko, V> entry : map.entrySet()) {
+            res.put(function.apply(entry.getKey()), entry.getValue());
         }
         return res;
     }

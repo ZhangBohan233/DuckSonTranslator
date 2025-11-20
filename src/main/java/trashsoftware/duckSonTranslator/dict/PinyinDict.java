@@ -8,8 +8,10 @@ public class PinyinDict {
     private static PinyinDict instance;
 
     protected int cqPinCount = 0;
-    protected Map<Character, String[]> pinyin;  // 值的长度3, [普通话拼音数字版，重庆拼音，真拼音]
-    protected Map<String, String[]> fullPinyin;  // 补充用的多音字拼音，长度任意。键为String因为unicode有些字符长度不为1
+    protected Map<Character, PinyinItem> pinyin;
+    protected Map<String, PinyinItem> nonUtf8Pinyin = new HashMap<>();
+//    protected Map<Character, String[]> pinyin;  // 值的长度3, [普通话拼音数字版，重庆拼音，真拼音]
+//    protected Map<String, String[]> fullPinyin;  // 补充用的多音字拼音，长度任意。键为String因为unicode有些字符长度不为1
 //    protected Map<String, List<String[]>> cantonesePin;  // 用于判断入声用，每个读音有[粤拼，声母，韵母，声调]
     
     // 繁体字表，暂时还没用上
@@ -21,13 +23,13 @@ public class PinyinDict {
 
     protected PinyinDict() throws IOException {
         pinyin = DictMaker.getChsPinyinDict();
-        fullPinyin = DictMaker.readFullPinyinDict();
+        DictMaker.readFullPinyinDict(pinyin, nonUtf8Pinyin);
         traditionalSimplified = DictMaker.readTraditionalSimplifiedConversion();
         simplifiedTraditional = Util.invertNonBijectionMap(traditionalSimplified);
         Map<String, List<String[]>> cantonesePin = DictMaker.readCantonesePinyin();  // 就用这一次了，放这里省内存
         DictMaker.processRuShengForCqPin(pinyin, cantonesePin);
 
-        System.out.println(Arrays.toString(fullPinyin.get("压")));
+//        System.out.println(Arrays.toString(fullPinyin.get("压")));
 
         // 把baseDict里面说明了的重庆拼音写进去
         BaseDict baseDict = BaseDict.getInstance();
@@ -35,10 +37,10 @@ public class PinyinDict {
             String word = entry.getKey();
             if (word.length() == 1) {
                 char c = word.charAt(0);
-                String[] arr = pinyin.get(c);
-                if (arr == null) throw new RuntimeException(c + " not have pinyin");
-                arr[0] = entry.getValue().pinyin;
-                arr[1] = entry.getValue().cq;
+                PinyinItem pi = pinyin.get(c);
+                if (pi == null) throw new RuntimeException(c + " not have pinyin");
+                pi.forceCoverCqPin(entry.getValue().cq.split(";"));
+                pi.forceSetDefaultPinyin(entry.getValue().pinyin);
             }
         }
         
@@ -48,9 +50,9 @@ public class PinyinDict {
                 DictMaker.class.getResourceAsStream("cq_pin.txt"));
         for (String[] line : csv) {
             if (line[0].length() != 1) throw new RuntimeException("Duck son");
-            String[] arr = pinyin.get(line[0].charAt(0));
-            if (arr == null) throw new RuntimeException(line[0].charAt(0) + " not have pinyin");
-            arr[1] = line[1];
+            PinyinItem pi = pinyin.get(line[0].charAt(0));
+            if (pi == null) throw new RuntimeException(line[0].charAt(0) + " not have pinyin");
+            pi.forceCoverCqPin(line[1].split(";"));
             cqPinCount++;
         }
 
@@ -77,28 +79,33 @@ public class PinyinDict {
     }
 
     private void makeRevPinyinDict() {
-        for (Map.Entry<Character, String[]> entry : pinyin.entrySet()) {
-            String[] pinAndCq = entry.getValue();
+        for (Map.Entry<Character, PinyinItem> entry : pinyin.entrySet()) {
+            // 多音字仅有第一个读音录入这里
+            PinyinItem item = entry.getValue();
             List<Character> samePinyinChar =
-                    pinyinToChs.computeIfAbsent(pinAndCq[0], k -> new ArrayList<>());
+                    pinyinToChs.computeIfAbsent(item.getDefaultPinyin(), k -> new ArrayList<>());
             samePinyinChar.add(entry.getKey());
 
             List<Character> sameCqChar =
-                    cqPinToChs.computeIfAbsent(pinAndCq[1], k -> new ArrayList<>());
+                    cqPinToChs.computeIfAbsent(item.getDefaultCqPin(), k -> new ArrayList<>());
             sameCqChar.add(entry.getKey());
         }
     }
 
-    public String[] getPinyinByChs(char ch) {
+    public PinyinItem getPinyinByChs(char ch) {
         return pinyin.get(ch);
     }
 
-    /**
-     * 返回这个字的全部普通话拼音。注意，这里的String是因为有些生僻字占用2个char，但整个DuckSonTranslator其实是不支持的
-     */
-    public String[] getFullPinyinByChs(String chars) {
-        return fullPinyin.get(chars);
+    public PinyinItem getPinyinByChs(String nonUtf8) {
+        return nonUtf8Pinyin.get(nonUtf8);
     }
+
+//    /**
+//     * 返回这个字的全部普通话拼音。注意，这里的String是因为有些生僻字占用2个char，但整个DuckSonTranslator其实是不支持的
+//     */
+//    public String[] getFullPinyinByChs(String chars) {
+//        return fullPinyin.get(chars);
+//    }
 
     public List<Character> getChsListByCqPin(String cqPin) {
         return cqPinToChs.get(cqPin);
@@ -108,13 +115,13 @@ public class PinyinDict {
         return pinyinToChs.get(pinyin);
     }
 
-    public static String getPin(String[] pinyin, boolean chongqingMode) {
-        return chongqingMode ? pinyin[1] : pinyin[0];
-    }
+//    public static String getPin(String[] pinyin, boolean chongqingMode) {
+//        return chongqingMode ? pinyin[1] : pinyin[0];
+//    }
 
     public List<Character> getSameSoundChsChars(char chs, boolean chongqingMode) {
-        String[] pinyin = getPinyinByChs(chs);
-        if (pinyin == null) {
+        PinyinItem item = getPinyinByChs(chs);
+        if (item == null) {
             if (Character.isLetter(chs)) {
                 // 是英文字母
                 return new ArrayList<>(List.of(Character.toUpperCase(chs), Character.toLowerCase(chs)));
@@ -128,9 +135,9 @@ public class PinyinDict {
         
         List<Character> sameSound;
         if (chongqingMode) {
-            sameSound = getChsListByCqPin(getPin(pinyin, true));
+            sameSound = getChsListByCqPin(item.getDefaultCqPin());
         } else {
-            sameSound = getChsListByPinyin(getPin(pinyin, false));
+            sameSound = getChsListByPinyin(item.getDefaultPinyin());
         }
         return sameSound;
     }

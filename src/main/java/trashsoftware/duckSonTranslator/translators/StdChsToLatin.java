@@ -1,6 +1,7 @@
 package trashsoftware.duckSonTranslator.translators;
 
 import trashsoftware.duckSonTranslator.dict.BaseItem;
+import trashsoftware.duckSonTranslator.dict.PinyinItem;
 import trashsoftware.duckSonTranslator.grammar.ChsToGegCase;
 import trashsoftware.duckSonTranslator.grammar.GrammarEffect;
 import trashsoftware.duckSonTranslator.grammar.Token;
@@ -133,7 +134,7 @@ public abstract class StdChsToLatin extends Translator {
                 } else {
                     char cur = notTransSeg.charAt(0);
                     String curStr = String.valueOf(cur);
-                    String[] pinyin = parent.pinyinDict.getPinyinByChs(cur);
+                    PinyinItem pinyin = parent.pinyinDict.getPinyinByChs(cur);
                     if (pinyin != null) {
                         String py = getPinNoTone(pinyin);
                         trans = new Token(curStr, py, "n", index, 1);
@@ -150,7 +151,7 @@ public abstract class StdChsToLatin extends Translator {
     }
 
     protected BaseItem baseDictSameSound(char chs, boolean forcedCover) {
-        String[] pinyin = parent.pinyinDict.getPinyinByChs(chs);
+        PinyinItem pinyin = parent.pinyinDict.getPinyinByChs(chs);
         if (pinyin == null) {
             return null;
         }
@@ -168,7 +169,7 @@ public abstract class StdChsToLatin extends Translator {
     }
 
     private List<Character> getSameSoundChsChars(char chs) {
-        String[] pinyin = parent.pinyinDict.getPinyinByChs(chs);
+        PinyinItem pinyin = parent.pinyinDict.getPinyinByChs(chs);
         if (pinyin == null) return null;
         List<Character> sameSound;
         if (parent.getOptions().isChongqingMode()) {
@@ -181,7 +182,7 @@ public abstract class StdChsToLatin extends Translator {
     
     protected Token bigDictSameSoundTrans(char chs, int indexInFullSentence) {
         // 遍历同音字查询，只查一个字
-        String[] pinyin = parent.pinyinDict.getPinyinByChs(chs);
+        PinyinItem pinyin = parent.pinyinDict.getPinyinByChs(chs);
         if (pinyin == null) return null;
         List<Character> sameSound = getSameSoundChsChars(chs);
         if (sameSound == null) return null;  // 其实和上面的重了
@@ -212,14 +213,14 @@ public abstract class StdChsToLatin extends Translator {
         return new Token(minChs, minVal.translated, minVal.partOfSpeech, indexInFullSentence, 1);
     }
 
-    private String getPin(String[] pinyin) {
-        return parent.options.isChongqingMode() ? pinyin[1] : pinyin[0];
+    private String getPin(PinyinItem item) {
+        return parent.options.isChongqingMode() ? item.getDefaultCqPin() : item.getDefaultPinyin();
     }
 
-    protected String getPinNoTone(String[] pinyin) {
-        String pin = getPin(pinyin);
+    protected String getPinNoTone(PinyinItem item) {
+        String pin = getPin(item);
         char tone = pin.charAt(pin.length() - 1);
-        if (tone >= '0' && tone <= '4') {
+        if (Character.isDigit(tone)) {
             return pin.substring(0, pin.length() - 1);
         } else {
             return pin;

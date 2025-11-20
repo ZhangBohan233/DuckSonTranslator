@@ -25,13 +25,17 @@ public class GegChsSearcher extends Searcher {
     
     private void searchRepresentative(LinkedHashMap<String, WordResult> results,
                                       String engWord) {
-        List<Character> chChars = parent.bigDict.mostRepChsByEng(engWord);
-        if (chChars.isEmpty()) return;
-//        Map<String, Set<String>> rep = new TreeMap<>();
-//        Set<String> repStrings = new TreeSet<>();
-//        for (Character c : chChars) repStrings.add(String.valueOf(c));
-//        rep.put("rep", repStrings);
         LinkedHashSet<String> lhs = new LinkedHashSet<>();
+        BaseItem bi = parent.baseDict.getByEng(engWord);
+        if (bi != null) {
+            if (bi.chs.length() == 1) {
+                lhs.add(bi.chs);
+            }
+        }
+        
+        List<Character> chChars = parent.bigDict.mostRepChsByEng(engWord);
+        if (chChars == null || chChars.isEmpty()) return;
+
         for (Character c : chChars) lhs.add(String.valueOf(c));
         WordResult wordResult = new WordResult(engWord, engWord, engWord, "eng", "chs", WordResultType.REPRESENTATIVE);
         wordResult.addPosDescription(Map.of("rep", lhs));

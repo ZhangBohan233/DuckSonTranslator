@@ -35,6 +35,7 @@ public class CombinedCharPicker extends SingleCharPicker {
 //                    System.out.println(pos + " " + des);
                     List<Character> mostRepChars = bigDict.mostRepChsByEng(des);
 //                    System.out.println(des + " " + mostRepChars);
+                    assert mostRepChars != null;
                     boolean isRepresentative = mostRepChars.contains(chs);
 //                    if (isRepresentative) System.out.println(chs + des + " " + mostRepChars);
                     var chsValues = bigDict.getEngChsMap().get(des);

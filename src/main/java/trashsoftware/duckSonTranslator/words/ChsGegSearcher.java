@@ -3,6 +3,7 @@ package trashsoftware.duckSonTranslator.words;
 import trashsoftware.duckSonTranslator.dict.BaseItem;
 import trashsoftware.duckSonTranslator.dict.BigDict;
 import trashsoftware.duckSonTranslator.dict.BigDictValue;
+import trashsoftware.duckSonTranslator.dict.PinyinItem;
 import trashsoftware.duckSonTranslator.translators.StdLatinToChs;
 
 import java.util.*;
@@ -33,24 +34,10 @@ public class ChsGegSearcher extends Searcher {
         return new ArrayList<>(results.values());
     }
     
-    private static String produceReadablePolyphone(String majorPinyin, String[] allPinyin) {
-        if (majorPinyin == null) {
-            if (allPinyin == null || allPinyin.length == 0) return "";
-            
-            if (allPinyin.length == 1) return allPinyin[0];
-            else {
-                return allPinyin[0] + "(" + String.join(", ", Arrays.copyOfRange(allPinyin, 1, allPinyin.length)) + ")";
-            }
-        } else {
-            if (allPinyin == null) return majorPinyin;
-            if (allPinyin.length == 1 && majorPinyin.equals(allPinyin[0])) return majorPinyin;
-            else {
-                List<String> poly = new ArrayList<>();
-                for (String ap : allPinyin) {
-                    if (!majorPinyin.equals(ap)) poly.add(ap);
-                }
-                return majorPinyin + "(" + String.join(", ", poly) + ")";
-            }
+    private static String produceReadablePolyphone(List<String> allPinyin) {
+        if (allPinyin.size() == 1) return allPinyin.get(0);
+        else {
+            return allPinyin.get(0) + "(" + String.join(", ", allPinyin.subList(1, allPinyin.size())) + ")";
         }
     }
 
@@ -62,19 +49,13 @@ public class ChsGegSearcher extends Searcher {
         List<String> puTongHua = new ArrayList<>();
         List<String> cqPin = new ArrayList<>();
         for (char c : word.toCharArray()) {
-            String[] pinyin = parent.pinyinDict.getPinyinByChs(c);
-            String[] fullPin = parent.pinyinDict.getFullPinyinByChs(String.valueOf(c));
-            if (pinyin == null) {
-                if (fullPin == null) {
-                    puTongHua.add(c + "");
-                    cqPin.add(c + "");
-                } else {
-                    puTongHua.add(produceReadablePolyphone(null, fullPin));
-                    cqPin.add(c + "");
-                }
+            PinyinItem item = parent.pinyinDict.getPinyinByChs(c);
+            if (item == null) {
+                puTongHua.add(c + "");
+                cqPin.add(c + "");
             } else {
-                puTongHua.add(produceReadablePolyphone(pinyin[2], fullPin));  // 这是真拼音
-                cqPin.add(pinyin[1]);
+                puTongHua.add(produceReadablePolyphone(item.getSymbolicPinyinList()));  // 这是真拼音
+                cqPin.add(produceReadablePolyphone(item.getCqPinList()));
             }
         }
         String pth = String.join(" ", puTongHua);

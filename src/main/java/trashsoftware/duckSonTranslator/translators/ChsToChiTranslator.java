@@ -1,6 +1,7 @@
 package trashsoftware.duckSonTranslator.translators;
 
 import trashsoftware.duckSonTranslator.dict.BaseItem;
+import trashsoftware.duckSonTranslator.dict.PinyinItem;
 import trashsoftware.duckSonTranslator.grammar.Token;
 import trashsoftware.duckSonTranslator.result.ResultToken;
 import trashsoftware.duckSonTranslator.result.TranslationResult;
@@ -256,7 +257,7 @@ public class ChsToChiTranslator extends StdChsToLatin {
                 // 直接上拼音了
                 char chs = notTransSeg.charAt(0);
                 String cs = String.valueOf(chs);
-                String[] pinyin = parent.pinyinDict.getPinyinByChs(chs);
+                PinyinItem pinyin = parent.pinyinDict.getPinyinByChs(chs);
                 String py = getPinNoTone(pinyin);
                 Token token = new Token(cs, py, "n", index, 1);
                 tokens.add(token);

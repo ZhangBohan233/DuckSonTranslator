@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class DictMaker {
 
@@ -50,6 +51,9 @@ public class DictMaker {
     public static final Map<Character, char[]> TONE_DICT = Util.mergeMaps(
             TONE_DICT_A, TONE_DICT_O, TONE_DICT_E, TONE_DICT_I, TONE_DICT_U, TONE_DICT_V
     );
+    
+    public static final Map<String, Character> TONE_DICT_REV = 
+            Util.replaceMapKey(Util.invertMap(TONE_DICT), k -> "" + k[0] + (int) k[1]);  // 处理char转成int的问题
 
     public static List<String[]> readCsv(InputStream inputStream) throws IOException {
         return readCsv(inputStream, false, false);
@@ -141,11 +145,11 @@ public class DictMaker {
         }
     }
 
-    public static Map<Character, String[]> getChsPinyinDict() throws IOException {
+    public static Map<Character, PinyinItem> getChsPinyinDict() throws IOException {
         try (BufferedReader pinBr = new BufferedReader(
                 new InputStreamReader(Objects.requireNonNull(
                         DictMaker.class.getResourceAsStream("pinyin.txt"))))) {
-            Map<Character, String[]> result = new TreeMap<>();
+            Map<Character, PinyinItem> result = new HashMap<>();
             String line;
             while ((line = pinBr.readLine()) != null) {
                 String[] split = line.split(",");
@@ -154,23 +158,8 @@ public class DictMaker {
                     if (s.length() >= 2) {
                         char chs = s.charAt(0);
                         String pinyin = s.substring(1);
-                        int tone = 0;
-                        StringBuilder builder = new StringBuilder();
-                        for (char c : pinyin.toCharArray()) {
-                            char[] replace = TONE_DICT.get(c);
-                            if (replace == null) {
-                                builder.append(c);
-                            } else {
-                                builder.append(replace[0]);
-                                tone = replace[1];
-                            }
-                        }
-                        String[] arr = new String[3];
-                        arr[0] = tone == 0 ?
-                                builder.toString() : builder.append(tone).toString();
-                        arr[1] = makeDefaultCqPin(arr[0]);  // 先假设重庆话和普通话拼音一样
-                        arr[2] = pinyin;
-                        result.put(chs, arr);
+                        PinyinItem item = new PinyinItem(chs, pinyin);
+                        result.put(chs, item);
                     }
                 }
             }
@@ -178,11 +167,11 @@ public class DictMaker {
         }
     }
 
-    public static Map<String, String[]> readFullPinyinDict() throws IOException {
+    public static void readFullPinyinDict(Map<Character, PinyinItem> normalMap, 
+                                          Map<String, PinyinItem> nonUtf8Map) throws IOException {
         try (BufferedReader pinBr = new BufferedReader(
                 new InputStreamReader(Objects.requireNonNull(
                         DictMaker.class.getResourceAsStream("pinyin_full.txt"))))) {
-            Map<String, String[]> result = new HashMap<>();
             String line;
             while ((line = pinBr.readLine()) != null) {
                 int hashtagIndex = line.indexOf('#');
@@ -198,11 +187,19 @@ public class DictMaker {
                     for (int i = 0; i < pins.length; i++) {
                         pins[i] = pins[i].strip();
                     }
-                    result.put(chars, pins);
+                    
+                    PinyinItem pinyinItem;
+                    if (chars.length() == 1) {
+                        char c = chars.charAt(0);
+                        pinyinItem = normalMap.computeIfAbsent(c, k -> new PinyinItem(k, pins[0]));
+                    } else {
+                        pinyinItem = nonUtf8Map.computeIfAbsent(chars, k -> new PinyinItem(k, pins[0]));
+                    }
+                    for (String pin : pins) {
+                        pinyinItem.addPins(pin);
+                    }
                 }
             }
-
-            return result;
         }
     }
 
@@ -254,8 +251,8 @@ public class DictMaker {
         return result;
     }
     
-    public static void processRuShengForCqPin(Map<Character, String[]> chsCqPin, 
-                                               Map<String, List<String[]>> cantonesePin) {
+    public static void processRuShengForCqPin(Map<?, PinyinItem> chsCqPin, 
+                                              Map<String, List<String[]>> cantonesePin) {
         for (var entry : chsCqPin.entrySet()) {
             String character = String.valueOf(entry.getKey());
             List<String[]> jyutPins = cantonesePin.get(character);  // 有多音字
@@ -272,16 +269,14 @@ public class DictMaker {
                 
                 if (ruPercent > 0.51 || (jyutPins.size() <= 2 && ruPercent > 0)) {
                     // 超过3个读音的多音字半数以上读入声才算
-                    String[] chsCq = entry.getValue();
-                    if (Character.isDigit(chsCq[1].charAt(chsCq[1].length() - 1))) {
-                        chsCq[1] = chsCq[1].substring(0, chsCq[1].length() - 1) + '2';  // 入声归阳平
-                    }
+                    PinyinItem pinyinItem = entry.getValue();
+                    pinyinItem.setRuSheng();
                 }
             }
         }
     }
 
-    private static String makeDefaultCqPin(String pinyin) {
+    static String makeDefaultCqPin(String pinyin) {
         char last = pinyin.charAt(pinyin.length() - 1);
         String pure = pinyin;
         String tone = "";
