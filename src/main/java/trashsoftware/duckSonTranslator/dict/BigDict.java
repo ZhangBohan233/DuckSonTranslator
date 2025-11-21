@@ -11,7 +11,7 @@ public class BigDict implements Serializable {
 
     private static BigDict instanceHighSchool;
     private static BigDict instanceHuge;
-    
+
     protected final Map<String, BigDictValue> engChsMap = new HashMap<>();
     protected final Map<String, BigDictValue> chsEngMap = new HashMap<>();
 
@@ -146,9 +146,22 @@ public class BigDict implements Serializable {
             }
         }
     }
-    
-    private static void createRepresentativeMap(Map<String, BigDictValue> engChsMap, 
+
+    private static void createRepresentativeMap(Map<String, BigDictValue> engChsMap,
                                                 Map<String, List<Character>> engChsMostRep) {
+
+        class ChsWordItem {
+            final char chs;
+            final int[] countIndex;  // [计数，index的和]
+
+            ChsWordItem(char chs, int[] countIndex) {
+                this.chs = chs;
+                this.countIndex = countIndex;
+            }
+        }
+
+        Map<String, List<ChsWordItem>> rawRepMap = new HashMap<>();
+
         for (var entry : engChsMap.entrySet()) {
             BigDictValue meanings = entry.getValue();
             Map<Character, int[]> counts = new TreeMap<>();  // 值为: [计数，index的和]
@@ -163,29 +176,62 @@ public class BigDict implements Serializable {
                     }
                 }
             }
-            List<Character> chsChars = new ArrayList<>(counts.keySet());
+            List<ChsWordItem> chsChars = counts.entrySet().stream().map(ent ->
+                    new ChsWordItem(ent.getKey(), ent.getValue())).collect(Collectors.toList());
             if (chsChars.isEmpty()) continue;
-            Comparator<Character> priceCmp = (o1, o2) -> {
-                int[] val1 = counts.get(o1);
-                int[] val2 = counts.get(o2);
-                int countCmp = Integer.compare(val1[0], val2[0]);
+            Comparator<ChsWordItem> priceCmp = (o1, o2) -> {
+                int countCmp = Integer.compare(o1.countIndex[0], o2.countIndex[0]);
                 if (countCmp != 0) return -countCmp;
-                int indexCmp = Integer.compare(val1[1], val2[1]);
-                if (indexCmp != 0) return indexCmp;
                 return 0;
             };
             chsChars.sort(priceCmp);
-            char first = chsChars.get(0);
-            List<Character> res = new ArrayList<>();
+            ChsWordItem first = chsChars.get(0);
+            List<ChsWordItem> res = new ArrayList<>();
             res.add(first);
-            for (int i = 1; i < chsChars.size() ; i++) {
-                char charI = chsChars.get(i);
-                if (priceCmp.compare(first, charI) == 0) res.add(charI);
+            for (int i = 1; i < chsChars.size(); i++) {
+                ChsWordItem charI = chsChars.get(i);
+                if (priceCmp.compare(first, charI) == 0) {
+                    res.add(charI);
+                } else break;
+            }
+            rawRepMap.put(entry.getKey(), res);
+        }
+        
+        // 相当于是减少歧义
+        Map<Character, Integer> countRawRepChs = new HashMap<>();  // 每个汉字被选为代表的次数
+        for (var entry : rawRepMap.entrySet()) {
+            for (ChsWordItem cwi : entry.getValue()) {
+                countRawRepChs.merge(cwi.chs, 1, Integer::sum);
+            }
+        }
+        for (var entry : rawRepMap.entrySet()) {
+            List<ChsWordItem> cwiList = entry.getValue();
+            Comparator<ChsWordItem> priceCmp2 = (o1, o2) -> {
+                // 在这里，countIndex[0]一定相等
+                int freqOther1 = countRawRepChs.get(o1.chs);
+                int freqOther2 = countRawRepChs.get(o2.chs);
+                int commonCmp = Integer.compare(freqOther1, freqOther2);  // 相当于是这个字的独特性
+                if (commonCmp != 0) {
+                    return commonCmp;  // 越小越好
+                }
+                return Integer.compare(o1.countIndex[1], o2.countIndex[1]);
+            };
+            cwiList.sort(priceCmp2);
+
+            ChsWordItem first = cwiList.get(0);
+            List<Character> res = new ArrayList<>();
+            res.add(first.chs);
+            for (int i = 1; i < cwiList.size(); i++) {
+                ChsWordItem charI = cwiList.get(i);
+                if (priceCmp2.compare(first, charI) == 0) {
+                    res.add(charI.chs);
+                } else break;
             }
             engChsMostRep.put(entry.getKey(), res);
         }
+//        System.out.println(countRawRepChs.get('最') + " " + countRawRepChs.get('少'));
     }
-    
+
     private static void createReverseRepMap(Map<String, List<Character>> engChsMostRep,
                                             Map<Character, List<String>> revMap) {
         for (var entry : engChsMostRep.entrySet()) {
@@ -307,7 +353,7 @@ public class BigDict implements Serializable {
         }
         createCharMap(chsEngMap, chsCharEngMap);
         createCharMap(engChsMap, engCharChsMap);
-        
+
         createRepresentativeMap(engChsMap, engChsMostRep);
         createReverseRepMap(engChsMostRep, chsEngMostRep);
 
@@ -469,11 +515,11 @@ public class BigDict implements Serializable {
         Map<String, BigDictValue> allMatches = dict.get(chs);
         return allMatches == null ? new HashMap<>() : allMatches;
     }
-    
+
     public List<Character> mostRepChsByEng(String eng) {
         return engChsMostRep.get(eng);
     }
-    
+
     public boolean hasChs(char chs, boolean hugeDict) {
         Map<Character, Map<String, BigDictValue>> dict = hugeDict ? chsCharEngHugeMap : chsCharEngMap;
         return dict.containsKey(chs);
@@ -498,9 +544,9 @@ public class BigDict implements Serializable {
         }
         return result;
     }
-    
+
     private WordMatch findSubstringMatches(CharMatchFinder finder,
-                                           String sentence, 
+                                           String sentence,
                                            boolean hugeDict) {
         Map<String, BigDictValue> matches = new HashMap<>();
         for (int i = 0; i < sentence.length(); i++) {
@@ -549,7 +595,7 @@ public class BigDict implements Serializable {
     public WordMatch findPrefixMatchesByEng(String sentence, boolean hugeDict, boolean requireExact) {
         return findPrefixMatches(this::getAllEngMatches, sentence, hugeDict, requireExact);
     }
-    
+
     public WordMatch findSubstringMatchesByChs(String sentence,
                                                boolean hugeDict) {
         return findSubstringMatches(this::getAllChsMatches, sentence, hugeDict);

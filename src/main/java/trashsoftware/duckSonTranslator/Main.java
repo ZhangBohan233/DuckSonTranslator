@@ -37,7 +37,9 @@ public class Main {
     private static void testDictionary() throws IOException {
         TranslatorOptions options = TranslatorOptions.getInstance();
 //        options.setUseSameSoundChar(false);
+        long st = System.currentTimeMillis();
         DuckSonDictionary dictionary = new DuckSonDictionary(options);
+        System.out.println("Dictionary launched in " + (System.currentTimeMillis() - st) + " ms");
 //        List<WordResult> wordResults = dictionary.search("x光", "chs", "geg");
 //        System.out.println("=====");
 //        for (WordResult wr : wordResults) {
@@ -49,7 +51,7 @@ public class Main {
             System.out.println(wr);
         }
 
-        List<WordResult> wordResults2 = dictionary.search("pretend", "geg", "chs");
+        List<WordResult> wordResults2 = dictionary.search("most", "geg", "chs");
         System.out.println("=====");
         for (WordResult wr : wordResults2) {
             System.out.println(wr);
