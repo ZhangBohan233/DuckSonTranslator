@@ -37,7 +37,7 @@ public abstract class IntermediateTranslator extends Translator {
                     rangesInOrig.addAll(rt.getOrigRanges());
                 }
             }
-            ResultToken newToken = new ResultToken(token.getTranslated(), rangesInOrig);
+            ResultToken newToken = new ResultToken(token.getTranslated(), token.getPartOfSpeech(), rangesInOrig);
             result.add(newToken);
 //            token.getOrigRanges()
         }

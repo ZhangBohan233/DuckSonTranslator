@@ -10,7 +10,7 @@ import static trashsoftware.duckSonTranslator.wordPickers.wordPickerChsGeg.Commo
 
 public class CombinedCharPicker extends SingleCharPicker {
 
-    public final static double STRONG_MATCH_THRESHOLD = 0.1;
+    public final static double STRONG_MATCH_THRESHOLD = 0.075;
 
     public static final List<String> POS_PRECEDENCE = List.of(
             "v", "pron", "n", "adj", "adv"

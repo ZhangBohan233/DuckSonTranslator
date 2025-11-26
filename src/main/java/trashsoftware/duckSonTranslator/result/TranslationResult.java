@@ -1,12 +1,14 @@
 package trashsoftware.duckSonTranslator.result;
 
+import trashsoftware.duckSonTranslator.translators.Translator;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class TranslationResult implements Serializable {
-    
+
     public final String originalText;
     private final List<ResultToken> resultTokens = new ArrayList<>();
     private boolean clickable = true;
@@ -62,8 +64,17 @@ public class TranslationResult implements Serializable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
+        ResultToken lastToken = null;
         for (ResultToken token : resultTokens) {
-            builder.append(token.toString());
+            if (lastToken != null &&
+                    !Translator.NO_SPACE_AFTER.contains(lastToken.getPartOfSpeech()) &&
+                    !Translator.NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
+                if (lastToken.needSpaceBetween(token)) {
+                    builder.append(' ');
+                }
+            }
+            builder.append(token);
+            lastToken = token;
         }
         return builder.toString();
     }
@@ -82,7 +93,7 @@ public class TranslationResult implements Serializable {
 
     /**
      * 从翻译结果中找到位置within范围的tokens，只要沾到了就返回。
-     * 
+     *
      * 这里的pos都是指在结果里的
      */
     public List<ResultToken> findTokensInRange(int beginCharPos, int endCharPos) {

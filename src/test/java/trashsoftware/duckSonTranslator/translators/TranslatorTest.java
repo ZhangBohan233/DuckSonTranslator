@@ -26,7 +26,24 @@ public class TranslatorTest {
     }
     
     @Test
-    public void testWorldCup() throws IOException {
+    public void testChongqingPlaceNames() {
+        DuckSonTranslator translator = new DuckSonTranslator();
+        
+        String[][] mapper = new String[][]{
+                new String[]{"观音桥", "see music bridge"},
+                new String[]{"大学城", "big study city"},
+                new String[]{"南坪", "south flat"}
+        };
+        
+        for (String[] maps : mapper) {
+            TranslationResult geg = translator.chsToGeglish(maps[0]);
+            System.out.println(geg);
+            assert geg.toString().equals(maps[1]);
+        }
+    }
+    
+    @Test
+    public void testWorldCup() {
         DuckSonTranslator translator = new DuckSonTranslator();
 
         String positions = "前锋 边锋 中场 后腰 后卫 门将 守门员 裁判 教练";
@@ -35,7 +52,7 @@ public class TranslatorTest {
     }
     
     @Test
-    public void testIntro() throws IOException {
+    public void testIntro() {
         String s = "Duck Son翻译器是一个具有将中文按每个字翻译为对应的英文单词的搞笑软件。该软件内置了普通话翻译版和重庆话翻译版，具有多种翻译模式，欢迎下载体验。";
         DuckSonTranslator translator = new DuckSonTranslator();
         
@@ -44,7 +61,7 @@ public class TranslatorTest {
     }
     
     @Test
-    public void uiTextTest() throws IOException {
+    public void uiTextTest() {
         String s = "介质";
         DuckSonTranslator translator = new DuckSonTranslator();
 
@@ -53,7 +70,7 @@ public class TranslatorTest {
     }
     
     @Test
-    public void testChsChi() throws IOException {
+    public void testChsChi() {
         String s = "每个都是傻子";
         DuckSonTranslator translator = new DuckSonTranslator();
         
@@ -89,11 +106,18 @@ public class TranslatorTest {
     }
     
     @Test
-    public void testChiChs() throws IOException {
-        String s = "aspirin stop";
+    public void testChiChs() {
+        String s = "pll slow aspirin stop";
         DuckSonTranslator translator = new DuckSonTranslator();
 
         TranslationResult result = translator.chinglishToChs(s);
+//        System.out.println(result.getResultTokens());
+//        System.out.println(result.getResultTokens().get(result.getResultTokens().size() - 1));
         System.out.println(result);
+        
+        TranslationResult result2 = translator.chsToGeglish("啊啊asdhasihd哈哈哈");
+        System.out.println(result2);
+//        System.out.println(result2.getResultTokens());
+//        assert s.equals(result.toString());
     }
 }

@@ -13,7 +13,7 @@ public class IdentityTranslator extends Translator {
     public TranslationResult translate(String text) {
         TranslationResult result = new TranslationResult(text);
         for (int i = 0; i < text.length(); i++) {
-            result.add(new ResultToken(String.valueOf(text.charAt(i)), i, 1));
+            result.add(new ResultToken(String.valueOf(text.charAt(i)), "unk", i, 1));
         }
         return result;
     }

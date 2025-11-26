@@ -34,7 +34,7 @@ public class Main {
         System.out.println(result);
     }
     
-    private static void testDictionary() throws IOException {
+    private static void testDictionary() {
         TranslatorOptions options = TranslatorOptions.getInstance();
 //        options.setUseSameSoundChar(false);
         long st = System.currentTimeMillis();
@@ -58,8 +58,8 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        testDictionary();
+    public static void main(String[] args) {
+//        testDictionary();
 //        if (true) return;
 //        worldCupCountries();
         TranslatorOptions options = TranslatorOptions.getInstance();
@@ -74,16 +74,16 @@ public class Main {
         
 //        translator.getOptions().setChongqingMode(false);
 
-//        TranslationResult geglish = translator.chsToGeglish("什么鸡巴东西的人正在打的GE1234，真是吃了屎了，的确。");
-//        System.out.println(geglish);
+        TranslationResult geglish = translator.chsToGeglish("什么鸡巴东西的人正在打的GE1234，真是吃了屎了，的确。");
+        System.out.println(geglish);
 //        geglish.printTokens();
 
-        System.out.println(translator.chsToGeglish("吓人"));
-        System.out.println(translator.chsToGeglish("好了"));
-        System.out.println(translator.chsToGeglish("冷却"));
-//        System.out.println(translator.geglishToChs("seer shit"));
-        System.out.println(translator.chsToGeglish("压力"));
-//        System.out.println(translator.geglishToChs("baggage claim"));
+        System.out.println(translator.chsToGeglish("镜子宜宾遵义"));
+        System.out.println(translator.chsToGeglish("疯了风枫树，风油精"));
+        System.out.println(translator.chsToGeglish("遵义碘酒典"));
+        System.out.println(translator.geglishToChs("seer seeing shit"));
+        System.out.println(translator.chsToGeglish("长词警告"));
+        System.out.println(translator.chsToGeglish("查询的词汇较长，可能导致App崩溃，建议缩短词汇或禁用同音字。如需翻译句子，请前往翻译界面。是否确定要查询？"));
 
 //        TranslationResult geglish2 = translator.chsToGeglish("萌♣");
 //        System.out.println(geglish2);

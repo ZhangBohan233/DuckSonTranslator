@@ -1,7 +1,7 @@
 package trashsoftware.duckSonTranslator.wordPickers;
 
 public class ResultFromLatin extends Result {
-    public static final ResultFromLatin NOT_FOUND = new ResultFromLatin(null, null);
+    public static final ResultFromLatin NOT_FOUND = new ResultFromLatin(null, "untranslated");
     
     public final String translated;
     public final String partOfSpeech;

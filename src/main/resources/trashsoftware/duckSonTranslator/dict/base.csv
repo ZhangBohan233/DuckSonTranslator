@@ -38,7 +38,7 @@ chs, cq, pinyin, eng, pos
 病, bin4, bing4, illness, n
 薄, bo2, bao2, thin, adj
 博, bo2, bo2, phd, n
-不, bu2, bu4, not, adv
+不, bu2, bu4, no, adv
 版本, ban3 ben3, ban3 ben3, version, n
 包弟, bao1 di4, bao1 di4, baggage, n
 百万, be2 wan4, bai3 wan4, million, n
@@ -95,6 +95,7 @@ chs, cq, pinyin, eng, pos
 弟, di4, di4, brother, n
 点, dian3, dian3, point, n
 丁, din1, ding1, D, n
+丢, diu1, diu1, throw, v
 多, do1, duo1, many, adj
 都, dou1, dou1, both, adv
 度, du4, du4, degree, n
@@ -123,6 +124,8 @@ chs, cq, pinyin, eng, pos
 飞, fei1, fei1, fly, v
 非, fei1, fei1, africa, n
 粉, fen3, fen3, pink, n
+风, fong1, feng1, wind, n
+疯, fong1, feng1, crazy, adj
 封, fong1, feng1, isolate, v, cover=false
 湖, fu2, hu2, lake, n
 浮, fu2, fu2, float, v
@@ -242,6 +245,7 @@ chs, cq, pinyin, eng, pos
 仅, jin3, jin3, only, adj
 警, jin3, jing3, police, n, cover=false
 近, jin4, jin4, near, adj, cover=false
+静, jin4, jing4, quiet, adj
 脚, jio2, jiao2, foot, n
 九, jiu3, jiu3, nine, n
 酒, jiu3, jiu3, wine, n
@@ -251,7 +255,7 @@ chs, cq, pinyin, eng, pos
 决, jue2, jue2, curse, v
 绝, jue2, jue2, absolute, adj
 间谍, jian4 die2, jian4 die2, spy cat, n
-结果, jie2 guo3, jie2 guo3, resultFromChs, n
+# 结果, jie2 guo3, jie2 guo3, resultFromChs, n
 经常, jin1 sang2, jing1 chang2, usually, adj
 今天, jin1 tian1, jin1 tian1, today, n
 
@@ -297,6 +301,7 @@ chs, cq, pinyin, eng, pos
 尿, liao4, niao4, piss, n
 林, lin2, lin2, forest, n
 零, lin2, ling2, zero, n
+您, lin2, nin2, you, pron
 溜, liu1, liu1, run, v
 流, liu2, liu2, flow, v
 牛, liu2, niu2, cow, n
@@ -348,6 +353,7 @@ chs, cq, pinyin, eng, pos
 
 # P
 𤆵, pa1, pa1, soft, adj
+叛, pan4, pan4, betray, v
 跑, pao3, pao3, run, v
 泡, pao4, pao4, bubble, n
 炮, pao4, pao4, cannon, n
@@ -360,12 +366,14 @@ chs, cq, pinyin, eng, pos
 屁股, pi4 gu3, pi4 gu3, ass, n
 皮肤, pi2 fu1, pi2 fu1, skin, n
 啤酒, pi2 jiu3, pi2 jiu3, beer, n
+评估, pin2 gu1, ping2 gu1, evaluate, v
 瓢羹, piao2 gen1, piao2 geng1, ticket root, n
 
 # Q
 溪, qi1, xi1, stream, n
 七, qi2, qi1, seven, n
 旗, qi2, qi2, flag, n
+其, qi2, qi2, other, pron
 起, qi3, qi3, raise, v
 启, qi3, qi3, launch, v
 气, qi4, qi4, gas, n
@@ -450,6 +458,7 @@ chs, cq, pinyin, eng, pos
 说, so2, shuo1, speak, v
 锁, so3, suo3, lock, n
 所, so3, suo3, all, n
+收, sou1, shou1, receive, v
 手, sou3, shou3, hand, n
 艏, sou3, shou3, bow, n
 兽, sou4, shou4, animal, n
@@ -508,6 +517,7 @@ chs, cq, pinyin, eng, pos
 萎, wei3, wei3, weak, adj
 纬, wei3, wei3, latitude, n
 卫, wei4, wei4, guard, n
+未, wei4, wei4, not, adv
 文, wen2, wen2, literature, n
 我, wo3, wo3, me, pron
 污, wu1, wu1, pollute, v
@@ -526,6 +536,7 @@ chs, cq, pinyin, eng, pos
 下, xia4, xia4, down, v
 夏, xia4, xia4, summer, n
 宵, xiao1, xiao1, night, n
+效, xiao4, xiao4, effect, n
 仙, xian1, xian1, fairy, n
 先, xian1, xian1, before, prep
 香, xiang1, xiang1, good smell, adj
@@ -542,6 +553,7 @@ chs, cq, pinyin, eng, pos
 虚, xu1, xu1, weak, adj
 须, xu1, xu1, beard, n
 鲜, xuan1, xian1, good taste, adj
+寻, xun2, xun2, find, v
 速, xuu2, su4, speed, n
 洗白, xi3 be2, xi3 bai2, die, v, cq_only=true
 小什字, xiao3 si2 zi4, xiao3 shi2 zi4, small stone word, n

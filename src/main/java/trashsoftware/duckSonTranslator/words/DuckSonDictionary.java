@@ -15,11 +15,15 @@ public class DuckSonDictionary {
     final PinyinDict pinyinDict;
     transient final TranslatorOptions options;
 
-    public DuckSonDictionary(TranslatorOptions options) throws IOException {
-        this.options = options;
-        this.baseDict = BaseDict.getInstance();
-        this.bigDict = BigDict.getInstance(options.isUseHugeDict());
-        this.pinyinDict = PinyinDict.getInstance();
+    public DuckSonDictionary(TranslatorOptions options) {
+        try {
+            this.options = options;
+            this.baseDict = BaseDict.getInstance();
+            this.bigDict = BigDict.getInstance(options.isUseHugeDict());
+            this.pinyinDict = PinyinDict.getInstance();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public TranslatorOptions getOptions() {

@@ -79,12 +79,13 @@ public abstract class StdLatinToChs extends Translator {
                 }
                 if (word.length() > 0) {
                     String wordS = word.toString();
-                    words.add(new Token(wordS,
-                            index - wordS.length(), wordS.length()));
+                    Token token = new Token(wordS, index - wordS.length(), wordS.length());
+//                    token.setPartOfSpeech("alphabetic");
+                    words.add(token);
                     word.setLength(0);
                 }
                 if (c == '\n') {
-                    words.add(new Token("\n", "\n", "lf", index, 1));
+                    words.add(new Token("\n", "\n", "etc", index, 1));
                 }
             } else if ((c >= 'A' && c <= 'z') || c == '\'') {
                 if (number.length() > 0) {
@@ -97,7 +98,9 @@ public abstract class StdLatinToChs extends Translator {
             } else {
                 if (word.length() > 0) {
                     String wordS = word.toString();
-                    words.add(new Token(wordS, index - wordS.length(), wordS.length()));
+                    Token token = new Token(wordS, index - wordS.length(), wordS.length());
+//                    token.setPartOfSpeech("alphabetic");
+                    words.add(token);
                     word.setLength(0);
                 }
                 if (c >= '0' && c <= '9') {
@@ -130,7 +133,9 @@ public abstract class StdLatinToChs extends Translator {
         }
         if (word.length() > 0) {
             String wordS = word.toString();
-            words.add(new Token(wordS, index - wordS.length(), wordS.length()));
+            Token token = new Token(wordS, index - wordS.length(), wordS.length());
+//            token.setPartOfSpeech("alphabetic");
+            words.add(token);
             word.setLength(0);
         }
 //        System.out.println(words);
@@ -220,29 +225,26 @@ public abstract class StdLatinToChs extends Translator {
     }
 
     protected TranslationResult integrateChsTokens(List<Token> tokens, String original) {
-//        StringBuilder builder = new StringBuilder();
         TranslationResult result = new TranslationResult(original);
         for (Token token : tokens) {
             if (token.isActual()) {
                 ResultToken resultToken;
                 if (token.getChs() != null) {
                     resultToken =
-                            new ResultToken(token.getChs(), token.getPosInOrig(), token.getLengthInOrig());
+                            new ResultToken(token.getChs(), token.getPartOfSpeech(), token.getPosInOrig(), token.getLengthInOrig());
                 } else {
                     resultToken =
-                            new ResultToken(token.getEng(), token.getPosInOrig(), token.getLengthInOrig());
+                            new ResultToken(token.getEng(), token.getPartOfSpeech(), token.getPosInOrig(), token.getLengthInOrig());
                 }
                 result.add(resultToken);
             } else {
-//                builder.append(token.getChs());
                 ResultToken resultToken =
-                        new ResultToken(token.getChs(), token.getPosInOrig(), token.getLengthInOrig());
+                        new ResultToken(token.getChs(), token.getPartOfSpeech(), token.getPosInOrig(), token.getLengthInOrig());
                 result.add(resultToken);
             }
         }
-//        return builder.toString();
         return result;
     }
-    
+
     protected abstract void translateToken(Token token);
 }

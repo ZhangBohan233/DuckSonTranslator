@@ -8,7 +8,7 @@ public class Token {
     private String chs;
     private String eng;
     private String engAfterTense;
-    private String partOfSpeech;
+    private String partOfSpeech = "untranslated";
     private GrammarEffect grammarEffect;
     private boolean applied = false;  // 语法token是否已被apply
 
@@ -18,11 +18,11 @@ public class Token {
     private int posInOrig;
     private int lengthInOrig;
 
-    public Token(String chs, String eng, String partOfSpeech) {
-        this.chs = chs;
-        this.eng = eng;
-        this.partOfSpeech = partOfSpeech;
-    }
+//    public Token(String chs, String eng, String partOfSpeech) {
+//        this.chs = chs;
+//        this.eng = eng;
+//        this.partOfSpeech = partOfSpeech;
+//    }
 
     public Token(String chs, String eng, String partOfSpeech, int posInOrig, int lengthInOrig) {
         this.chs = chs;
@@ -150,7 +150,9 @@ public class Token {
 
     private void applyIng() {
         String eng = getEng();
-        setEngAfterTense(eng + "ing");
+//        setEngAfterTense(eng + "ing");
+        if (eng.endsWith("e")) setEngAfterTense(eng.substring(0, eng.length() - 1) + "ing");
+        else setEngAfterTense(eng + "ing");
     }
 
     private void applyBetter() {
@@ -223,8 +225,10 @@ public class Token {
             };
         }
         if (eng.endsWith("ing")) {
+            String sub = eng.substring(0, len - 3);
             if (len > 3) return new String[][]{
-                    {eng.substring(0, len - 3), "ing"},
+                    {sub, "ing"},
+                    {sub + "e", "ing"}
             };
         }
         if (eng.endsWith("'s")) {
@@ -296,6 +300,7 @@ public class Token {
     }
 
     public void setPartOfSpeech(String partOfSpeech) {
+        if (partOfSpeech == null) throw new RuntimeException("Attempt setting part of speech to null.");
         this.partOfSpeech = partOfSpeech;
     }
 

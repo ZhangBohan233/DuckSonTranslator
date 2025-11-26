@@ -1,4 +1,4 @@
 package trashsoftware.duckSonTranslator.wordPickers;
 
-public class Result {
+public abstract class Result {
 }

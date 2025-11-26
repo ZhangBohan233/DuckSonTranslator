@@ -109,4 +109,8 @@ public class Util {
         // If we've matched all pattern characters, it's contained
         return j == pattern.length();
     }
+
+    public static boolean isChineseByRange(char c) {
+        return c >= '\u4e00' && c <= '\u9fa5';
+    }
 }

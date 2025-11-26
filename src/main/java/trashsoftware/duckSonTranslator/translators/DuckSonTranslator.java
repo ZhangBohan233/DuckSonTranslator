@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class DuckSonTranslator {
-    public static final String CORE_VERSION = "0.11.2";
+    public static final String CORE_VERSION = "0.11.3";
 
     final BaseDict baseDict;
     final PinyinDict pinyinDict;
@@ -45,17 +45,20 @@ public class DuckSonTranslator {
     private transient ChsChiWordPicker chsToChiPicker;
     private transient ChiChsWordPicker chiToChsPicker;
 
-    public DuckSonTranslator(TranslatorOptions options) throws IOException {
+    public DuckSonTranslator(TranslatorOptions options) {
         this.options = options;
-        this.baseDict = BaseDict.getInstance();
-        this.pinyinDict = PinyinDict.getInstance();
-        this.bigDict = BigDict.getInstance(options.isUseHugeDict());
-        this.grammarDict = new GrammarDict();
-
-//        createPickerInstances();
+        try {
+            this.baseDict = BaseDict.getInstance();
+            this.pinyinDict = PinyinDict.getInstance();
+            this.bigDict = BigDict.getInstance(options.isUseHugeDict());
+            this.grammarDict = new GrammarDict();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
     }
 
-    public DuckSonTranslator() throws IOException {
+    public DuckSonTranslator() {
         this(TranslatorOptions.getInstance());
     }
 
@@ -66,13 +69,6 @@ public class DuckSonTranslator {
     public String getDictionaryVersion() {
         return baseDict.getVersionStr() + "." + pinyinDict.getVersionStr() + "." + bigDict.getVersionStr();
     }
-
-//    private void createPickerInstances() {
-//        this.chsToGegPicker = options.getPicker().createChsToGeg(bigDict);
-//        this.gegToChsPicker = options.getPicker().createGegToChs(bigDict);
-//        this.chsToChiPicker = options.getPicker().createChsToChi(bigDict);
-//        this.chiToChsPicker = options.getPicker().createChiToChs(bigDict);
-//    }
 
     @SuppressWarnings("unused")
     public String autoDetectLanguage(String input) {

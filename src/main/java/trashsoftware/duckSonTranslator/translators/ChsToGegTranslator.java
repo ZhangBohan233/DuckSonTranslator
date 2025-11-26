@@ -124,7 +124,6 @@ public class ChsToGegTranslator extends StdChsToLatin {
     }
 
     private TranslationResult integrateToGeglish(List<Token> tokens, String original) {
-//        StringBuilder builder = new StringBuilder();
         TranslationResult result = new TranslationResult(original);
         Token lastActual = null;
         List<Token> grammarTokens = new ArrayList<>();
@@ -150,6 +149,7 @@ public class ChsToGegTranslator extends StdChsToLatin {
                             ResultToken last = result.removeLast();
                             ResultToken mergedToken = new ResultToken(
                                     token.getEngAfterTense(),
+                                    token.getPartOfSpeech(),
                                     last.getOrigRanges(),
                                     token.getPosInOrig(),
                                     token.getLengthInOrig());
@@ -164,16 +164,17 @@ public class ChsToGegTranslator extends StdChsToLatin {
 
                     continue;
                 }
-                String pre = "";
-                if (lastActual != null &&
-                        !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
-                        !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
-//                    builder.append(' ');
-                    pre = " ";
-                }
+//                String pre = "";
+//                if (lastActual != null &&
+//                        !NO_SPACE_AFTER.contains(lastActual.getPartOfSpeech()) &&
+//                        !NO_SPACE_BEFORE.contains(token.getPartOfSpeech())) {
+////                    builder.append(' ');
+//                    pre = " ";
+//                }
 //                System.out.println(token);
 //                builder.append(token.getEng());
-                result.add(new ResultToken(pre + token.getEng(), token.getPosInOrig(), token.getLengthInOrig()));
+                result.add(new ResultToken(token.getEng(), token.getPartOfSpeech(), 
+                        token.getPosInOrig(), token.getLengthInOrig()));
                 lastActual = token;
             } else if (token.isEffect()) {
                 grammarTokens.add(token);
